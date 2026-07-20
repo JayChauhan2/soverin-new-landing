@@ -807,11 +807,13 @@
               let worldReady = false;
               worldImage.src = 'assets/living-world.png';
               worldImage.onload = () => {
-                // Contain, don't crop: the wide landscape keeps its original aspect ratio.
-                const scale = Math.min(worldSource.width / worldImage.naturalWidth, worldSource.height / worldImage.naturalHeight);
-                const imageWidth = worldImage.naturalWidth * scale;
+                // Use only the left 75%: mountain + river stay prominent and the
+                // composition fits the near-square card without horizontal distortion.
+                const cropWidth = worldImage.naturalWidth * 0.75;
+                const scale = Math.min(worldSource.width / cropWidth, worldSource.height / worldImage.naturalHeight);
+                const imageWidth = cropWidth * scale;
                 const imageHeight = worldImage.naturalHeight * scale;
-                worldCtx.drawImage(worldImage, (worldSource.width - imageWidth) / 2, (worldSource.height - imageHeight) / 2, imageWidth, imageHeight);
+                worldCtx.drawImage(worldImage, 0, 0, cropWidth, worldImage.naturalHeight, (worldSource.width - imageWidth) / 2, (worldSource.height - imageHeight) / 2, imageWidth, imageHeight);
                 const imageData = worldCtx.getImageData(0, 0, worldSource.width, worldSource.height);
                 for (let y = 0; y < worldSource.height * 0.67; y++) {
                   for (let x = 0; x < worldSource.width; x++) {
