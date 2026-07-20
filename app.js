@@ -526,69 +526,133 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // ==========================================
-  // 8. Animated Retro Dither Overlay
+  // 8. Animated Image-Based Dither Overlay
   // ==========================================
   const ditherCanvas = document.getElementById("dither-canvas");
   if (ditherCanvas) {
     const ditherCtx = ditherCanvas.getContext("2d");
-    const pixelSize = 3; // Match the 3x nearest-neighbor upscaled image pixel ratio
-    const patterns = [];
+    const scale = 3; // Match the 3x nearest-neighbor upscaled image pixel ratio
+    let w = 0;
+    let h = 0;
     
-    // Create 4 offscreen pattern canvases representing animation frames
-    for (let f = 0; f < 4; f++) {
-      const pCanvas = document.createElement("canvas");
-      pCanvas.width = 4 * pixelSize;
-      pCanvas.height = 4 * pixelSize;
-      const pCtx = pCanvas.getContext("2d");
-      pCtx.clearRect(0, 0, pCanvas.width, pCanvas.height);
-      pCtx.fillStyle = "rgba(2, 2, 4, 0.08)";
-      
-      for (let y = 0; y < 4; y++) {
-        for (let x = 0; x < 4; x++) {
-          let draw = false;
-          if (f === 0) {
-            draw = (x + y) % 4 === 0;
-          } else if (f === 1) {
-            draw = (x - y + 4) % 4 === 0;
-          } else if (f === 2) {
-            draw = (x + y + 2) % 4 === 0;
-          } else {
-            draw = (x - y + 6) % 4 === 0;
-          }
-          if (draw) {
-            pCtx.fillRect(x * pixelSize, y * pixelSize, pixelSize, pixelSize);
-          }
-        }
-      }
-      patterns.push(ditherCtx.createPattern(pCanvas, "repeat"));
+    // Offscreen canvas to analyze background image pixel brightness
+    const offCanvas = document.createElement("canvas");
+    const offCtx = offCanvas.getContext("2d");
+    
+    const bgImg = new Image();
+    bgImg.src = "assets/nature_bg.jpg";
+    
+    let imgPixels = null;
+    
+    bgImg.onload = () => {
+      initDither();
+    };
+    
+    if (bgImg.complete) {
+      initDither();
     }
+    
+    function initDither() {
+      resizeCanvas();
+      window.addEventListener("resize", resizeCanvas);
+      requestAnimationFrame(renderLoop);
+    }
+    
+    function resizeCanvas() {
+      w = Math.ceil(window.innerWidth / scale);
+      h = Math.ceil(window.innerHeight / scale);
+      
+      ditherCanvas.width = w;
+      ditherCanvas.height = h;
+      
+      offCanvas.width = w;
+      offCanvas.height = h;
+      
+      offCtx.drawImage(bgImg, 0, 0, w, h);
+      try {
+        const imgData = offCtx.getImageData(0, 0, w, h);
+        imgPixels = imgData.data;
+      } catch (e) {
+        console.error("Dither pixel extraction error:", e);
+      }
+    }
+    
+    const bayerMatrix = [
+      [0.0625, 0.5625, 0.1875, 0.6875],
+      [0.8125, 0.3125, 0.9375, 0.4375],
+      [0.2500, 0.7500, 0.1250, 0.6250],
+      [1.0000, 0.5000, 0.8750, 0.3750]
+    ];
     
     let frame = 0;
     let lastTime = 0;
-    const fpsInterval = 1000 / 8; // 8 FPS for classic retro hardware refresh rates
+    const fpsInterval = 1000 / 12; // 12 FPS for classic retro look
     
-    function resizeDitherCanvas() {
-      ditherCanvas.width = window.innerWidth;
-      ditherCanvas.height = window.innerHeight;
-    }
-    
-    resizeDitherCanvas();
-    window.addEventListener("resize", resizeDitherCanvas);
-    
-    function renderDither(timestamp) {
-      requestAnimationFrame(renderDither);
+    function renderLoop(timestamp) {
+      requestAnimationFrame(renderLoop);
       
+      if (!imgPixels) return;
       if (timestamp - lastTime < fpsInterval) return;
       lastTime = timestamp;
       
-      ditherCtx.clearRect(0, 0, ditherCanvas.width, ditherCanvas.height);
-      ditherCtx.fillStyle = patterns[frame];
-      ditherCtx.fillRect(0, 0, ditherCanvas.width, ditherCanvas.height);
+      ditherCtx.clearRect(0, 0, w, h);
       
-      frame = (frame + 1) % patterns.length;
+      const outImgData = ditherCtx.createImageData(w, h);
+      const outData = outImgData.data;
+      
+      frame = (frame + 1) % 8;
+      
+      for (let y = 0; y < h; y++) {
+        const matrixY = y % 4;
+        for (let x = 0; x < w; x++) {
+          const matrixX = x % 4;
+          const idx = (y * w + x) * 4;
+          
+          const r = imgPixels[idx];
+          const g = imgPixels[idx + 1];
+          const b = imgPixels[idx + 2];
+          const a = imgPixels[idx + 3];
+          
+          if (a === 0) continue;
+          
+          const brightness = (r * 0.299 + g * 0.587 + b * 0.114) / 255;
+          const bayerVal = bayerMatrix[matrixY][matrixX];
+          
+          // Wave-based shimmer animating only in midtones
+          const wave = Math.sin(x * 0.1 + y * 0.1 + frame * 0.8) * 0.12;
+          const animBayer = (bayerVal + wave + 1.0) % 1.0;
+          
+          let drawDither = false;
+          let color = [0, 0, 0, 0];
+          
+          // Draw dark dither pixels in dark midtones to enhance shadow textures
+          if (brightness >= 0.15 && brightness < 0.5) {
+            if (brightness < animBayer * 0.85) {
+              drawDither = true;
+              color = [2, 2, 4, 35]; // Dark dither block with ~14% opacity
+            }
+          }
+          // Draw light dither pixels in light midtones to simulate glistening light
+          else if (brightness >= 0.5 && brightness < 0.82) {
+            if (brightness > animBayer * 1.05) {
+              drawDither = true;
+              color = [255, 235, 205, 25]; // Warm highlight dither block with ~10% opacity
+            }
+          }
+          
+          if (drawDither) {
+            outData[idx] = color[0];
+            outData[idx + 1] = color[1];
+            outData[idx + 2] = color[2];
+            outData[idx + 3] = color[3];
+          } else {
+            outData[idx + 3] = 0;
+          }
+        }
+      }
+      
+      ditherCtx.putImageData(outImgData, 0, 0);
     }
-    
-    requestAnimationFrame(renderDither);
   }
 
 });
