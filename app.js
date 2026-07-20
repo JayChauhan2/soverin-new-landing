@@ -729,9 +729,6 @@ document.addEventListener("DOMContentLoaded", () => {
             if (brightness < animBayer * 0.72) {
               drawDither = true;
               color = [10, 25, 75, 255]; // Fully opaque navy shadow ripple (prevents black background bleed)
-            } else if (brightness > animBayer * 0.88) {
-              drawDither = true;
-              color = [90, 215, 255, 255]; // Fully opaque glistening cyan highlight ripple
             }
           } else {
             // Only draw light dither highlights (no dark shadow dither overlays to keep the image bright and clean)
