@@ -646,12 +646,44 @@ document.addEventListener("DOMContentLoaded", () => {
           const isGreen = (g > b && g > r * 0.9) && (y > h * 0.55); // Grass dither pushed lower (starts at 55% screen height)
           const isWarm = (r > b && r > g * 0.8); // Sunset tones (orange, peach, pink, red)
           
-          // Bounding coordinates matching the user's screenshot markings for selective lake dither (narrowed to hug the shoreline)
-          const isLakeDitherZone = 
-            (x > w * 0.56 && x < w * 0.98 && y > h * 0.61 && y < h * 0.66) || // Region 1 (narrow shoreline band under the right green bank)
-            (x > w * 0.46 && x < w * 0.92 && y > h * 0.78 && y < h * 0.83);   // Region 2 (narrow shoreline band above the bottom grass)
+          // Dynamic proximity check: check if a green grass pixel exists within a small neighborhood
+          let isNearGreen = false;
+          if (isBlue && y > h * 0.58 && x > w * 0.35 && brightness >= 0.12 && brightness < 0.55) {
+            // Check vertical neighbors within radius 4
+            for (let dy = -4; dy <= 4; dy++) {
+              if (dy === 0) continue;
+              const ny = y + dy;
+              if (ny >= 0 && ny < h) {
+                const nIdx = (ny * w + x) * 4;
+                const nr = imgPixels[nIdx];
+                const ng = imgPixels[nIdx + 1];
+                const nb = imgPixels[nIdx + 2];
+                if (ng > nb && ng > nr * 0.9) {
+                  isNearGreen = true;
+                  break;
+                }
+              }
+            }
+            // Check horizontal neighbors within radius 4
+            if (!isNearGreen) {
+              for (let dx = -4; dx <= 4; dx++) {
+                if (dx === 0) continue;
+                const nx = x + dx;
+                if (nx >= 0 && nx < w) {
+                  const nIdx = (y * w + nx) * 4;
+                  const nr = imgPixels[nIdx];
+                  const ng = imgPixels[nIdx + 1];
+                  const nb = imgPixels[nIdx + 2];
+                  if (ng > nb && ng > nr * 0.9) {
+                    isNearGreen = true;
+                    break;
+                  }
+                }
+              }
+            }
+          }
           
-          if (isBlue && isLakeDitherZone && brightness >= 0.12 && brightness < 0.55) {
+          if (isBlue && isNearGreen && brightness >= 0.12 && brightness < 0.55) {
             if (brightness < animBayer * 0.72) {
               drawDither = true;
               color = [10, 25, 75, 45]; // Deep navy shadow ripple
