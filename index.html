@@ -293,7 +293,8 @@
               margin: 0 auto;
               display: flex;
               flex-direction: column;
-              border: 1px solid #ffffff;
+              border-left: 1px solid #ffffff;
+              border-right: 1px solid #ffffff;
               border-radius: 0;
               padding: 32px;
               gap: 0;
@@ -802,8 +803,8 @@
 
                 function draw(w, h) {
                   dctx.clearRect(0, 0, w, h);
-                  const spacing = 16;
-                  const maxR    = 1.55;
+                  const spacing = mode === 'light-green' ? 26 : 16;
+                  const maxR    = mode === 'light-green' ? 1.2 : 1.55;
 
                   for (let y = spacing / 2; y < h; y += spacing) {
                     for (let x = spacing / 2; x < w; x += spacing) {
@@ -817,9 +818,12 @@
                         weight = Math.max(0, (ny - 0.16) * 1.08 + edge * 0.24);
                         color = `rgba(35, 142, 70, ${0.05 + weight * 0.19})`;
                       } else if (mode === 'light-green') {
-                        const edge = Math.abs(nx - 0.5) * 2;
-                        weight = Math.max(0, (ny - 0.12) * 1.02 + edge * 0.18);
-                        color = `rgba(35, 142, 70, ${0.045 + weight * 0.17})`;
+                        // Section 3 intentionally differs: a sparse, irregular field
+                        // starts at the top and dissolves before reaching the bottom.
+                        const center = 1 - Math.abs(nx - 0.5) * 2;
+                        const variation = Math.sin(nx * 22 + ny * 7) * 0.1;
+                        weight = Math.max(0, (0.78 - ny) * 0.82 + center * 0.16 + variation);
+                        color = `rgba(35, 142, 70, ${0.035 + weight * 0.14})`;
                       } else {
                         weight = Math.max(0, 0.82 - nx * 0.3 - (1 - ny) * 0.24);
                         color = `rgba(0, 70, 24, ${0.035 + weight * 0.11})`;
