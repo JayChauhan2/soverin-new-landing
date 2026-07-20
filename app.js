@@ -644,14 +644,14 @@ document.addEventListener("DOMContentLoaded", () => {
             // Keep foreground plants completely static (no sway)
           }
           
-          // 2. Entire Tree Bending (Left side) - rigid horizontal integer pixel shift (no fluid warp)
+          // 2. Entire Tree Bending (Left side) - smooth linear horizontal bending (no fluid warp)
           else if (x < w * 0.32 && y < h * 0.88 && rawBrightness < 0.48) {
             const baseFactor = Math.max(0, (h * 0.88 - y) / (h * 0.88));
             const factor = 0.4 + 0.6 * baseFactor;
             
             const tree_t = base_t * 2;
-            // Rounded to integer to guarantee a clean horizontal pixel shift with zero sub-pixel fluid warping
-            dx += Math.round(Math.sin(tree_t) * 1.8 * factor);
+            // Smooth float displacement (no rounding to prevent freezing, horizontal-only to prevent fluid warp)
+            dx += Math.sin(tree_t) * 2.8 * factor;
           }
           
           // 4. Grass Hill Swaying (Lower screen) - very subtle back and forth sway (no fluid ripples)
