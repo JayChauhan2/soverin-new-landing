@@ -342,3 +342,58 @@ a {
     font-size: 24px;
   }
 }
+
+/* Custom white background section override */
+.s-intro-custom {
+  background-color: #ffffff !important;
+  background: #ffffff !important;
+}
+
+/* Hide the blue background glowing intro element */
+.s-intro-custom .s-bg-intro {
+  display: none !important;
+}
+
+.s-intro-custom .s_intro_title {
+  color: #000000 !important;
+}
+
+.s-intro-custom .s_intro_line {
+  background-color: rgba(0, 0, 0, 0.15) !important;
+}
+
+.s-intro-custom .s_intro_info_icon svg path {
+  fill: #000000 !important;
+  opacity: 0.25 !important;
+}
+
+/* Button overrides for light background */
+.s-intro-custom .button_main_element {
+  border-color: #000000 !important;
+}
+
+.s-intro-custom .button_main_text {
+  color: #000000 !important;
+}
+
+.s-intro-custom .button_main_line {
+  background-color: #000000 !important;
+}
+
+.s-intro-custom .bn_main_icon path {
+  fill: #000000 !important;
+}
+
+/* Ensure hover animation remains premium in light mode */
+.s-intro-custom .button_main_wrap:hover .button_main_element {
+  background-color: #000000 !important;
+}
+
+.s-intro-custom .button_main_wrap:hover .button_main_text {
+  color: #ffffff !important;
+}
+
+.s-intro-custom .button_main_wrap:hover .bn_main_icon path {
+  fill: #ffffff !important;
+}
+
