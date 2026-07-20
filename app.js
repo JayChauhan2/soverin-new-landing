@@ -616,7 +616,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const outImgData = ditherCtx.createImageData(w, h);
       const outData = outImgData.data;
       
-      frame = (frame + 1) % 8;
+      frame = (frame + 1) % 360;
       
       for (let y = 0; y < h; y++) {
         const matrixY = y % 4;
@@ -634,8 +634,8 @@ document.addEventListener("DOMContentLoaded", () => {
           const brightness = (r * 0.299 + g * 0.587 + b * 0.114) / 255;
           const bayerVal = bayerMatrix[matrixY][matrixX];
           
-          // Wave-based shimmer animating only in midtones
-          const wave = Math.sin(x * 0.1 + y * 0.1 + frame * 0.8) * 0.12;
+          // Slow wave-based shimmer (frame * 0.05) to simulate a gentle constant sway
+          const wave = Math.sin(x * 0.1 + y * 0.1 + frame * 0.05) * 0.12;
           const animBayer = (bayerVal + wave + 1.0) % 1.0;
           
           let drawDither = false;
@@ -649,11 +649,11 @@ document.addEventListener("DOMContentLoaded", () => {
           const isLakeArea = (y > h * 0.64) && (x > w * 0.32); // Constrain water dither to the bottom-right lake area
           
           if (isBlue && isLakeArea && brightness >= 0.12 && brightness < 0.55) {
-            // Animated spatial wave mask to create organic, moving patches of dither ripples on the water surface
-            const rippleNoise = Math.sin(x * 0.08 - y * 0.05 + frame * 0.15) + Math.cos(x * 0.04 + y * 0.06 - frame * 0.1);
+            // Static spatial noise pattern (no frame factor) for fixed ripple patches
+            const rippleNoise = Math.sin(x * 0.08 - y * 0.05) + Math.cos(x * 0.04 + y * 0.06);
             
-            // Only draw water dither in the peak areas of the noise wave (selective patches)
-            if (rippleNoise > 0.6) {
+            // Only draw water dither in the peak areas of the static noise wave
+            if (rippleNoise > 0.65) {
               if (brightness < animBayer * 0.72) {
                 drawDither = true;
                 color = [10, 25, 75, 45]; // Deep navy shadow ripple
