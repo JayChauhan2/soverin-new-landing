@@ -304,23 +304,24 @@
               display: flex;
               width: 100%;
               min-height: 460px;
-              gap: 32px;
             }
             .sf-square {
-              width: calc(50% - 16px);
-              flex: 0 0 calc(50% - 16px);
+              width: 50%;
+              flex: 0 0 50%;
               position: relative;
               overflow: hidden;
               min-height: 460px;
               border: 1px solid rgba(255, 255, 255, 0.08);
-              border-radius: 8px;
+            }
+            .sf-row .sf-square + .sf-square {
+              border-left: none;
             }
             /* Image square */
             .sf-square--img {
               display: flex;
               align-items: center;
               justify-content: center;
-              background: linear-gradient(135deg, #141e2e 0%, #0d1520 100%);
+              background: #ffffff !important;
             }
             .sf-square--img__placeholder {
               width: 100%;
@@ -331,13 +332,18 @@
               justify-content: center;
               gap: 14px;
             }
-            .sf-square--img__placeholder svg { opacity: 0.18; }
+            .sf-square--img__placeholder svg { opacity: 0.35; }
+            .sf-square--img__placeholder svg rect,
+            .sf-square--img__placeholder svg circle,
+            .sf-square--img__placeholder svg path {
+              stroke: #000000 !important;
+            }
             .sf-square--img__placeholder span {
               font-family: 'Space Grotesk', sans-serif;
               font-size: 0.68rem;
               letter-spacing: 0.18em;
               text-transform: uppercase;
-              color: rgba(255, 255, 255, 0.2);
+              color: rgba(0, 0, 0, 0.4);
             }
             /* Text square */
             .sf-square--text {
@@ -389,7 +395,7 @@
 
             <!-- Row 1: Image left, Text right -->
             <div class="sf-row" id="sf-row-0">
-              <div class="sf-square sf-square--img" style="position: relative; overflow: hidden; background: linear-gradient(135deg, #141e2e 0%, #0d1520 100%);">
+              <div class="sf-square sf-square--img" style="position: relative; overflow: hidden; background: #ffffff;">
                 <canvas id="sf-brain-canvas" width="500" height="460" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: block; object-fit: contain; z-index: 5;"></canvas>
                 <img id="sf-brain-img" src="assets/brain_dither.png" style="display: none;" />
               </div>
