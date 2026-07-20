@@ -136,6 +136,46 @@ a {
   opacity: 1;
 }
 
+/* Transition for theme switching */
+.link_logo_nav img,
+.link_nav_text,
+.link_email_text,
+.link_email,
+.link_email_bx,
+.button_main_text,
+.button_main_line,
+.bn_main_icon,
+.burger_menu rect {
+  transition: all 0.3s ease;
+}
+
+/* Dark Navbar theme overrides */
+.nav_bar.nav-dark .link_logo_nav img {
+  filter: brightness(0) !important;
+}
+.nav_bar.nav-dark .link_nav_text {
+  color: #000000 !important;
+}
+.nav_bar.nav-dark .link_email_text,
+.nav_bar.nav-dark .link_email {
+  color: #000000 !important;
+}
+.nav_bar.nav-dark .link_email_bx {
+  border-color: rgba(0, 0, 0, 0.15) !important;
+}
+.nav_bar.nav-dark .button_main_text {
+  color: #000000 !important;
+}
+.nav_bar.nav-dark .button_main_line {
+  background-color: #000000 !important;
+}
+.nav_bar.nav-dark .bn_main_icon {
+  color: #000000 !important;
+}
+.nav_bar.nav-dark .burger_menu rect {
+  fill: #000000 !important;
+}
+
 /* Horizontal spacing fixes */
 .u-container {
   max-width: 1200px;

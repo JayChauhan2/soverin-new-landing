@@ -756,4 +756,26 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  // ==========================================
+  // Navbar dark/light theme toggle on white section (#vision)
+  // ==========================================
+  const navbar = document.querySelector(".nav_bar");
+  const visionSec = document.getElementById("vision");
+  if (navbar && visionSec) {
+    const handleNavbarTheme = () => {
+      const rect = visionSec.getBoundingClientRect();
+      const navbarHeight = navbar.offsetHeight || 80;
+      // If the top of the vision section has reached the navbar,
+      // and the bottom of the vision section is still below the navbar:
+      if (rect.top <= navbarHeight && rect.bottom >= 0) {
+        navbar.classList.add("nav-dark");
+      } else {
+        navbar.classList.remove("nav-dark");
+      }
+    };
+    window.addEventListener("scroll", handleNavbarTheme, { passive: true });
+    window.addEventListener("resize", handleNavbarTheme, { passive: true });
+    handleNavbarTheme(); // Run initially
+  }
+
 });
