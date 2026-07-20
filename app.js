@@ -705,13 +705,14 @@ document.addEventListener("DOMContentLoaded", () => {
           // Only draw light dither highlights (no dark shadow dither overlays to keep the image bright and clean)
           if (brightness >= 0.5 && brightness < 0.85) {
             if (isGreen) {
-              // Increased threshold (1.18) to significantly reduce grass dither density on left hill
-              if (brightness > animBayer * 1.18) {
+              // Static bayer threshold (no wave/shimmer) to prevent flickering/flashing on the grass hill
+              // Higher threshold (1.24) for extremely sparse and subtle highlights
+              if (brightness > bayerVal * 1.24) {
                 drawDither = true;
                 color = [220, 255, 100, 255]; // Fully opaque bright light green/yellow dither
               }
             } else if (isWarm) {
-              // High threshold (1.26) to make cloud dither extremely sparse/subtle on the left side
+              // High threshold (1.26) and slow shimmer to make cloud dither extremely sparse and subtle on the left side
               if (brightness > animBayer * 1.26) {
                 drawDither = true;
                 color = [255, 200, 150, 255]; // Fully opaque soft peach/coral dither in clouds
