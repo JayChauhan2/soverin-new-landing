@@ -649,13 +649,18 @@ document.addEventListener("DOMContentLoaded", () => {
           const isLakeArea = (y > h * 0.64) && (x > w * 0.32); // Constrain water dither to the bottom-right lake area
           
           if (isBlue && isLakeArea && brightness >= 0.12 && brightness < 0.55) {
-            // Specialized glistening water/lake shader to generate cyan highlight and navy shadow ripples
-            if (brightness < animBayer * 0.72) {
-              drawDither = true;
-              color = [10, 25, 75, 45]; // Deep navy shadow ripple
-            } else if (brightness > animBayer * 0.88) {
-              drawDither = true;
-              color = [90, 215, 255, 70]; // Glistening light blue/cyan highlight ripple
+            // Animated spatial wave mask to create organic, moving patches of dither ripples on the water surface
+            const rippleNoise = Math.sin(x * 0.08 - y * 0.05 + frame * 0.15) + Math.cos(x * 0.04 + y * 0.06 - frame * 0.1);
+            
+            // Only draw water dither in the peak areas of the noise wave (selective patches)
+            if (rippleNoise > 0.6) {
+              if (brightness < animBayer * 0.72) {
+                drawDither = true;
+                color = [10, 25, 75, 45]; // Deep navy shadow ripple
+              } else if (brightness > animBayer * 0.88) {
+                drawDither = true;
+                color = [90, 215, 255, 70]; // Glistening light blue/cyan highlight ripple
+              }
             }
           } else {
             // Standard shadow & highlight dither for land, grass, sky
