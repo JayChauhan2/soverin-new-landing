@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <title>Soverin | Clone</title>
+  <meta content="Building the world's first hotel on the Moon." name="description"/>
+  <meta content="width=device-width, initial-scale=1" name="viewport"/>
+  
+  <!-- Webflow Core Shared CSS of Soverin -->
+  <link href="https://cdn.prod.website-files.com/69523705e6ef6f1b4fbf357d/css/gru-space-flexy.webflow.shared.7765d2bcb.min.css" rel="stylesheet" type="text/css"/>
+  
+  <!-- FontAwesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Custom Stylesheet (Local overrides & fixes) -->
+  <link rel="stylesheet" href="style.css"/>
+
+  <!-- Google Fonts: Space Grotesk -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="body-wrap">
+
+  <!-- Core Page Wrap -->
+  <div class="page_wrap">
+    
+    <!-- Top Menu/Nav Bar (Cloned with Smooth Anchor Links) -->
+    <div data-animation="default" class="nav_bar w-nav" data-easing2="ease" data-easing="ease" data-collapse="medium" role="banner" data-duration="400">
+      <div class="nav_bar_container u-container">
+        <div class="nav_bar_menu">
+          <!-- Logo -->
+          <a href="#home" class="link_logo_nav w-nav-brand" style="display: flex; align-items: center; justify-content: center; height: 100%;">
+            <img src="assets/soverin_text_logo.png" alt="Soverin logo" style="height: 30px; width: auto; object-fit: contain; filter: brightness(0) invert(1);"/>
+          </a>
+          
+          <!-- Menu links rewritten to scroll down to sections -->
+          <nav role="navigation" class="menu_nav w-nav-menu">
+            <div class="menu_nav_wrap">
+              <div class="menu_nav_list">
+                <a href="#vision" class="link_nav w-inline-block">
+                  <div class="link_nav_text">Vision</div>
+                </a>
+                <a href="#roadmap" class="link_nav w-inline-block">
+                  <div class="link_nav_text">Roadmap</div>
+                </a>
+                <a href="#model" class="link_nav w-inline-block">
+                  <div class="link_nav_text">3D Hotel</div>
+                </a>
+                <a href="#whitepaper" class="link_nav w-inline-block">
+                  <div class="link_nav_text">Whitepaper</div>
+                </a>
+                <a href="#team" class="link_nav w-inline-block">
+                  <div class="link_nav_text">Team</div>
+                </a>
+                <a href="#featured" class="link_nav w-inline-block">
+                  <div class="link_nav_text">Featured In</div>
+                </a>
+              </div>
+              <div class="menu_nav_email_link">
+                <a href="mailto:contact@soverinlabs.com" class="link_email_wrap w-inline-block">
+                  <div class="link_email_text">Get in <span class="span-font-m">Touch</span></div>
+                  <div class="link_email_bx">
+                    <div class="link_email">contact@soverinlabs.com</div>
+                  </div>
+                </a>
+              </div>
+            </div>
+          </nav>
+          
+          <!-- CTA Reservation Button -->
+          <div class="bn-s_nav_wrap">
+            <div class="bn_nav_wrap">
+              <div data-button=" " data-trigger="hover focus" class="button_main_wrap">
+                <div class="clickable_wrap u-cover-absolute">
+                  <a href="#reserve" class="clickable_link w-inline-block">
+                    <span class="clickable_text u-sr-only">Reserve a spot</span>
+                  </a>
+                </div>
+                <div class="button_main_element">
+                  <div class="button_main_arrow_text_wrap">
+                    <div aria-hidden="true" class="button_main_text">Reserve a spot</div>
+                    <div class="button_main_arrow_icon_wrap">
+                      <div class="bn_main_icon w-embed">
+                        <svg width="100%" height="100%" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M12.6066 15.9427L11.9585 15.2945L14.7967 12.4563C15.3741 11.8788 14.9652 10.8914 14.1485 10.8914H3.20801V9.97484H14.1485C14.9652 9.97484 15.3741 8.98746 14.7967 8.40999L11.9585 5.57177L12.6066 4.92358L18.1162 10.4331L12.6066 15.9427Z" fill="currentColor"/>
+                        </svg>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="button_main_line"></div>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Mobile nav trigger toggle button -->
+            <div class="bn_menu w-nav-button" id="mob-menu-btn">
+              <div class="bn_menu_wrap">
+                <div class="burger_menu w-embed">
+                  <svg width="100%" height="100%" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="6.45801" y="10.3334" width="18.0833" height="1.29167" fill="#D9D9D9"/>
+                    <rect x="6.45801" y="19.375" width="18.0833" height="1.29167" fill="#D9D9D9"/>
+                  </svg>
+                </div>
+                <div class="close_menu w-embed" style="display: none;">
+                  <svg width="100%" height="100%" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M23.0718 9.87176L18.8292 14.1144C17.7878 15.1558 17.7878 16.8442 18.8292 17.8856L23.0718 22.1283L22.129 23.0711L17.8864 18.8284C16.845 17.7871 15.1565 17.7871 14.1151 18.8284L9.8725 23.0711L8.92969 22.1283L13.1723 17.8856C14.2137 16.8442 14.2137 15.1558 13.1723 14.1144L8.92969 9.87176L9.8725 8.92896L14.1151 13.1716C15.1565 14.213 16.845 14.213 17.8864 13.1716L22.129 8.92896L23.0718 9.87176Z" fill="white"/>
+                  </svg>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Content Wrapper -->
+    <main class="page_main">
+      
+      <!-- Section 1: Hero Section (Cloned) -->
+      <section id="home" class="s-h-home">
+        <div class="s_h_home_bg_video">
+          <div class="s_h_home_bg_grad"></div>
+          <div class="des_bg_video w-embed">
+            <!-- DESKTOP Video -->
+            <video class="video-desktop" muted loop playsinline poster="https://cdn.prod.website-files.com/69523705e6ef6f1b4fbf357d/6970787eea82fb25fc4a5082_cover-des-video.avif">
+              <source src="https://webflow-resources.b-cdn.net/GruSpace_LaunchVideo_v06.1_Landscape_NoEndText_fixEnd_web1080-2.mp4" type="video/mp4" />
+            </video>
+          </div>
+          <div class="mob_bg_video w-embed">
+            <!-- MOBILE Video -->
+            <video class="video-mobile" muted loop playsinline poster="https://cdn.prod.website-files.com/69523705e6ef6f1b4fbf357d/6970789cbcc32bc7637dbaea_cover-mob-video.avif">
+              <source src="https://webflow-resources.b-cdn.net/GruSpace_LaunchVideo_v06.1_Portrait_NoEndText_fixEnd_web720-2.mp4" type="video/mp4" />
+            </video>
+          </div>
+        </div>
+        
+        <div class="s_h_home_container u-container">
+          <div class="s_h_home_content_wrap">
+            <div class="s_h_home_logos_muted_wrap">
+              <!-- Mute / Unmute Button -->
+              <div id="mute-btn-wrap" class="s_h_home_muted_wrap" style="cursor: pointer;">
+                <div class="s_h_home_muted_icon_wrap">
+                  <!-- Muted State Icon (White) -->
+                  <div class="s_h_home_muted_icon_noactive w-embed" id="icon-muted">
+                    <svg width="100%" height="100%" viewBox="0 0 21 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <g opacity="0.6">
+                        <path d="M18.5755 4.0313C18.8797 3.92455 19.2078 4.09966 19.3084 4.42241C19.7573 5.86271 20 7.40189 20 9C20 10.5981 19.7573 12.1373 19.3084 13.5776C19.2078 13.9003 18.8797 14.0754 18.5755 13.9687C18.2713 13.862 18.1063 13.5138 18.2069 13.191C18.6175 11.8739 18.8399 10.4651 18.8399 9C18.8399 7.53488 18.6175 6.12613 18.2069 4.80897C18.1063 4.48622 18.2713 4.13805 18.5755 4.0313Z" fill="white"/>
+                        <path d="M16.1247 5.67428C16.0142 5.35519 15.6809 5.19156 15.3802 5.3088C15.0795 5.42604 14.9253 5.77975 15.0357 6.09884C15.3486 7.00237 15.5196 7.9793 15.5196 9C15.5196 9.84664 15.402 10.663 15.1834 11.4323C15.1712 11.4751 15.1587 11.5178 15.1459 11.5604C15.1114 11.6751 15.0747 11.7887 15.0357 11.9012C14.9253 12.2202 15.0795 12.574 15.3802 12.6912C15.6809 12.8084 16.0142 12.6448 16.1247 12.3257C16.1694 12.1967 16.2115 12.0663 16.2511 11.9347C16.2658 11.8858 16.2801 11.8368 16.2941 11.7876C16.5451 10.9044 16.6798 9.96832 16.6798 9C16.6798 7.83231 16.4839 6.71178 16.1247 5.67428Z" fill="white"/>
+                        <path d="M1 11.8824V6.11765H4.39431C5.29353 6.11765 6.16652 5.81466 6.87239 5.25757L11 2V16L6.87239 12.7424C6.16652 12.1853 5.29353 11.8824 4.39432 11.8824H1Z" fill="white"/>
+                      </g>
+                    </svg>
+                  </div>
+                  <!-- Active Unmuted State Icon -->
+                  <div class="s_h_home_muted_icon_active w-embed" id="icon-unmuted" style="display: none;">
+                    <svg width="100%" height="100%" viewBox="0 0 21 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <g opacity="0.6">
+                        <path d="M1 11.8824V6.11765H4.39431C5.29353 6.11765 6.16652 5.81466 6.87239 5.25757L11 2V16L6.87239 12.7424C6.16652 12.1853 5.29353 11.8824 4.39432 11.8824H1Z" fill="white"/>
+                        <path d="M15 11L19 7" stroke="white" stroke-linecap="round"/>
+                        <path d="M15 7.00001L19 11" stroke="white" stroke-linecap="round"/>
+                      </g>
+                    </svg>
+                  </div>
+                </div>
+                <div class="s_h_home_muted_text_wrap">
+                  <div class="s_h_home_muted_text">Sound: </div>
+                  <div class="span_muted_text" id="mute-status-text">Off </div>
+                </div>
+              </div>
+              
+              <!-- Backed Logos -->
+              <div id="w-node-_053225eb-fe38-1b91-71ab-02ef281214f2-df9c20da" class="s_h_home_logos_wrap">
+                <div class="s_h_home_content_logos_wrap">
+                  <div class="s_h_home_logo_text">Backed by</div>
+                  <div class="s_h_home_logos_list">
+                    <div class="s_h_home_logo_wrap">
+                      <img src="https://cdn.prod.website-files.com/69523705e6ef6f1b4fbf357d/69526a31636987ccd79f88fb_Y%20-%20Combinator.png" loading="lazy" alt="Y - Combinator" class="s_h_home_logo"/>
+                    </div>
+                    <div class="s_h_home_logo_wrap">
+                      <img src="https://cdn.prod.website-files.com/69523705e6ef6f1b4fbf357d/69526aea1f07ca75871c5c89_NVIDIA.png" loading="lazy" alt="NVIDIA" class="s_h_home_logo"/>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Wrapper for scroll animations -->
+      <div class="s-bg-wrap">
+        
+        <!-- Section 2: Intro/Vision Section -->
+        <section id="vision" class="s-intro">
+          <div class="s_intro_container u-container">
+            <div class="s_intro_content_wrap">
+              <div class="s-bg-intro"></div>
+              <div class="s_intro_content">
+                <div class="s_intro_info_wrap">
+                  <div class="s_intro_info_icon w-embed">
+                    <svg width="100%" height="100%" viewBox="0 0 19 19" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path opacity="0.5" d="M10.2402 5.74023C10.2402 7.39709 11.5834 8.74023 13.2402 8.74023H19V10.2402H13.2402C11.5834 10.2402 10.2402 11.5834 10.2402 13.2402V14H8.74023V13.2402C8.74023 11.5834 7.39709 10.2402 5.74023 10.2402H0V8.74023H5.74023C7.39709 8.74023 8.74023 7.39709 8.74023 5.74023V0H10.2402V5.74023Z" fill="white"/>
+                    </svg>
+                  </div>
+                  <div class="s_intro_info_icon w-embed">
+                    <svg width="100%" height="100%" viewBox="0 0 19 19" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path opacity="0.5" d="M10.2402 5.74023C10.2402 7.39709 11.5834 8.74023 13.2402 8.74023H19V10.2402H13.2402C11.5834 10.2402 10.2402 11.5834 10.2402 13.2402V14H8.74023V13.2402C8.74023 11.5834 7.39709 10.2402 5.74023 10.2402H0V8.74023H5.74023C7.39709 8.74023 8.74023 7.39709 8.74023 5.74023V0H10.2402V5.74023Z" fill="white"/>
+                    </svg>
+                  </div>
+                </div>
+                
+                <div class="s_intro_title_wrap">
+                  <div class="s_intro_line"></div>
+                  <div class="s_intro_line top-right"></div>
+                  <div data-intro-trigger="" class="s_intro_title_bn_wrap">
+                    <h2 data-intro-item="" class="s_intro_title u-text-style-display">
+                      <span class="span-font-m-60px">The First Hotel on the Moon</span> <br/>
+                      Take Part in Humanity’s Journey to the Next Frontier
+                    </h2>
+                    
+                    <div data-button=" " data-trigger="hover focus" class="button_main_wrap" style="margin-top: 30px;">
+                      <div class="clickable_wrap u-cover-absolute">
+                        <a href="#reserve" class="clickable_link w-inline-block">
+                          <span class="clickable_text u-sr-only">Reserve a Spot</span>
+                        </a>
+                      </div>
+                      <div class="button_main_element">
+                        <div class="button_main_arrow_text_wrap">
+                          <div aria-hidden="true" class="button_main_text">Reserve a Spot</div>
+                          <div class="button_main_arrow_icon_wrap">
+                            <div class="bn_main_icon w-embed">
+                              <svg width="100%" height="100%" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12.6066 15.9427L11.9585 15.2945L14.7967 12.4563C15.3741 11.8788 14.9652 10.8914 14.1485 10.8914H3.20801V9.97484H14.1485C14.9652 9.97484 15.3741 8.98746 14.7967 8.40999L11.9585 5.57177L12.6066 4.92358L18.1162 10.4331L12.6066 15.9427Z" fill="currentColor"/>
+                              </svg>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="button_main_line"></div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="s_intro_line bottom-right"></div>
+                  <div class="s_intro_line bottom-left"></div>
+                </div>
+                
+                <div class="s_intro_info_wrap">
+                  <div class="s_intro_info_icon w-embed">
+                    <svg width="100%" height="100%" viewBox="0 0 19 19" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path opacity="0.5" d="M10.2402 5.74023C10.2402 7.39709 11.5834 8.74023 13.2402 8.74023H19V10.2402H13.2402C11.5834 10.2402 10.2402 11.5834 10.2402 13.2402V14H8.74023V13.2402C8.74023 11.5834 7.39709 10.2402 5.74023 10.2402H0V8.74023H5.74023C7.39709 8.74023 8.74023 7.39709 8.74023 5.74023V0H10.2402V5.74023Z" fill="white"/>
+                    </svg>
+                  </div>
+                  <div class="s_intro_info_icon w-embed">
+                    <svg width="100%" height="100%" viewBox="0 0 19 19" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path opacity="0.5" d="M10.2402 5.74023C10.2402 7.39709 11.5834 8.74023 13.2402 8.74023H19V10.2402H13.2402C11.5834 10.2402 10.2402 11.5834 10.2402 13.2402V14H8.74023V13.2402C8.74023 11.5834 7.39709 10.2402 5.74023 10.2402H0V8.74023H5.74023C7.39709 8.74023 8.74023 7.39709 8.74023 5.74023V0H10.2402V5.74023Z" fill="white"/>
+                    </svg>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Section 3: Roadmap (Signature Scrub-Canvas Timeline) -->
+        <section id="roadmap" class="s-roadmap">
+          <div class="s_roadmap_content_wrap">
+            <div class="canvas_scroll w-embed">
+              <!-- Animated Image Sequence Canvas -->
+              <canvas class="scroll-canvas"></canvas>
+            </div>
+            <div class="scroll_video_bg_grad"></div>
+            
+            <div class="s_roadmap_container u-container">
+              <!-- Roadmap Text Columns -->
+              <div class="s_roadmap_list_wrap">
+                <div class="s_roadmap_tag_wrap">
+                  <div class="s_roadmap_tag_text">Estimated Timeline</div>
+                </div>
+                
+                <!-- Mission 1 -->
+                <div class="s_roadmap_card_wrap is-active">
+                  <div class="s_roadmap_title_step_wrap">
+                    <div class="s_roadmap_step_tag_text">Mission I</div>
+                    <div class="s_roadmap_title_wrap">
+                      <h2 class="s_roadmap_title_step">First Lunar Systems Test</h2>
+                    </div>
+                    <div class="s_roadmap_rich_text u-rich-text w-richtext">
+                      <p>A pressurized test payload is placed on the lunar surface to evaluate controlled environmental conditions, alongside early construction experiments using locally sourced materials. Together, these tests reduce risk ahead of larger, more complex missions.</p>
+                    </div>
+                  </div>
+                </div>
+                
+                <!-- Mission 2 -->
+                <div class="s_roadmap_card_wrap">
+                  <div class="s_roadmap_title_step_wrap">
+                    <div class="s_roadmap_step_tag_text">Mission II</div>
+                    <div class="s_roadmap_title_wrap">
+                      <h2 class="s_roadmap_title_step">Lunar Cave Base</h2>
+                    </div>
+                    <div class="s_roadmap_rich_text u-rich-text w-richtext">
+                      <p>A larger payload lands near a lunar pit chosen for its natural shielding from radiation and temperature extremes. Inside, an inflatable system is deployed, and further construction tests begin, preparing the way for building at scale.</p>
+                    </div>
+                  </div>
+                </div>
+                
+                <!-- Mission 3 -->
+                <div class="s_roadmap_card_wrap">
+                  <div class="s_roadmap_title_step_wrap">
+                    <div class="s_roadmap_step_tag_text">Mission III</div>
+                    <div class="s_roadmap_title_wrap">
+                      <h2 class="s_roadmap_title_step">First Lunar Hotel</h2>
+                    </div>
+                    <div class="s_roadmap_rich_text u-rich-text w-richtext">
+                      <p>In 2032, the first hotel is landed and deployed on the Moon. Built on Earth and delivered by a heavy lander, the inflatable structure is installed to host up to four guests for multi-day stays.</p>
+                      <p>Designed to operate for 10 years, the hotel offers views of the lunar landscape and Earth, along with envisioned experiences such as surface experiences including Moonwalks, driving, golfing, and other activities.</p>
+                    </div>
+                  </div>
+                </div>
+                
+                <!-- Mission Future -->
+                <div class="s_roadmap_card_wrap">
+                  <div class="s_roadmap_title_step_wrap">
+                    <div class="s_roadmap_step_tag_text">Future Missions</div>
+                    <div class="s_roadmap_title_wrap">
+                      <h2 class="s_roadmap_title_step">Long-Term Presence</h2>
+                    </div>
+                    <div class="s_roadmap_rich_text u-rich-text w-richtext">
+                      <p>Future missions scale construction on the Moon using ISRU systems and robotic equipment. Modular inflatable habitats are enclosed by structures made from lunar material, increasing capacity from four to ten guests and extending operational life.</p>
+                      <p>As payload costs drop and launch cadence improves, this supports a permanent lunar presence and opens the path to similar destinations on Mars.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Timeline vertical progress bar indicator -->
+              <div class="s_roadmap_progress_wrap">
+                <div class="s_roadmap_progress_list">
+                  <div class="s_roadmap_progress_item is-active">
+                    <div class="s_roadmap_progress_text">2029</div>
+                    <div class="s_roadmap_progress">
+                      <div class="s_roadmap_progress_bar"></div>
+                    </div>
+                  </div>
+                  <div class="s_roadmap_progress_item">
+                    <div class="s_roadmap_progress_text">2031</div>
+                    <div class="s_roadmap_progress">
+                      <div class="s_roadmap_progress_bar"></div>
+                    </div>
+                  </div>
+                  <div class="s_roadmap_progress_item">
+                    <div class="s_roadmap_progress_text">2032</div>
+                    <div class="s_roadmap_progress">
+                      <div class="s_roadmap_progress_bar"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+            </div>
+          </div>
+          <!-- Trigger for ScrollTrigger scroll sequence -->
+          <div class="s_roadmap_trigger">
+            <div class="s_step_trigger"></div>
+          </div>
+        </section>
+
+      </div>
+
+      <!-- Section 4: 3D Model Section (ThreeJS Orbiting Hotel) -->
+      <section id="model" class="s-model">
+        <div class="s_model_container u-container">
+          <div class="s_model_content_wrap">
+            <div class="s_model_content">
+              <!-- ThreeJS Canvas -->
+              <div class="code-canvas w-embed">
+                <canvas id="sketch"></canvas>
+              </div>
+              
+              <div class="s_model_info_wrap">
+                <div class="s_model_info_icon w-embed">
+                  <svg width="100%" height="100%" viewBox="0 0 19 19" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.5" d="M10.2402 5.74023C10.2402 7.39709 11.5834 8.74023 13.2402 8.74023H19V10.2402H13.2402C11.5834 10.2402 10.2402 11.5834 10.2402 13.2402V14H8.74023V13.2402C8.74023 11.5834 7.39709 10.2402 5.74023 10.2402H0V8.74023H5.74023C7.39709 8.74023 8.74023 7.39709 8.74023 5.74023V0H10.2402V5.74023Z" fill="white"/>
+                  </svg>
+                </div>
+                <div class="s_model_info_text_wrap align-right">
+                  <div class="s_model_info_text">Built from Lunar Regolith (Drag to Rotate)</div>
+                </div>
+              </div>
+              
+              <div class="s_model_lines_wrap">
+                <div class="s_model_line"></div>
+                <div class="s_model_line top-right"></div>
+                <div class="s_model_lines_box">
+                  <div class="s_model_line_bx"></div>
+                  <div class="s_model_line_bx bottom"></div>
+                  <div class="s_model_line_bx left"></div>
+                  <div class="s_model_line_bx right"></div>
+                </div>
+                <div class="s_model_line bottom-right"></div>
+                <div class="s_model_line bottom-left"></div>
+                <!-- 3D Loader HUD -->
+                <div class="loader-model">
+                  <div class="loader-text">Loading 3D model</div>
+                  <div class="loader-progress">0%</div>
+                </div>
+              </div>
+              
+              <div class="s_model_info_wrap">
+                <div class="s_model_info_icon w-embed">
+                  <svg width="100%" height="100%" viewBox="0 0 19 19" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.5" d="M10.2402 5.74023C10.2402 7.39709 11.5834 8.74023 13.2402 8.74023H19V10.2402H13.2402C11.5834 10.2402 10.2402 11.5834 10.2402 13.2402V14H8.74023V13.2402C8.74023 11.5834 7.39709 10.2402 5.74023 10.2402H0V8.74023H5.74023C7.39709 8.74023 8.74023 7.39709 8.74023 5.74023V0H10.2402V5.74023Z" fill="white"/>
+                  </svg>
+                </div>
+                <div class="s_model_info_logo">
+                  <img src="https://cdn.prod.website-files.com/69523705e6ef6f1b4fbf357d/6963dbd13e6914e38250c65f_GRU.avif" loading="lazy" alt="Soverin logo" class="img_auto" style="width: 70px;"/>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 5: Whitepaper Section -->
+      <section id="whitepaper" class="s-whitepaper">
+        <div class="s_whitepaper_container u-container">
+          <div class="s_whitepaper_content">
+            <div class="s_whitepaper_cta">
+              <div class="s_whitepaper_title_bn_wrap">
+                <div class="s_whitepaper_cta_title_descrip_wrap">
+                  <div class="s_whitepaper_cta_title_wrap">
+                    <h2 class="s_whitepaper_cta_title u-text-style-h2">
+                      How is This Actually <span class="span-font-m-60px">Possible?</span>
+                    </h2>
+                  </div>
+                  <div class="s_whitepaper_cta_rich_text u-rich-text w-richtext">
+                    <p>Our whitepaper explains how the first hotel on the Moon can become the foundation for scalable lunar infrastructure.</p>
+                    <p>It outlines why humanity’s move beyond Earth is now within reach, and how a clear technical and economic roadmap turns that inevitability into reality.</p>
+                  </div>
+                </div>
+                
+                <div class="s_whitepaper_bn_wrap">
+                  <div data-button=" " data-trigger="hover focus" class="button_main_wrap">
+                    <div class="clickable_wrap u-cover-absolute">
+                      <a target="_blank" href="https://www.gru.space/wp" class="clickable_link w-inline-block">
+                        <span class="clickable_text u-sr-only">Read the Whitepaper</span>
+                      </a>
+                    </div>
+                    <div class="button_main_element">
+                      <div class="button_main_arrow_text_wrap">
+                        <div aria-hidden="true" class="button_main_text">Read the Whitepaper</div>
+                        <div class="button_main_arrow_icon_wrap">
+                          <div class="bn_main_icon w-embed">
+                            <svg width="100%" height="100%" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+                              <path d="M12.6066 15.9427L11.9585 15.2945L14.7967 12.4563C15.3741 11.8788 14.9652 10.8914 14.1485 10.8914H3.20801V9.97484H14.1485C14.9652 9.97484 15.3741 8.98746 14.7967 8.40999L11.9585 5.57177L12.6066 4.92358L18.1162 10.4331L12.6066 15.9427Z" fill="currentColor"/>
+                            </svg>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="button_main_line"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Whitepaper visual deck cards -->
+            <div class="s_whitepaper_list">
+              <div class="s_whitepaper_card">
+                <img src="https://cdn.prod.website-files.com/69523705e6ef6f1b4fbf357d/69536c1b2505f0dae2f15008_39595a74cfba138cfa05c813f47e8152_Creating%20habitats%20for%20humanity%20%20on%20other%20planets..avif" loading="lazy" alt="Creating habitats for humanity on other planets." class="s_whitepaper_card_img"/>
+              </div>
+              <div class="s_whitepaper_card last">
+                <img src="https://cdn.prod.website-files.com/69523705e6ef6f1b4fbf357d/6953bc1be75474700a93b842_46f389cdddb34a079c3405b6d5786d4d_Introduction.avif" loading="lazy" alt="Introduction page of whitepaper" class="s_whitepaper_card_img"/>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 6: Team Section -->
+      <section id="team" class="s-team">
+        <div class="s_team_container u-container">
+          <div class="s_team_content">
+            <div data-intro-trigger="" class="s_team_title_wrap">
+              <h2 data-intro-item="" class="s_team_title u-text-style-h2">
+                Soverin <span class="span-font-m-60px">Team</span>
+              </h2>
+              <p data-intro-item="" class="s_team_descrip">Soverin brings together builders with backgrounds in spaceflight, autonomous systems, and large-scale hardware, united by a single goal: making humanity interplanetary.</p>
+            </div>
+            
+            <div class="s_team_list_m">
+              <div class="s_team_col_list">
+                <div role="list" class="s_team_list">
+                  
+                  <!-- Member 1: Skyler -->
+                  <div role="listitem" class="s_team_item">
+                    <div class="s_team_card_wrap">
+                      <div class="s_team_card_social_list_wrap">
+                        <a aria-label="Linkedin" href="https://www.linkedin.com/in/skylerchan03/" target="_blank" class="s_team_card_social_wrap w-inline-block">
+                          <div class="s_team_card_social_icon w-embed">
+                            <i class="fa-brands fa-linkedin-in"></i>
+                          </div>
+                        </a>
+                        <a aria-label="Instagram" href="https://www.instagram.com/skylerflys" target="_blank" class="s_team_card_social_wrap w-inline-block">
+                          <div class="s_team_card_social_icon w-embed">
+                            <i class="fa-brands fa-instagram"></i>
+                          </div>
+                        </a>
+                      </div>
+                      <img src="https://cdn.prod.website-files.com/6953aaefe9d9d9d35cb3a684/695fa7f4f115334018af747f_Skyler%20Chan.avif" loading="lazy" alt="Skyler Chan" class="s_team_card_img"/>
+                      <div class="s_team_card_content_wrap">
+                        <div class="s_team_card_name_wrap">
+                          <div class="s_team_card_name_bx">
+                            <h3 class="s_team_card_name">Skyler Chan</h3>
+                          </div>
+                          <p class="s_team_card_role">Founder & CEO</p>
+                        </div>
+                        <div class="s_team_card_content_bio">
+                          <div class="s_team_card_content_bio_bx">
+                            <p class="s_team_card_descrip_bio">Skyler graduated early from Berkeley EECS to make humanity interplanetary. Previously he built vehicle software at Tesla, built a NASA funded 3D-printer launched into space, and authored at the largest space conference. Air Force-trained pilot at 16.</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Member 2: Kevin -->
+                  <div role="listitem" class="s_team_item">
+                    <div class="s_team_card_wrap">
+                      <img src="https://cdn.prod.website-files.com/6953aaefe9d9d9d35cb3a684/695fa83a3878cca4c8bb6bb5_Dr.%20Kevin%20Cannon.avif" loading="lazy" alt="Dr. Kevin Cannon" class="s_team_card_img"/>
+                      <div class="s_team_card_content_wrap">
+                        <div class="s_team_card_name_wrap">
+                          <div class="s_team_card_name_bx">
+                            <h3 class="s_team_card_name">Dr. Kevin Cannon</h3>
+                          </div>
+                          <p class="s_team_card_role">Founding Member of Technical Staff</p>
+                        </div>
+                        <div class="s_team_card_content_bio">
+                          <div class="s_team_card_content_bio_bx">
+                            <p class="s_team_card_descrip_bio">Kevin was a professor at Colorado School of Mines, and previously CTO at Ethos. He is the world expert in lunar and martian regolith. Kevin holds a PhD in Planetary Sciences from Brown University. Kevin leads Soverin’s ISRU program.</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Member 3: Robert -->
+                  <div role="listitem" class="s_team_item">
+                    <div class="s_team_card_wrap">
+                      <img src="https://cdn.prod.website-files.com/6953aaefe9d9d9d35cb3a684/695fa86c13b3d74e25715bd0_Dr.%20Robert%20Lillis.avif" loading="lazy" alt="Dr. Robert Lillis" class="s_team_card_img"/>
+                      <div class="s_team_card_content_wrap">
+                        <div class="s_team_card_name_wrap">
+                          <div class="s_team_card_name_bx">
+                            <h3 class="s_team_card_name">Dr. Robert Lillis</h3>
+                          </div>
+                          <p class="s_team_card_role">Advisor</p>
+                        </div>
+                        <div class="s_team_card_content_bio">
+                          <div class="s_team_card_content_bio_bx">
+                            <p class="s_team_card_descrip_bio">Associate Director for Planetary Science at UC Berkeley’s Space Sciences Laboratory and PI of ESCAPADE (NASA Mars mission). His research addresses radiation, space weather, and atmospheric loss critical to human presence beyond Earth.</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+            
+            <!-- Bottom Quote CTA -->
+            <div class="s_team_cta">
+              <img src="https://cdn.prod.website-files.com/69523705e6ef6f1b4fbf357d/69627f85fba570f104928407_bg-cta.avif" loading="eager" alt="Lunar Concept Background" class="s_team_cta_img_bg"/>
+              <div class="s_team_cta_quote_wrap">
+                <div class="s_team_cta_quote_icon w-embed">
+                  <svg width="100%" height="100%" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M10 9.48926C10.0009 9.51217 10.002 9.54399 10.0029 9.58398C10.0048 9.66412 10.0065 9.77796 10.0049 9.91992C10.0017 10.2035 9.98646 10.6029 9.94043 11.0801C9.84882 12.0295 9.6309 13.3158 9.11719 14.6172C8.60295 15.9198 7.77742 17.2755 6.44922 18.3057C5.10828 19.3456 3.32415 20 1 20V18C2.9256 18 4.26675 17.4668 5.22266 16.7256C6.19105 15.9746 6.83459 14.955 7.25781 13.8828C7.49372 13.2851 7.66948 12.6629 7.79105 12.0296C8.00243 10.9285 7.0802 10 5.959 10H1V1H10V9.48926Z" fill="white" fill-opacity="0.4"/>
+                    <path d="M23 9.48926C23.0009 9.51217 23.002 9.54399 23.0029 9.58398C23.0048 9.66412 23.0065 9.77796 23.0049 9.91992C23.0017 10.2035 22.9865 10.6029 22.9404 11.0801C22.8488 12.0295 22.6309 13.3158 22.1172 14.6172C21.603 15.9198 20.7774 17.2755 19.4492 18.3057C18.1083 19.3456 16.3241 20 14 20V18C15.9256 18 17.2667 17.4668 18.2227 16.7256C19.1911 15.9746 19.8346 14.955 20.2578 13.8828C20.4937 13.2851 20.6695 12.6629 20.7911 12.0296C21.0024 10.9285 20.0802 10 18.959 10H14V1H23V9.48926Z" fill="white" fill-opacity="0.4"/>
+                  </svg>
+                </div>
+                <p class="s_team_cta_quote">We’re not imagining life beyond Earth. We’re engineering the next human frontier.</p>
+              </div>
+            </div>
+            
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 7: Featured News Section -->
+      <section id="featured" class="s-featured-blog">
+        <div class="s_featured_blog_container u-container">
+          <div class="s_featured_blog_content_wrap des">
+            <div class="s_featured_blog_title_wrap">
+              <h2 class="s_featured_blog_title u-text-style-h2">
+                Featured <span class="span-font-m">in</span>
+              </h2>
+              <p class="s_featured_blog_descrip">Soverin has been covered by leading global media since launch.</p>
+            </div>
+            
+            <div class="s_featured_blog_col_wrap">
+              <div class="s_featured_blog_bg_top"></div>
+              <div class="s_featured_blog_col">
+                <div role="list" class="s_featured_blog_list">
+                  
+                  <!-- News Item 1 -->
+                  <div role="listitem" class="s_featured_blog_item">
+                    <a href="https://www.space.com/astronomy/moon/this-company-is-taking-usd1-million-reservations-for-hotel-rooms-on-the-moon" target="_blank" class="card_news w-inline-block">
+                      <div class="card_news_logo_title_wrap">
+                        <div class="card_news_logo_wrap">
+                          <img src="https://cdn.prod.website-files.com/6953aaefe9d9d9d35cb3a684/6968b41bbb8574f4c23ce99d_SPACE.avif" loading="lazy" alt="Space.com logo" class="img_auto"/>
+                        </div>
+                        <div class="card_news_title_date_wrap">
+                          <h3 class="card_news_title u-line-clamp-2">This company is taking $1 million reservations for hotel rooms on the moon</h3>
+                          <div class="card_news_date">January 13, 2026</div>
+                        </div>
+                      </div>
+                      <div class="card_news_img_wrap">
+                        <img src="https://cdn.prod.website-files.com/6953aaefe9d9d9d35cb3a684/6968b2bef09f78def1ef6c04_GRU%20Space%20Opens%20Bookings%20for%20Planned%20Lunar%20Hotel.avif" loading="lazy" alt="Planned Lunar Hotel Cover" class="card_news_img"/>
+                      </div>
+                    </a>
+                  </div>
+
+                  <!-- News Item 2 -->
+                  <div role="listitem" class="s_featured_blog_item">
+                    <a href="https://www.fox32chicago.com/video/fmc-yuavqe6lzh3pa4pq" target="_blank" class="card_news w-inline-block">
+                      <div class="card_news_logo_title_wrap">
+                        <div class="card_news_logo_wrap">
+                          <img src="https://cdn.prod.website-files.com/6953aaefe9d9d9d35cb3a684/6968b3c0261ef1667e04bd3e_fox-32.avif" loading="lazy" alt="Fox 32 logo" class="img_auto"/>
+                        </div>
+                        <div class="card_news_title_date_wrap">
+                          <h3 class="card_news_title u-line-clamp-2">Want to vacation on the moon? Soverin opens $1M reservations</h3>
+                          <div class="card_news_date">January 13, 2026</div>
+                        </div>
+                      </div>
+                      <div class="card_news_img_wrap">
+                        <img src="https://cdn.prod.website-files.com/6953aaefe9d9d9d35cb3a684/6968b3a37165b2638bb118f8_Want%20to%20vacation%20on%20the%20moon%3F%20GRU%20Space%20opens%20%241M%20reservations.avif" loading="lazy" alt="Vacation on the Moon Cover" class="card_news_img"/>
+                      </div>
+                    </a>
+                  </div>
+
+                  <!-- News Item 3 -->
+                  <div role="listitem" class="s_featured_blog_item">
+                    <a href="https://arstechnica.com/space/2026/01/you-can-now-reserve-a-hotel-room-on-the-moon-for-250000/" target="_blank" class="card_news w-inline-block">
+                      <div class="card_news_logo_title_wrap">
+                        <div class="card_news_logo_wrap">
+                          <img src="https://cdn.prod.website-files.com/6953aaefe9d9d9d35cb3a684/6968b361084e3affa86137a6_arstechnica.avif" loading="lazy" alt="Ars Technica logo" class="img_auto"/>
+                        </div>
+                        <div class="card_news_title_date_wrap">
+                          <h3 class="card_news_title u-line-clamp-2">You can now reserve a hotel room on the Moon for $250,000</h3>
+                          <div class="card_news_date">January 12, 2026</div>
+                        </div>
+                      </div>
+                      <div class="card_news_img_wrap">
+                        <img src="https://cdn.prod.website-files.com/6953aaefe9d9d9d35cb3a684/6968b32f7c1409a29d513ec0_You%20can%20now%20reserve%20a%20hotel%20room%20on%20the%20Moon%20for%20%24250%2C000.avif" loading="lazy" alt="Lunar room bookings Cover" class="card_news_img"/>
+                      </div>
+                    </a>
+                  </div>
+
+                </div>
+              </div>
+              <div class="s_featured_blog_bg_bottom"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 8: Reservation CTA Form -->
+      <section id="reserve" class="s-cta-newsletter">
+        <div class="s_cta_newsletter_container u-container">
+          <div class="s_cta_newsletter_content_wrap">
+            <div class="s_cta_newsletter_title_wrap">
+              <h2 class="s_cta_newsletter_title u-text-style-h2">
+                Apply for <span class="span-font-m">Reservation</span>
+              </h2>
+              <p class="s_cta_newsletter_descrip">Submit your email address to receive priority application materials for commercial passenger launches and engineering updates.</p>
+            </div>
+            
+            <div class="s_cta_newsletter_form">
+              <div class="form_sub w-form">
+                <form id="subscribe-form" class="form_sub_wrap">
+                  <div class="form_sub_element">
+                    <div class="form_fieldset_list" style="display: flex; gap: 15px; width: 100%;">
+                      <input id="form-email" name="Email" type="email" placeholder="Enter your email" required class="form_sub_field" style="flex-grow: 1; padding: 20px; font-family: 'Space Grotesk', sans-serif; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.08); color: white; border-radius: 0; outline: none; transition: 0.3s;"/>
+                      
+                      <!-- Submit Button -->
+                      <div data-button=" " data-trigger="hover focus" class="button_main_wrap" style="width: auto;">
+                        <button type="submit" class="clickable_btn u-cover-absolute" style="background: transparent; border: none; width: 100%; height: 100%; cursor: pointer;"></button>
+                        <div class="button_main_element">
+                          <div class="button_main_arrow_text_wrap" style="padding: 18px 30px;">
+                            <div class="button_main_text">Submit</div>
+                          </div>
+                          <div class="button_main_line"></div>
+                        </div>
+                      </div>
+                      
+                    </div>
+                  </div>
+                </form>
+                
+                <!-- Success / Error indicators -->
+                <div class="form_sub_success w-form-done" id="form-success" style="display: none; margin-top: 15px; background: rgba(0,255,102,0.05); border: 1px solid #00ff66; padding: 15px;">
+                  <div class="form_sub_success_content">
+                    <p class="form_sub_success_text" style="color: #00ff66;">Submission successful! We will contact you soon.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Footer Section -->
+    <footer class="s-footer">
+      <div class="s_footer_container u-container">
+        <div class="s_footer_content">
+          <div class="s_footer_logo_links_list">
+            <!-- Logo -->
+            <a href="#home" class="link_logo_footer" style="display: flex; align-items: center;">
+              <img src="assets/soverin_text_logo.png" alt="Soverin logo" style="height: 30px; width: auto; object-fit: contain; filter: brightness(0) invert(1);"/>
+            </a>
+            
+            <div class="s_footer_links_bn_wrap">
+              <div class="s_footer_links_list">
+                <a href="#vision" class="link_footer">Vision</a>
+                <a href="#roadmap" class="link_footer">Roadmap</a>
+                <a href="#model" class="link_footer">3D Hotel</a>
+                <a href="#whitepaper" class="link_footer">Whitepaper</a>
+                <a href="#team" class="link_footer">Team</a>
+              </div>
+            </div>
+          </div>
+          
+          <div class="s_footer_container_bottom">
+            <div class="s_footer_copy_legal_wrap">
+              <div class="s_footer_copy_text">Soverin, Inc. <span class="current-year">2026</span> All rights reserved</div>
+              <div class="s_footer_legal_list">
+                <a href="https://www.gru.space/privacy-policy" target="_blank" class="s_footer_legal_link">Privacy Policy</a>
+              </div>
+            </div>
+            <div class="s_footer_social_wrap">
+              <a href="https://x.com/gru_space" target="_blank" class="s_footer_social_link">X</a>
+              <a href="https://www.linkedin.com/company/galactic-resource-utilization-space-inc/about/" target="_blank" class="s_footer_social_link">Linkedin</a>
+              <a href="https://www.instagram.com/gru.space/" target="_blank" class="s_footer_social_link">Instagram</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </footer>
+    
+  </div>
+
+  <!-- CDN JS Libraries -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+  
+  <!-- ThreeJS Importmap config for modern JSM loading -->
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+    }
+  }
+  </script>
+  
+  <!-- Custom Application Scripts -->
+  <script type="module" src="app.js"></script>
+</body>
+</html>

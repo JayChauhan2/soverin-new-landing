@@ -1,0 +1,344 @@
+/* ==========================================
+   GRU Space Clone Stylesheet Overrides
+   ========================================== */
+
+/* Import Space Grotesk directly */
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+
+:root {
+  /* Webflow themes overrides */
+  --_theme---background: #020204;
+  --_theme---text: #ffffff;
+  --_theme---selection--background: rgba(255, 255, 255, 0.15);
+  --_theme---selection--text: #ffffff;
+}
+
+html, body {
+  background-color: #020204 !important;
+  color: #ffffff !important;
+  font-family: 'Space Grotesk', sans-serif !important;
+  scroll-behavior: smooth;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #020204;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* Clean up links default state */
+a {
+  text-decoration: none !important;
+}
+
+/* Hero Section Adjustments */
+.s-h-home {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.s_h_home_bg_video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+}
+
+.s_h_home_bg_grad {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(180deg, rgba(2, 2, 4, 0.4) 0%, rgba(2, 2, 4, 1) 100%);
+  z-index: 1;
+}
+
+.des_bg_video, .mob_bg_video {
+  width: 100%;
+  height: 100%;
+}
+
+.des_bg_video video, .mob_bg_video video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Ensure mobile video is hidden by default and responsive triggers swap */
+@media (max-width: 568px) {
+  .des_bg_video {
+    display: none !important;
+  }
+  .mob_bg_video {
+    display: block !important;
+  }
+}
+@media (min-width: 569px) {
+  .des_bg_video {
+    display: block !important;
+  }
+  .mob_bg_video {
+    display: none !important;
+  }
+}
+
+/* Navigation overrides */
+.nav_bar {
+  position: fixed !important;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+  background-color: rgba(2, 2, 4, 0.7);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  transition: all 0.3s ease;
+}
+
+.link_logo_nav {
+  display: flex;
+  align-items: center;
+}
+
+.menu_nav_list {
+  display: flex;
+  gap: 25px;
+}
+
+.link_nav {
+  opacity: 0.6;
+  transition: opacity 0.3s ease;
+}
+
+.link_nav:hover {
+  opacity: 1;
+}
+
+/* Horizontal spacing fixes */
+.u-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 40px;
+  width: 100%;
+}
+
+/* Roadmap scrubbing styles */
+.s-roadmap {
+  position: relative;
+  width: 100%;
+  min-height: 400vh; /* Extremely tall to allow smooth scrub */
+  background-color: #020204;
+}
+
+.s_roadmap_content_wrap {
+  position: sticky;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  z-index: 1;
+}
+
+.canvas_scroll {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+}
+
+.scroll-canvas {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.scroll_video_bg_grad {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(180deg, rgba(2,2,4,0.7) 0%, rgba(2,2,4,0.3) 50%, rgba(2,2,4,0.9) 100%);
+  z-index: 1;
+}
+
+.s_roadmap_container {
+  position: relative;
+  z-index: 2;
+  height: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.s_roadmap_list_wrap {
+  width: 45%;
+  max-width: 500px;
+  position: relative;
+}
+
+.s_roadmap_card_wrap {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.5s ease, visibility 0.5s ease;
+  pointer-events: none;
+}
+
+.s_roadmap_card_wrap.is-active {
+  position: relative;
+  top: 0;
+  transform: none;
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.s_roadmap_progress_wrap {
+  width: 80px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* 3D Model HUD overlay styles */
+.s-model {
+  min-height: 100vh;
+  position: relative;
+  overflow: hidden;
+  background-color: #020204;
+  padding: 100px 0;
+}
+
+.s_model_content_wrap {
+  position: relative;
+  width: 100%;
+  height: 80vh;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.s_model_content {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.code-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+#sketch {
+  width: 100%;
+  height: 100%;
+}
+
+.loader-model {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 5;
+  text-align: center;
+  font-family: 'Space Grotesk', sans-serif;
+  transition: opacity 0.4s ease, visibility 0.4s ease;
+}
+
+.loader-text {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: rgba(255, 255, 255, 0.5);
+  margin-bottom: 10px;
+}
+
+.loader-progress {
+  font-size: 32px;
+  font-weight: 300;
+  color: #ffffff;
+}
+
+/* Vertical timeline trigger spacer for scroll scrub */
+.s_roadmap_trigger {
+  position: relative;
+  width: 100%;
+  height: 400vh;
+  pointer-events: none;
+}
+
+.s_step_trigger {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* Mobile Nav responsiveness */
+@media (max-width: 991px) {
+  .menu_nav {
+    display: none;
+  }
+  
+  .menu_nav.open {
+    display: block;
+    position: fixed;
+    top: 70px;
+    left: 0;
+    width: 100%;
+    height: calc(100vh - 70px);
+    background-color: #020204;
+    padding: 40px;
+    z-index: 999;
+  }
+  
+  .menu_nav_wrap {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 30px;
+  }
+  
+  .menu_nav_list {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+  }
+  
+  .link_nav {
+    font-size: 24px;
+  }
+}
