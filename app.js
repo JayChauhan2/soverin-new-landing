@@ -644,18 +644,14 @@ document.addEventListener("DOMContentLoaded", () => {
             // Keep foreground plants completely static (no sway)
           }
           
-          // 2. Entire Tree Bending (Left side) - gentle, cohesive bending of foliage & branches (no fluid warp)
+          // 2. Entire Tree Bending (Left side) - rigid horizontal integer pixel shift (no fluid warp)
           else if (x < w * 0.32 && y < h * 0.88 && rawBrightness < 0.48) {
             const baseFactor = Math.max(0, (h * 0.88 - y) / (h * 0.88));
             const factor = 0.4 + 0.6 * baseFactor;
             
             const tree_t = base_t * 2;
-            // Very low vertical/horizontal frequencies to prevent fluid warping and simulate rigid branch bending
-            const waveX = Math.sin(y * 0.012 + tree_t) + Math.sin(x * 0.015 + tree_t * 2) * 0.2;
-            const waveY = Math.cos(y * 0.01 + tree_t) * 0.15;
-            
-            dx += waveX * 1.5 * factor; // Soft and subtle sway
-            dy += waveY * 0.8 * factor;
+            // Rounded to integer to guarantee a clean horizontal pixel shift with zero sub-pixel fluid warping
+            dx += Math.round(Math.sin(tree_t) * 1.8 * factor);
           }
           
           // 4. Grass Hill Swaying (Lower screen) - very subtle back and forth sway (no fluid ripples)
