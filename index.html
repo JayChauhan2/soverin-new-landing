@@ -794,60 +794,44 @@
                 ctx.restore();
               }
 
-              setupFeatureReveal('sf-world-canvas', 'sf-row-1', (ctx, w, h, p, time) => {
-                ctx.clearRect(0, 0, w, h);
-                const regions = [
-                  [[70,125],[145,91],[205,132],[186,205],[104,218]],
-                  [[267,62],[352,90],[370,164],[308,194],[250,145]],
-                  [[319,267],[413,242],[454,307],[425,381],[342,390],[290,331]],
-                  [[72,287],[160,255],[223,302],[208,378],[115,404],[55,351]]
-                ];
-                regions.forEach((points, index) => {
-                  const local = Math.max(0, Math.min(1, p * 1.65 - index * 0.18));
-                  if (!local) return;
-                  ctx.save();
-                  ctx.globalAlpha = local;
-                  ctx.beginPath();
-                  points.forEach(([x, y], pointIndex) => pointIndex ? ctx.lineTo(x, y) : ctx.moveTo(x, y));
-                  ctx.closePath();
-                  ctx.fillStyle = index % 2 ? 'rgba(194,231,199,0.58)' : 'rgba(221,244,224,0.72)';
-                  ctx.fill();
-                  ctx.strokeStyle = '#006400';
-                  ctx.lineWidth = 1.4;
-                  ctx.setLineDash([4, 4]);
-                  ctx.stroke();
-                  ctx.setLineDash([]);
-                  for (let gx = points[0][0] + 10; gx < points[2][0]; gx += 13) {
-                    for (let gy = Math.min(...points.map((pt) => pt[1])) + 12; gy < Math.max(...points.map((pt) => pt[1])); gy += 13) {
-                      if ((gx + gy + index * 17) % 31 < 10) ctx.fillRect(gx, gy, 2, 2);
-                    }
+              // Section 2 is the supplied pixel landscape. Blue sky pixels are
+              // keyed out so the card's own pale-green background shows through.
+              const worldSource = new Image();
+              const worldCells = [];
+              let worldReady = false;
+              worldSource.src = 'assets/living-world-reference.jpeg';
+              worldSource.onload = () => {
+                const prepared = document.createElement('canvas');
+                prepared.width = 500;
+                prepared.height = 460;
+                const preparedCtx = prepared.getContext('2d');
+                const scale = Math.max(prepared.width / worldSource.naturalWidth, prepared.height / worldSource.naturalHeight);
+                const sourceWidth = worldSource.naturalWidth * scale;
+                const sourceHeight = worldSource.naturalHeight * scale;
+                preparedCtx.drawImage(worldSource, (prepared.width - sourceWidth) / 2, (prepared.height - sourceHeight) / 2, sourceWidth, sourceHeight);
+                const pixels = preparedCtx.getImageData(0, 0, prepared.width, prepared.height);
+                for (let y = 0; y < prepared.height * 0.62; y++) {
+                  for (let x = 0; x < prepared.width; x++) {
+                    const i = (y * prepared.width + x) * 4;
+                    const r = pixels.data[i]; const g = pixels.data[i + 1]; const b = pixels.data[i + 2];
+                    // Remove only the blue upper-sky range; mountains, clouds, water and landscape remain.
+                    if (b > r * 1.28 && b > g * 1.04 && b > 105) pixels.data[i + 3] = 0;
                   }
-                  ctx.restore();
-                });
-
-                const routes = [[[145,156],[292,130]], [[319,158],[370,277]], [[174,302],[322,321]], [[142,213],[123,298]]];
-                if (p > 0.38) {
-                  ctx.save();
-                  ctx.globalAlpha = Math.min(1, (p - 0.38) * 2.2);
-                  ctx.strokeStyle = 'rgba(0,100,0,0.62)';
-                  ctx.lineWidth = 2;
-                  ctx.setLineDash([6, 5]);
-                  routes.forEach(([a, b]) => { ctx.beginPath(); ctx.moveTo(...a); ctx.lineTo(...b); ctx.stroke(); });
-                  ctx.setLineDash([]);
-                  routes.forEach(([a, b], index) => {
-                    const t = ((time * 0.00022) + index * 0.23) % 1;
-                    const x = a[0] + (b[0] - a[0]) * t;
-                    const y = a[1] + (b[1] - a[1]) * t;
-                    ctx.fillStyle = '#006400';
-                    ctx.fillRect(x - 3, y - 3, 6, 6);
-                  });
-                  ctx.restore();
                 }
-                if (p > 0.7) {
-                  const alpha = Math.min(1, (p - 0.7) * 3.4);
-                  drawSystemLabel(ctx, 'CLIMATE', 38, 55, 'left', alpha);
-                  drawSystemLabel(ctx, 'MIGRATION', 462, 215, 'right', alpha);
-                  drawSystemLabel(ctx, 'RESOURCE FLOW', 462, 422, 'right', alpha);
+                preparedCtx.putImageData(pixels, 0, 0);
+                worldSource.prepared = prepared;
+                for (let y = 0; y < 460; y += 8) for (let x = 0; x < 500; x += 8) worldCells.push({ x, y });
+                worldCells.sort(() => Math.random() - 0.5);
+                worldReady = true;
+              };
+
+              setupFeatureReveal('sf-world-canvas', 'sf-row-1', (ctx, w, h, p) => {
+                ctx.clearRect(0, 0, w, h);
+                if (!worldReady) return;
+                const visibleCells = Math.floor(worldCells.length * p);
+                for (let i = 0; i < visibleCells; i++) {
+                  const cell = worldCells[i];
+                  ctx.drawImage(worldSource.prepared, cell.x, cell.y, 8, 8, cell.x, cell.y, 8, 8);
                 }
               });
 
