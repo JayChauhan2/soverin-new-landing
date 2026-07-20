@@ -695,6 +695,18 @@ document.addEventListener("DOMContentLoaded", () => {
       }
       
       ditherCtx.putImageData(outImgData, 0, 0);
+      
+      // DEBUG: Draw red rectangle around the tree region I'm targeting (remove once confirmed)
+      // Source coords in 640x360 space: rawSrcX 20..130, rawSrcY 60..230
+      const dbgX1 = 20 * s + offsetX;
+      const dbgY1 = 60 * s + offsetY;
+      const dbgX2 = 130 * s + offsetX;
+      const dbgY2 = 230 * s + offsetY;
+      ditherCtx.save();
+      ditherCtx.strokeStyle = 'red';
+      ditherCtx.lineWidth = 2;
+      ditherCtx.strokeRect(dbgX1, dbgY1, dbgX2 - dbgX1, dbgY2 - dbgY1);
+      ditherCtx.restore();
     }
   }
 
