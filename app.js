@@ -568,12 +568,44 @@ document.addEventListener("DOMContentLoaded", () => {
       const srcY = Math.round((canvasY - curOffY) / curS);
       return { srcX: Math.max(0, Math.min(BG_WIDTH - 1, srcX)), srcY: Math.max(0, Math.min(BG_HEIGHT - 1, srcY)) };
     }
+
+    // Create a dedicated overlay canvas for INSTANT drawing feedback (not throttled by 12fps)
+    const overlayCanvas = document.createElement('canvas');
+    overlayCanvas.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:3;';
+    ditherCanvas.parentElement.appendChild(overlayCanvas);
+    const overlayCtx = overlayCanvas.getContext('2d');
     
+    function syncOverlaySize() {
+      overlayCanvas.width = ditherCanvas.width;
+      overlayCanvas.height = ditherCanvas.height;
+    }
+    
+    function drawOverlay() {
+      overlayCtx.clearRect(0, 0, overlayCanvas.width, overlayCanvas.height);
+      if (!userSelection) return;
+      const curS = Math.max(w / BG_WIDTH, h / BG_HEIGHT);
+      const curOffX = (w - BG_WIDTH * curS) / 2;
+      const curOffY = (h - BG_HEIGHT * curS) * 0.75;
+      const ux1 = userSelection.x1 * curS + curOffX;
+      const uy1 = userSelection.y1 * curS + curOffY;
+      const ux2 = userSelection.x2 * curS + curOffX;
+      const uy2 = userSelection.y2 * curS + curOffY;
+      overlayCtx.save();
+      overlayCtx.strokeStyle = '#00ff00';
+      overlayCtx.lineWidth = 3;
+      overlayCtx.setLineDash([8, 4]);
+      overlayCtx.strokeRect(ux1, uy1, ux2 - ux1, uy2 - uy1);
+      overlayCtx.fillStyle = 'rgba(0,255,0,0.08)';
+      overlayCtx.fillRect(ux1, uy1, ux2 - ux1, uy2 - uy1);
+      overlayCtx.restore();
+    }
+
     ditherCanvas.addEventListener('mousedown', e => {
       const { srcX, srcY } = screenToSrc(e.clientX, e.clientY);
       dragStart = { srcX, srcY };
       isDragging = true;
       userSelection = null;
+      overlayCtx.clearRect(0, 0, overlayCanvas.width, overlayCanvas.height);
     });
     
     ditherCanvas.addEventListener('mousemove', e => {
@@ -585,6 +617,12 @@ document.addEventListener("DOMContentLoaded", () => {
         x2: Math.max(dragStart.srcX, srcX),
         y2: Math.max(dragStart.srcY, srcY),
       };
+      drawOverlay(); // Instant feedback, not throttled
+      const coordEl = document.getElementById('sel-coords');
+      if (coordEl) {
+        const { x1, y1, x2, y2 } = userSelection;
+        coordEl.textContent = `srcX ${x1}..${x2}  srcY ${y1}..${y2}`;
+      }
     });
     
     window.addEventListener('mouseup', e => {
@@ -592,8 +630,9 @@ document.addEventListener("DOMContentLoaded", () => {
       isDragging = false;
       if (userSelection) {
         const { x1, y1, x2, y2 } = userSelection;
+        const coordEl = document.getElementById('sel-coords');
+        if (coordEl) coordEl.textContent = `✅ srcX ${x1}..${x2}  srcY ${y1}..${y2}`;
         console.log(`🌲 TREE SELECTION: rawSrcX ${x1}..${x2}, rawSrcY ${y1}..${y2}`);
-        console.log(`Fractions: x ${(x1/BG_WIDTH).toFixed(3)}..${(x2/BG_WIDTH).toFixed(3)}, y ${(y1/BG_HEIGHT).toFixed(3)}..${(y2/BG_HEIGHT).toFixed(3)}`);
       }
     });
     
@@ -601,9 +640,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const selHint = document.createElement('div');
     selHint.id = 'tree-sel-hint';
     selHint.style.cssText = `position:fixed;top:12px;left:50%;transform:translateX(-50%);
-      background:rgba(0,0,0,0.75);color:#fff;font:13px monospace;padding:8px 16px;
-      border-radius:6px;border:1px solid red;z-index:9999;pointer-events:none;text-align:center;`;
-    selHint.innerHTML = '🌲 Draw a rectangle around the tree &nbsp;|&nbsp; <span id="sel-coords">drag to select</span>';
+      background:rgba(0,0,0,0.85);color:#fff;font:13px monospace;padding:8px 18px;
+      border-radius:6px;border:2px solid #00ff00;z-index:9999;pointer-events:none;text-align:center;`;
+    selHint.innerHTML = '🌲 Click &amp; drag around the tree &nbsp;|&nbsp; <span id="sel-coords">drag to start</span>';
     document.body.appendChild(selHint);
     // -- End draw-to-select tool --
     
@@ -623,6 +662,7 @@ document.addEventListener("DOMContentLoaded", () => {
       
       ditherCanvas.width = w;
       ditherCanvas.height = h;
+      syncOverlaySize();
     }
     
     const bayerMatrix = [
