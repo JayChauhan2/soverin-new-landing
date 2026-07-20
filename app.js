@@ -638,52 +638,49 @@ document.addEventListener("DOMContentLoaded", () => {
           const rawB = imgPixels[rawIdx + 2];
           const rawBrightness = (rawR * 0.299 + rawG * 0.587 + rawB * 0.114) / 255;
           
-          // 1. Entire Tree Swaying (Left side) - organic 2D flowing elliptical sway (isolated from bright sky/clouds)
-          if (x < w * 0.32 && y < h * 0.88 && rawBrightness < 0.48) {
-            // Factor ranges from 0.4 (trunk base) to 1.0 (foliage top) so the entire tree sways together
+          const plant_t = base_t * 3; // Loops 3 times per 360 frames
+          
+          // 1. Foreground Plants Swaying (Bottom-left corner) - high rigid sway (no fluid distortion)
+          if (x < w * 0.30 && y > h * 0.68 && rawBrightness < 0.48) {
+            dx += Math.sin(plant_t) * 4.2;
+            dy += Math.cos(plant_t) * 1.6;
+          }
+          
+          // 2. Foreground Plants Swaying (Bottom-right corner) - high rigid sway (no fluid distortion)
+          else if (x > w * 0.72 && y > h * 0.70 && rawBrightness < 0.48) {
+            dx += Math.sin(plant_t + Math.PI) * 3.8; // 180deg out of phase for asymmetric natural sway
+            dy += Math.cos(plant_t + Math.PI) * 1.4;
+          }
+          
+          // 3. Entire Tree Bending (Left side) - gentle, cohesive bending of foliage & branches (no fluid warp)
+          else if (x < w * 0.32 && y < h * 0.88 && rawBrightness < 0.48) {
             const baseFactor = Math.max(0, (h * 0.88 - y) / (h * 0.88));
             const factor = 0.4 + 0.6 * baseFactor;
             
-            // Loop-friendly out-of-phase sin/cos waves for 2D circular branch bending
-            const tree_t = base_t * 2; // Loops 2 times per 360 frames
-            const waveX = Math.sin(y * 0.06 + tree_t) + Math.sin(x * 0.1 + tree_t * 2) * 0.35;
-            const waveY = Math.cos(y * 0.05 + tree_t) + Math.cos(x * 0.08 + tree_t * 3) * 0.25;
+            const tree_t = base_t * 2;
+            // Very low vertical/horizontal frequencies to prevent fluid warping and simulate rigid branch bending
+            const waveX = Math.sin(y * 0.012 + tree_t) + Math.sin(x * 0.015 + tree_t * 2) * 0.2;
+            const waveY = Math.cos(y * 0.01 + tree_t) * 0.15;
             
-            dx += waveX * 2.2 * factor; // Gentle horizontal sway
-            dy += waveY * 1.2 * factor; // Gentle vertical lift/dip
+            dx += waveX * 2.8 * factor;
+            dy += waveY * 1.4 * factor;
           }
           
-          // 2. Foreground Plants Swaying (Bottom-left corner) - very visible, organic sways matching reference
-          if (x < w * 0.30 && y > h * 0.68 && rawBrightness < 0.48) {
-            const plant_t = base_t * 3; // Loops 3 times per 360 frames
-            dx += Math.sin(x * 0.08 + y * 0.05 + plant_t) * 3.2;
-            dy += Math.cos(x * 0.08 + y * 0.05 + plant_t) * 1.5;
-          }
-          
-          // 3. Foreground Plants Swaying (Bottom-right corner) - very visible, organic sways matching reference
-          if (x > w * 0.72 && y > h * 0.70 && rawBrightness < 0.48) {
-            const plant_t = base_t * 3; // Loops 3 times per 360 frames
-            dx += Math.sin(x * 0.08 + y * 0.05 - plant_t) * 2.8;
-            dy += Math.cos(x * 0.08 + y * 0.05 - plant_t) * 1.2;
-          }
-          
-          // 4. Entire Grass Swaying (Lower screen) - obvious wind sway, but exponentially damped in distance
-          if (y > h * 0.55) {
-            // Exponential distance factor: distant hills and mountains stay perfectly static (factor close to 0)
+          // 4. Grass Hill Swaying (Lower screen) - very subtle back and forth sway (no fluid ripples)
+          else if (y > h * 0.55) {
             const baseFactor = (y - h * 0.55) / (h * 0.45);
-            const factor = Math.pow(baseFactor, 2.8); 
+            const factor = Math.pow(baseFactor, 2.8); // Locks distant hills/mountains completely static
             
-            const grass_t = base_t * 2; // Loops 2 times per 360 frames
-            dx += Math.sin(x * 0.03 + grass_t) * 2.2 * factor;
-            dx += Math.sin(x * 0.08 - y * 0.04 + grass_t * 3) * 0.5 * factor;
+            const grass_t = base_t * 2;
+            dx += Math.sin(grass_t) * 1.2 * factor; // Low amplitude, no spatial x/y waves to prevent fluid look
           }
           
-          // 5. Lake ripples (bottom-right water area) - flowing reflection warp matching reference
+          // 5. Lake ripples (bottom-right water area) - flowing reflection warp
           const isLakeArea = (y > h * 0.60) && (x > w * 0.32);
           if (isLakeArea) {
-            const lake_t = base_t * 3; // Loops 3 times per 360 frames
-            dx += Math.sin(y * 0.15 - lake_t) * 0.8; // Horizontal flow
-            dy += Math.cos(x * 0.1 + lake_t) * 0.6;  // Vertical ripple
+            const lake_t = base_t * 3;
+            dx += Math.sin(y * 0.15 - lake_t) * 0.6; // Horizontal flow
+            dy += Math.cos(x * 0.1 + lake_t) * 0.4;  // Vertical ripple
           }
           
           const srcX = Math.max(0, Math.min(w - 1, Math.round(x + dx)));
