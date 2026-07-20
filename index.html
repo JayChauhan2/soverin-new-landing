@@ -328,7 +328,7 @@
               align-items: center;
               justify-content: center;
               position: relative;
-              background: #b8dc90 !important;
+              background: linear-gradient(135deg, #e5f5e7 0%, #d4eed9 100%) !important;
             }
             #sf-row-0 .sf-square--img {
               background:
@@ -337,8 +337,8 @@
             }
             #sf-row-2 .sf-square--img {
               background:
-                radial-gradient(ellipse at 50% 58%, rgba(255, 255, 255, 0.92) 0%, rgba(244, 250, 255, 0.72) 48%, transparent 100%),
-                linear-gradient(135deg, #d8ebff 0%, #f7fbff 54%, #d4e9ff 100%) !important;
+                radial-gradient(ellipse at 50% 58%, rgba(255, 255, 255, 0.92) 0%, rgba(246, 253, 247, 0.72) 48%, transparent 100%),
+                linear-gradient(135deg, #d7efda 0%, #f9fdf9 54%, #d4eed9 100%) !important;
             }
             .sf-square--img__placeholder {
               width: 100%;
@@ -802,8 +802,8 @@
 
                 function draw(w, h) {
                   dctx.clearRect(0, 0, w, h);
-                  const spacing = 18;
-                  const maxR    = 0.85;
+                  const spacing = 16;
+                  const maxR    = 1.55;
 
                   for (let y = spacing / 2; y < h; y += spacing) {
                     for (let x = spacing / 2; x < w; x += spacing) {
@@ -814,11 +814,12 @@
 
                       if (mode === 'brain') {
                         const edge = Math.abs(nx - 0.5) * 2;
-                        weight = Math.max(0, ny * 0.72 + edge * 0.26 - 0.12);
-                        color = `rgba(35, 142, 70, ${0.02 + weight * 0.11})`;
-                      } else if (mode === 'blue') {
-                        weight = 0.42;
-                        color = 'rgba(93, 157, 225, 0.15)';
+                        weight = Math.max(0, (ny - 0.16) * 1.08 + edge * 0.24);
+                        color = `rgba(35, 142, 70, ${0.05 + weight * 0.19})`;
+                      } else if (mode === 'light-green') {
+                        const edge = Math.abs(nx - 0.5) * 2;
+                        weight = Math.max(0, (ny - 0.12) * 1.02 + edge * 0.18);
+                        color = `rgba(35, 142, 70, ${0.045 + weight * 0.17})`;
                       } else {
                         weight = Math.max(0, 0.82 - nx * 0.3 - (1 - ny) * 0.24);
                         color = `rgba(0, 70, 24, ${0.035 + weight * 0.11})`;
@@ -843,7 +844,7 @@
               const rows = document.querySelectorAll('.sf-row');
               if (rows[0]) paintImgDither(rows[0].querySelector('.sf-square--img'), 'brain');
               if (rows[1]) paintImgDither(rows[1].querySelector('.sf-square--img'), 'green');
-              if (rows[2]) paintImgDither(rows[2].querySelector('.sf-square--img'), 'blue');
+              if (rows[2]) paintImgDither(rows[2].querySelector('.sf-square--img'), 'light-green');
 
 
             })();
