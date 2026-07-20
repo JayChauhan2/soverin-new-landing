@@ -551,101 +551,6 @@ document.addEventListener("DOMContentLoaded", () => {
     
     let ditherInitialized = false;
     
-    // ---- Draw-to-select debug tool ----
-    let userSelection = null;   // { x1, y1, x2, y2 } in SOURCE pixel space (640×360)
-    let dragStart = null;       // { x, y } in CANVAS pixel space
-    let isDragging = false;
-    
-    function screenToSrc(screenX, screenY) {
-      // Canvas is CSS-scaled via transform; account for device pixel ratio
-      const rect = ditherCanvas.getBoundingClientRect();
-      const canvasX = (screenX - rect.left) * (ditherCanvas.width / rect.width);
-      const canvasY = (screenY - rect.top) * (ditherCanvas.height / rect.height);
-      const curS = Math.max(w / BG_WIDTH, h / BG_HEIGHT);
-      const curOffX = (w - BG_WIDTH * curS) / 2;
-      const curOffY = (h - BG_HEIGHT * curS) * 0.75;
-      const srcX = Math.round((canvasX - curOffX) / curS);
-      const srcY = Math.round((canvasY - curOffY) / curS);
-      return { srcX: Math.max(0, Math.min(BG_WIDTH - 1, srcX)), srcY: Math.max(0, Math.min(BG_HEIGHT - 1, srcY)) };
-    }
-
-    // Create a dedicated overlay canvas for INSTANT drawing feedback (not throttled by 12fps)
-    const overlayCanvas = document.createElement('canvas');
-    overlayCanvas.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:3;';
-    ditherCanvas.parentElement.appendChild(overlayCanvas);
-    const overlayCtx = overlayCanvas.getContext('2d');
-    
-    function syncOverlaySize() {
-      overlayCanvas.width = ditherCanvas.width;
-      overlayCanvas.height = ditherCanvas.height;
-    }
-    
-    function drawOverlay() {
-      overlayCtx.clearRect(0, 0, overlayCanvas.width, overlayCanvas.height);
-      if (!userSelection) return;
-      const curS = Math.max(w / BG_WIDTH, h / BG_HEIGHT);
-      const curOffX = (w - BG_WIDTH * curS) / 2;
-      const curOffY = (h - BG_HEIGHT * curS) * 0.75;
-      const ux1 = userSelection.x1 * curS + curOffX;
-      const uy1 = userSelection.y1 * curS + curOffY;
-      const ux2 = userSelection.x2 * curS + curOffX;
-      const uy2 = userSelection.y2 * curS + curOffY;
-      overlayCtx.save();
-      overlayCtx.strokeStyle = '#00ff00';
-      overlayCtx.lineWidth = 3;
-      overlayCtx.setLineDash([8, 4]);
-      overlayCtx.strokeRect(ux1, uy1, ux2 - ux1, uy2 - uy1);
-      overlayCtx.fillStyle = 'rgba(0,255,0,0.08)';
-      overlayCtx.fillRect(ux1, uy1, ux2 - ux1, uy2 - uy1);
-      overlayCtx.restore();
-    }
-
-    ditherCanvas.addEventListener('mousedown', e => {
-      const { srcX, srcY } = screenToSrc(e.clientX, e.clientY);
-      dragStart = { srcX, srcY };
-      isDragging = true;
-      userSelection = null;
-      overlayCtx.clearRect(0, 0, overlayCanvas.width, overlayCanvas.height);
-    });
-    
-    ditherCanvas.addEventListener('mousemove', e => {
-      if (!isDragging) return;
-      const { srcX, srcY } = screenToSrc(e.clientX, e.clientY);
-      userSelection = {
-        x1: Math.min(dragStart.srcX, srcX),
-        y1: Math.min(dragStart.srcY, srcY),
-        x2: Math.max(dragStart.srcX, srcX),
-        y2: Math.max(dragStart.srcY, srcY),
-      };
-      drawOverlay(); // Instant feedback, not throttled
-      const coordEl = document.getElementById('sel-coords');
-      if (coordEl) {
-        const { x1, y1, x2, y2 } = userSelection;
-        coordEl.textContent = `srcX ${x1}..${x2}  srcY ${y1}..${y2}`;
-      }
-    });
-    
-    window.addEventListener('mouseup', e => {
-      if (!isDragging) return;
-      isDragging = false;
-      if (userSelection) {
-        const { x1, y1, x2, y2 } = userSelection;
-        const coordEl = document.getElementById('sel-coords');
-        if (coordEl) coordEl.textContent = `✅ srcX ${x1}..${x2}  srcY ${y1}..${y2}`;
-        console.log(`🌲 TREE SELECTION: rawSrcX ${x1}..${x2}, rawSrcY ${y1}..${y2}`);
-      }
-    });
-    
-    // Inject a small instruction UI
-    const selHint = document.createElement('div');
-    selHint.id = 'tree-sel-hint';
-    selHint.style.cssText = `position:fixed;top:12px;left:50%;transform:translateX(-50%);
-      background:rgba(0,0,0,0.85);color:#fff;font:13px monospace;padding:8px 18px;
-      border-radius:6px;border:2px solid #00ff00;z-index:9999;pointer-events:none;text-align:center;`;
-    selHint.innerHTML = '🌲 Click &amp; drag around the tree &nbsp;|&nbsp; <span id="sel-coords">drag to start</span>';
-    document.body.appendChild(selHint);
-    // -- End draw-to-select tool --
-    
     initDither();
     
     function initDither() {
@@ -662,7 +567,6 @@ document.addEventListener("DOMContentLoaded", () => {
       
       ditherCanvas.width = w;
       ditherCanvas.height = h;
-      syncOverlaySize();
     }
     
     const bayerMatrix = [
@@ -717,17 +621,24 @@ document.addEventListener("DOMContentLoaded", () => {
           const rawB = imgPixels[rawSrcIdx + 2];
           const rawBrightness = (rawR * 0.299 + rawG * 0.587 + rawB * 0.114) / 255;
           
-          const rawIsBlue = (rawB > rawR && rawB > rawG * 0.9);
-          const rawIsGreen = (rawG > rawR * 0.9 && rawG > rawB * 0.9 && rawG > 40);
+          const isForegroundPlant = ((rawSrcX < BG_WIDTH * 0.30 && rawSrcY > BG_HEIGHT * 0.68) || (rawSrcX > BG_WIDTH * 0.72 && rawSrcY > BG_HEIGHT * 0.70)) && (rawBrightness < 0.48);
           
-          let isTree = (rawSrcX < 130 && rawSrcY < 235 && rawSrcY > 120 && rawBrightness < 0.48 && !rawIsBlue);
-          if (isTree && rawSrcY > 190 && rawIsGreen) {
-            isTree = false;
+          if (isForegroundPlant) {
+            // Keep foreground plants completely static (no sway)
+          } else if (rawSrcY > BG_HEIGHT * 0.55) {
+            // Grass hill subtle sway
+            const baseFactor = (rawSrcY - BG_HEIGHT * 0.55) / (BG_HEIGHT * 0.45);
+            const factor = Math.pow(baseFactor, 2.8);
+            const grass_t = frame * (2 * Math.PI / 360) * 2;
+            dx += Math.sin(grass_t) * 1.8 * factor;
           }
           
-          if (isTree) {
-            // Shake the tree violently left to right!
-            dx += Math.sin(frame * 0.8) * 15;
+          // Lake ripples (bottom-right water area)
+          const isLakeArea = (rawSrcY > BG_HEIGHT * 0.60) && (rawSrcX > BG_WIDTH * 0.32);
+          if (isLakeArea) {
+            const lake_t = frame * (2 * Math.PI / 360) * 3;
+            dx += Math.sin(rawSrcY * 0.15 - lake_t) * 0.6;
+            dy += Math.cos(rawSrcX * 0.1 + lake_t) * 0.4;
           }
           
           // Map warped coordinate back to low-res source grid space
@@ -792,36 +703,6 @@ document.addEventListener("DOMContentLoaded", () => {
       }
       
       ditherCtx.putImageData(outImgData, 0, 0);
-      
-      // Draw user's live selection rectangle (green) or the current target box (red)
-      ditherCtx.save();
-      if (userSelection) {
-        // Draw user's drawn selection in green
-        const ux1 = userSelection.x1 * s + offsetX;
-        const uy1 = userSelection.y1 * s + offsetY;
-        const ux2 = userSelection.x2 * s + offsetX;
-        const uy2 = userSelection.y2 * s + offsetY;
-        ditherCtx.strokeStyle = '#00ff00';
-        ditherCtx.lineWidth = 2;
-        ditherCtx.setLineDash([6, 3]);
-        ditherCtx.strokeRect(ux1, uy1, ux2 - ux1, uy2 - uy1);
-        // Update coords display
-        const coordEl = document.getElementById('sel-coords');
-        if (coordEl) {
-          const { x1, y1, x2, y2 } = userSelection;
-          coordEl.textContent = `srcX ${x1}..${x2}  srcY ${y1}..${y2}`;
-        }
-      } else {
-        // Draw current target box in red so user can see my guess
-        const dbgX1 = 20 * s + offsetX;
-        const dbgY1 = 60 * s + offsetY;
-        const dbgX2 = 130 * s + offsetX;
-        const dbgY2 = 230 * s + offsetY;
-        ditherCtx.strokeStyle = 'red';
-        ditherCtx.lineWidth = 2;
-        ditherCtx.strokeRect(dbgX1, dbgY1, dbgX2 - dbgX1, dbgY2 - dbgY1);
-      }
-      ditherCtx.restore();
     }
   }
 
