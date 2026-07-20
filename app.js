@@ -646,7 +646,9 @@ document.addEventListener("DOMContentLoaded", () => {
           const isGreen = (g > b && g > r * 0.9) && (y > h * 0.55); // Grass dither pushed lower (starts at 55% screen height)
           const isWarm = (r > b && r > g * 0.8); // Sunset tones (orange, peach, pink, red)
           
-          if (isBlue && brightness >= 0.12 && brightness < 0.55) {
+          const isLakeArea = (y > h * 0.64) && (x > w * 0.32); // Constrain water dither to the bottom-right lake area
+          
+          if (isBlue && isLakeArea && brightness >= 0.12 && brightness < 0.55) {
             // Specialized glistening water/lake shader to generate cyan highlight and navy shadow ripples
             if (brightness < animBayer * 0.72) {
               drawDither = true;
