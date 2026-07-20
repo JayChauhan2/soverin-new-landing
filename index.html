@@ -261,6 +261,9 @@
               background: linear-gradient(180deg, #0a0a12 0%, #0d1520 40%, #0a1a2e 100%);
               position: relative;
             }
+            .s-features * {
+              box-sizing: border-box;
+            }
             /* Fixed left nav — floats in the left margin, takes ZERO layout space */
             .sf-nav {
               position: fixed;
@@ -269,7 +272,7 @@
               left: 2.5%;
               display: flex;
               flex-direction: column;
-              gap: 0;
+              gap: 16px;
               z-index: 50;
               pointer-events: none;
               opacity: 0;
@@ -285,17 +288,14 @@
               font-weight: 600;
               letter-spacing: 0.12em;
               text-transform: uppercase;
-              color: rgba(255,255,255,0.25);
-              padding: 12px 0 12px 14px;
+              color: rgba(255, 255, 255, 0.28);
+              padding: 6px 0;
               cursor: pointer;
-              border-left: 2px solid transparent;
-              transition: color 0.25s, border-color 0.25s;
+              transition: color 0.25s;
               white-space: nowrap;
             }
-            .sf-nav__item.is-active,
-            .sf-nav__item:hover {
-              color: rgba(255,255,255,0.9);
-              border-left-color: rgba(255,255,255,0.5);
+            .sf-nav__item.is-active {
+              color: rgba(255, 255, 255, 0.95);
             }
             /* Rows — centered at 75% width, take the full available space */
             .sf-rows {
@@ -303,6 +303,7 @@
               margin: 0 auto;
               display: flex;
               flex-direction: column;
+              border: 1px solid rgba(255, 255, 255, 0.08);
             }
             /* Each row = two perfectly equal squares side by side, flush */
             .sf-row {
@@ -310,11 +311,18 @@
               width: 100%;
               min-height: 460px;
             }
+            .sf-row + .sf-row {
+              border-top: 1px solid rgba(255, 255, 255, 0.08);
+            }
             .sf-square {
-              flex: 1;
+              width: 50%;
+              flex: 0 0 50%;
               position: relative;
               overflow: hidden;
               min-height: 460px;
+            }
+            .sf-row .sf-square:first-child {
+              border-right: 1px solid rgba(255, 255, 255, 0.08);
             }
             /* Image square */
             .sf-square--img {
@@ -331,7 +339,6 @@
               align-items: center;
               justify-content: center;
               gap: 14px;
-              border-right: 1px solid rgba(255,255,255,0.06);
             }
             .sf-square--img__placeholder svg { opacity: 0.18; }
             .sf-square--img__placeholder span {
@@ -339,27 +346,22 @@
               font-size: 0.68rem;
               letter-spacing: 0.18em;
               text-transform: uppercase;
-              color: rgba(255,255,255,0.2);
+              color: rgba(255, 255, 255, 0.2);
             }
             /* Text square */
             .sf-square--text {
-              background: rgba(255,255,255,0.025);
-              border-top: 1px solid rgba(255,255,255,0.07);
+              background: rgba(255, 255, 255, 0.015);
               display: flex;
               flex-direction: column;
               justify-content: center;
               padding: 52px 56px;
-            }
-            .sf-row + .sf-row .sf-square--text,
-            .sf-row + .sf-row .sf-square--img {
-              border-top: 1px solid rgba(255,255,255,0.07);
             }
             .sf-square--text__tag {
               font-family: 'Press Start 2P', monospace;
               font-size: 0.48rem;
               letter-spacing: 0.22em;
               text-transform: uppercase;
-              color: rgba(100,200,255,0.65);
+              color: rgba(100, 200, 255, 0.65);
               margin-bottom: 18px;
             }
             .sf-square--text__title {
@@ -373,14 +375,14 @@
               font-family: 'Space Grotesk', sans-serif;
               font-size: 1rem;
               line-height: 1.75;
-              color: rgba(255,255,255,0.5);
+              color: rgba(255, 255, 255, 0.5);
               margin: 0 0 28px;
             }
             .sf-square--text__cta {
               font-family: 'Space Grotesk', sans-serif;
               font-size: 0.82rem;
               font-weight: 600;
-              color: rgba(100,200,255,0.75);
+              color: rgba(100, 200, 255, 0.75);
               letter-spacing: 0.06em;
               text-decoration: none;
             }
