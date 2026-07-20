@@ -736,4 +736,54 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
+  // ==========================================
+  // 9. Interactive Pixel Trail on Hover
+  // ==========================================
+  const visionSection = document.getElementById("vision");
+  if (visionSection) {
+    let lastX = 0;
+    let lastY = 0;
+    const minDistance = 15; // Minimum distance (pixels) between spawned trail pixels
+    
+    visionSection.style.position = "relative";
+    visionSection.style.overflow = "hidden";
+    
+    visionSection.addEventListener("mousemove", (e) => {
+      const rect = visionSection.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      
+      const dist = Math.hypot(x - lastX, y - lastY);
+      if (dist < minDistance) return;
+      
+      lastX = x;
+      lastY = y;
+      
+      const pixelSize = 12; // 12x12 square pixel
+      const pixel = document.createElement("div");
+      pixel.style.position = "absolute";
+      pixel.style.width = `${pixelSize}px`;
+      pixel.style.height = `${pixelSize}px`;
+      pixel.style.backgroundColor = "#006400"; // Dark green pixel color
+      pixel.style.left = `${x - pixelSize / 2}px`;
+      pixel.style.top = `${y - pixelSize / 2}px`;
+      pixel.style.pointerEvents = "none";
+      pixel.style.zIndex = "10";
+      pixel.style.opacity = "1";
+      pixel.style.transition = "opacity 0.8s cubic-bezier(0.25, 1, 0.5, 1)";
+      
+      visionSection.appendChild(pixel);
+      
+      // Request frame to trigger smooth opacity transition
+      requestAnimationFrame(() => {
+        pixel.style.opacity = "0";
+      });
+      
+      // Clean up the pixel after transition completes
+      setTimeout(() => {
+        pixel.remove();
+      }, 800);
+    });
+  }
+
 });

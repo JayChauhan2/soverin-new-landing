@@ -368,6 +368,11 @@ a {
   opacity: 0.25 !important;
 }
 
+.s-intro-custom .s_intro_info_icon svg rect {
+  fill: #006400 !important;
+  opacity: 1 !important;
+}
+
 /* Button overrides for light background */
 .s-intro-custom .button_main_element {
   border-color: #000000 !important;
