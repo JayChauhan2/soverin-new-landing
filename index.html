@@ -842,11 +842,10 @@
               });
 
               const globeSource = document.createElement('canvas');
-              globeSource.width = 150;
-              globeSource.height = 138;
+              globeSource.width = 500;
+              globeSource.height = 460;
               const globeCtx = globeSource.getContext('2d');
-              globeCtx.imageSmoothingEnabled = false;
-              const globeCells = [];
+              globeCtx.imageSmoothingEnabled = true;
               const globeImage = new Image();
               let globeReady = false;
               globeImage.src = 'assets/globe-hands.png';
@@ -860,21 +859,17 @@
                   if (imageData.data[i] > 242 && imageData.data[i + 1] > 242 && imageData.data[i + 2] > 242) imageData.data[i + 3] = 0;
                 }
                 globeCtx.putImageData(imageData, 0, 0);
-                for (let y = 0; y < globeSource.height; y++) for (let x = 0; x < globeSource.width; x++) globeCells.push({ x, y });
-                globeCells.sort(() => Math.random() - 0.5);
                 globeReady = true;
               };
 
               setupFeatureReveal('sf-chronicle-canvas', 'sf-row-2', (ctx, w, h, p) => {
                 ctx.clearRect(0, 0, w, h);
                 if (!globeReady) return;
-                ctx.imageSmoothingEnabled = false;
-                const visibleCells = Math.floor(globeCells.length * p);
-                const pixelScale = w / globeSource.width;
-                for (let i = 0; i < visibleCells; i++) {
-                  const cell = globeCells[i];
-                  ctx.drawImage(globeSource, cell.x, cell.y, 1, 1, cell.x * pixelScale, cell.y * pixelScale, pixelScale, pixelScale);
-                }
+                ctx.save();
+                ctx.globalAlpha = Math.min(1, p * 1.35);
+                ctx.imageSmoothingEnabled = true;
+                ctx.drawImage(globeSource, 0, 0, w, h);
+                ctx.restore();
               });
               // ==========================================
               // One restrained dither treatment is shared by every image square.
