@@ -627,18 +627,28 @@ document.addEventListener("DOMContentLoaded", () => {
           let dx = 0;
           let dy = 0;
           
-          // 1. Tree swaying (left side) - branches sway and leaves jitter
-          if (x < w * 0.32 && y < h * 0.85) {
-            const factor = Math.max(0, (h * 0.85 - y) / (h * 0.85));
-            dx += Math.sin(y * 0.05 + frame * 0.04) * 0.7 * factor; // Main branch sway
-            dx += Math.sin(x * 0.2 + y * 0.1 + frame * 0.12) * 0.25 * factor; // Micro leaf jitter
+          // 1. Entire Tree Swaying (Left side) - larger, obvious, natural sway
+          if (x < w * 0.35 && y < h * 0.88) {
+            // Factor ranges from 0.4 (trunk base) to 1.0 (foliage top) so the entire tree sways together
+            const baseFactor = Math.max(0, (h * 0.88 - y) / (h * 0.88));
+            const factor = 0.4 + 0.6 * baseFactor;
+            
+            // Obvious, slow wind sway (amplitude 2.8 low-res pixels = ~8.4 screen pixels)
+            dx += Math.sin(y * 0.04 + frame * 0.045) * 2.8 * factor;
+            // High-frequency leaves jitter
+            dx += Math.sin(x * 0.2 + y * 0.1 + frame * 0.12) * 0.35 * factor;
           }
           
-          // 2. Grass swaying (lower screen) - gentle rolling grass waves
+          // 2. Entire Grass & Foreground Plants Swaying (Lower screen) - obvious wind sway
           if (y > h * 0.55) {
-            const factor = (y - h * 0.55) / (h * 0.45);
-            dx += Math.sin(x * 0.04 + frame * 0.035) * 0.45 * factor; // Main sway
-            dx += Math.sin(x * 0.1 - y * 0.05 + frame * 0.08) * 0.18 * factor; // Wind gust wave
+            // Factor ranges from 0.5 (midground) to 1.0 (foreground bottom) so entire grass fields sway
+            const baseFactor = (y - h * 0.55) / (h * 0.45);
+            const factor = 0.5 + 0.5 * baseFactor;
+            
+            // Obvious, slow wind wave sway (amplitude 2.2 low-res pixels = ~6.6 screen pixels)
+            dx += Math.sin(x * 0.03 + frame * 0.04) * 2.2 * factor;
+            // Secondary wind gust wave
+            dx += Math.sin(x * 0.08 - y * 0.04 + frame * 0.08) * 0.5 * factor;
           }
           
           // 3. Lake ripples (bottom-right water area) - flowing reflection warp
@@ -715,21 +725,24 @@ document.addEventListener("DOMContentLoaded", () => {
           if (isBlue && isNearGreen && brightness >= 0.12 && brightness < 0.55) {
             if (brightness < animBayer * 0.72) {
               drawDither = true;
-              color = [10, 25, 75, 45]; // Deep navy shadow ripple
+              color = [10, 25, 75, 255]; // Fully opaque navy shadow ripple (prevents black background bleed)
             } else if (brightness > animBayer * 0.88) {
               drawDither = true;
-              color = [90, 215, 255, 70]; // Glistening light blue/cyan highlight ripple
+              color = [90, 215, 255, 255]; // Fully opaque glistening cyan highlight ripple
             }
           } else {
             // Only draw light dither highlights (no dark shadow dither overlays to keep the image bright and clean)
             if (brightness >= 0.5 && brightness < 0.85) {
-              if (brightness > animBayer * 1.05) {
-                if (isGreen) {
+              if (isGreen) {
+                if (brightness > animBayer * 1.05) {
                   drawDither = true;
-                  color = [220, 255, 100, 70]; // Bright light green/yellow dither in grass
-                } else if (isWarm) {
+                  color = [220, 255, 100, 255]; // Fully opaque bright light green/yellow dither
+                }
+              } else if (isWarm) {
+                // Higher threshold (1.14) to significantly reduce cloud dither density ("go easy")
+                if (brightness > animBayer * 1.14) {
                   drawDither = true;
-                  color = [255, 200, 150, 60]; // Soft peach/coral dither in sunset clouds and peaks
+                  color = [255, 200, 150, 255]; // Fully opaque soft peach/coral dither in clouds
                 }
               }
             }
