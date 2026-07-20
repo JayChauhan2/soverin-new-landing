@@ -499,7 +499,7 @@
                 const dpr = window.devicePixelRatio || 1;
                 canvas.width = rect.width * dpr;
                 canvas.height = rect.height * dpr;
-                ctx.scale(dpr, dpr);
+                ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
               }
 
               resizeCanvas();
@@ -516,38 +516,21 @@
                 if (width > 0 && height > 0) {
                   ctx.clearRect(0, 0, width, height);
 
-                  // A restrained halftone field: tiny marks, generous spacing.
+                  // A bright, square-pixel field across the entire black section.
                   // The card layer sits above this canvas, so it only lives in the
                   // surrounding negative space, never across the square content.
-                  const spacing = 18;
+                  const spacing = 15;
                   
-                  // Halftone-style dot grid fading from bottom-left to top-right
+                  // The right side deliberately receives the same baseline density.
                   for (let y = spacing / 2; y < height; y += spacing) {
                     for (let x = spacing / 2; x < width; x += spacing) {
-                      const dx = x / width;
-                      const dy = y / height;
-
-                      // Linear gradient factor (max weight on bottom-left, min on top-right)
-                      let val = (1 - dx) * 0.65 + (1 - dy) * 0.35;
-
-                      // Micro-animation: a very subtle floating wave shimmer
-                      const wave = Math.sin(x * 0.008 - y * 0.006 + frame * 0.015) * 0.12;
-                      val = Math.max(0, Math.min(1, val + wave));
-
-                      // Keep the dots deliberately small; the reference is texture,
-                      // not a prominent pixel pattern.
-                      const maxRadius = 1.1;
-                      const radius = val * maxRadius;
-
-                      if (radius > 0.18) {
-                        ctx.beginPath();
-                        ctx.arc(x, y, radius, 0, Math.PI * 2);
-                        // Soft white with a faint green cast, tuned to recede behind
-                        // the content instead of competing with it.
-                        const alpha = 0.05 + val * 0.12;
-                        ctx.fillStyle = `rgba(185, 255, 204, ${alpha})`;
-                        ctx.fill();
-                      }
+                      const wave = Math.sin(x * 0.017 - y * 0.011 + frame * 0.026) * 0.16;
+                      const band = Math.sin((x + y) * 0.008 - frame * 0.014) * 0.08;
+                      const val = Math.max(0.25, Math.min(1, 0.54 + wave + band));
+                      const size = 1.25 + val * 2.15;
+                      const alpha = 0.12 + val * 0.2;
+                      ctx.fillStyle = `rgba(151, 255, 180, ${alpha})`;
+                      ctx.fillRect(x - size / 2, y - size / 2, size, size);
                     }
                   }
                 }
