@@ -550,6 +550,63 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     
     let ditherInitialized = false;
+    
+    // ---- Draw-to-select debug tool ----
+    let userSelection = null;   // { x1, y1, x2, y2 } in SOURCE pixel space (640×360)
+    let dragStart = null;       // { x, y } in CANVAS pixel space
+    let isDragging = false;
+    
+    function screenToSrc(screenX, screenY) {
+      // Canvas is CSS-scaled via transform; account for device pixel ratio
+      const rect = ditherCanvas.getBoundingClientRect();
+      const canvasX = (screenX - rect.left) * (ditherCanvas.width / rect.width);
+      const canvasY = (screenY - rect.top) * (ditherCanvas.height / rect.height);
+      const curS = Math.max(w / BG_WIDTH, h / BG_HEIGHT);
+      const curOffX = (w - BG_WIDTH * curS) / 2;
+      const curOffY = (h - BG_HEIGHT * curS) * 0.75;
+      const srcX = Math.round((canvasX - curOffX) / curS);
+      const srcY = Math.round((canvasY - curOffY) / curS);
+      return { srcX: Math.max(0, Math.min(BG_WIDTH - 1, srcX)), srcY: Math.max(0, Math.min(BG_HEIGHT - 1, srcY)) };
+    }
+    
+    ditherCanvas.addEventListener('mousedown', e => {
+      const { srcX, srcY } = screenToSrc(e.clientX, e.clientY);
+      dragStart = { srcX, srcY };
+      isDragging = true;
+      userSelection = null;
+    });
+    
+    ditherCanvas.addEventListener('mousemove', e => {
+      if (!isDragging) return;
+      const { srcX, srcY } = screenToSrc(e.clientX, e.clientY);
+      userSelection = {
+        x1: Math.min(dragStart.srcX, srcX),
+        y1: Math.min(dragStart.srcY, srcY),
+        x2: Math.max(dragStart.srcX, srcX),
+        y2: Math.max(dragStart.srcY, srcY),
+      };
+    });
+    
+    window.addEventListener('mouseup', e => {
+      if (!isDragging) return;
+      isDragging = false;
+      if (userSelection) {
+        const { x1, y1, x2, y2 } = userSelection;
+        console.log(`🌲 TREE SELECTION: rawSrcX ${x1}..${x2}, rawSrcY ${y1}..${y2}`);
+        console.log(`Fractions: x ${(x1/BG_WIDTH).toFixed(3)}..${(x2/BG_WIDTH).toFixed(3)}, y ${(y1/BG_HEIGHT).toFixed(3)}..${(y2/BG_HEIGHT).toFixed(3)}`);
+      }
+    });
+    
+    // Inject a small instruction UI
+    const selHint = document.createElement('div');
+    selHint.id = 'tree-sel-hint';
+    selHint.style.cssText = `position:fixed;top:12px;left:50%;transform:translateX(-50%);
+      background:rgba(0,0,0,0.75);color:#fff;font:13px monospace;padding:8px 16px;
+      border-radius:6px;border:1px solid red;z-index:9999;pointer-events:none;text-align:center;`;
+    selHint.innerHTML = '🌲 Draw a rectangle around the tree &nbsp;|&nbsp; <span id="sel-coords">drag to select</span>';
+    document.body.appendChild(selHint);
+    // -- End draw-to-select tool --
+    
     initDither();
     
     function initDither() {
@@ -696,16 +753,34 @@ document.addEventListener("DOMContentLoaded", () => {
       
       ditherCtx.putImageData(outImgData, 0, 0);
       
-      // DEBUG: Draw red rectangle around the tree region I'm targeting (remove once confirmed)
-      // Source coords in 640x360 space: rawSrcX 20..130, rawSrcY 60..230
-      const dbgX1 = 20 * s + offsetX;
-      const dbgY1 = 60 * s + offsetY;
-      const dbgX2 = 130 * s + offsetX;
-      const dbgY2 = 230 * s + offsetY;
+      // Draw user's live selection rectangle (green) or the current target box (red)
       ditherCtx.save();
-      ditherCtx.strokeStyle = 'red';
-      ditherCtx.lineWidth = 2;
-      ditherCtx.strokeRect(dbgX1, dbgY1, dbgX2 - dbgX1, dbgY2 - dbgY1);
+      if (userSelection) {
+        // Draw user's drawn selection in green
+        const ux1 = userSelection.x1 * s + offsetX;
+        const uy1 = userSelection.y1 * s + offsetY;
+        const ux2 = userSelection.x2 * s + offsetX;
+        const uy2 = userSelection.y2 * s + offsetY;
+        ditherCtx.strokeStyle = '#00ff00';
+        ditherCtx.lineWidth = 2;
+        ditherCtx.setLineDash([6, 3]);
+        ditherCtx.strokeRect(ux1, uy1, ux2 - ux1, uy2 - uy1);
+        // Update coords display
+        const coordEl = document.getElementById('sel-coords');
+        if (coordEl) {
+          const { x1, y1, x2, y2 } = userSelection;
+          coordEl.textContent = `srcX ${x1}..${x2}  srcY ${y1}..${y2}`;
+        }
+      } else {
+        // Draw current target box in red so user can see my guess
+        const dbgX1 = 20 * s + offsetX;
+        const dbgY1 = 60 * s + offsetY;
+        const dbgX2 = 130 * s + offsetX;
+        const dbgY2 = 230 * s + offsetY;
+        ditherCtx.strokeStyle = 'red';
+        ditherCtx.lineWidth = 2;
+        ditherCtx.strokeRect(dbgX1, dbgY1, dbgX2 - dbgX1, dbgY2 - dbgY1);
+      }
       ditherCtx.restore();
     }
   }
