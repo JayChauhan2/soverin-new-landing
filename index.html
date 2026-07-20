@@ -797,15 +797,18 @@
               // Section 2: supplied green pixel landscape. White sky is keyed out
               // so the card's own pale-green background shows through.
               const worldSource = document.createElement('canvas');
-              worldSource.width = 500;
-              worldSource.height = 460;
+              // 150 × 138 maps exactly to the 500 × 460 card at 3.33px per source
+              // pixel — the same scale used by the brain materialization.
+              worldSource.width = 150;
+              worldSource.height = 138;
               const worldCtx = worldSource.getContext('2d');
               const worldCells = [];
               const worldImage = new Image();
               let worldReady = false;
               worldImage.src = 'assets/living-world.png';
               worldImage.onload = () => {
-                const scale = Math.max(worldSource.width / worldImage.naturalWidth, worldSource.height / worldImage.naturalHeight);
+                // Contain, don't crop: the wide landscape keeps its original aspect ratio.
+                const scale = Math.min(worldSource.width / worldImage.naturalWidth, worldSource.height / worldImage.naturalHeight);
                 const imageWidth = worldImage.naturalWidth * scale;
                 const imageHeight = worldImage.naturalHeight * scale;
                 worldCtx.drawImage(worldImage, (worldSource.width - imageWidth) / 2, (worldSource.height - imageHeight) / 2, imageWidth, imageHeight);
@@ -818,7 +821,7 @@
                   }
                 }
                 worldCtx.putImageData(imageData, 0, 0);
-                for (let y = 0; y < 460; y += 8) for (let x = 0; x < 500; x += 8) worldCells.push({ x, y });
+                for (let y = 0; y < worldSource.height; y++) for (let x = 0; x < worldSource.width; x++) worldCells.push({ x, y });
                 worldCells.sort(() => Math.random() - 0.5);
                 worldReady = true;
               };
@@ -827,9 +830,10 @@
                 ctx.clearRect(0, 0, w, h);
                 if (!worldReady) return;
                 const visibleCells = Math.floor(worldCells.length * p);
+                const pixelScale = w / worldSource.width;
                 for (let i = 0; i < visibleCells; i++) {
                   const cell = worldCells[i];
-                  ctx.drawImage(worldSource, cell.x, cell.y, 8, 8, cell.x, cell.y, 8, 8);
+                  ctx.drawImage(worldSource, cell.x, cell.y, 1, 1, cell.x * pixelScale, cell.y * pixelScale, pixelScale, pixelScale);
                 }
               });
 
