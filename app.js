@@ -640,16 +640,16 @@ document.addEventListener("DOMContentLoaded", () => {
           
           const plant_t = base_t * 3; // Loops 3 times per 360 frames
           
-          // 1. Foreground Plants Swaying (Bottom-left corner) - high rigid sway (no fluid distortion)
+          // 1. Foreground Plants Swaying (Bottom-left corner) - gentle rigid sway (no fluid distortion)
           if (x < w * 0.30 && y > h * 0.68 && rawBrightness < 0.48) {
-            dx += Math.sin(plant_t) * 4.2;
-            dy += Math.cos(plant_t) * 1.6;
+            dx += Math.sin(plant_t) * 2.4;
+            dy += Math.cos(plant_t) * 0.8;
           }
           
-          // 2. Foreground Plants Swaying (Bottom-right corner) - high rigid sway (no fluid distortion)
+          // 2. Foreground Plants Swaying (Bottom-right corner) - gentle rigid sway (no fluid distortion)
           else if (x > w * 0.72 && y > h * 0.70 && rawBrightness < 0.48) {
-            dx += Math.sin(plant_t + Math.PI) * 3.8; // 180deg out of phase for asymmetric natural sway
-            dy += Math.cos(plant_t + Math.PI) * 1.4;
+            dx += Math.sin(plant_t + Math.PI) * 2.2; // 180deg out of phase for asymmetric natural sway
+            dy += Math.cos(plant_t + Math.PI) * 0.7;
           }
           
           // 3. Entire Tree Bending (Left side) - gentle, cohesive bending of foliage & branches (no fluid warp)
@@ -662,8 +662,8 @@ document.addEventListener("DOMContentLoaded", () => {
             const waveX = Math.sin(y * 0.012 + tree_t) + Math.sin(x * 0.015 + tree_t * 2) * 0.2;
             const waveY = Math.cos(y * 0.01 + tree_t) * 0.15;
             
-            dx += waveX * 2.8 * factor;
-            dy += waveY * 1.4 * factor;
+            dx += waveX * 1.5 * factor; // Reduced to be soft and subtle
+            dy += waveY * 0.8 * factor;
           }
           
           // 4. Grass Hill Swaying (Lower screen) - very subtle back and forth sway (no fluid ripples)
