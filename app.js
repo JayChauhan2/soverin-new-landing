@@ -627,16 +627,19 @@ document.addEventListener("DOMContentLoaded", () => {
           let dx = 0;
           let dy = 0;
           
-          // 1. Entire Tree Swaying (Left side) - larger, obvious, natural sway
+          // 1. Entire Tree Swaying (Left side) - organic 2D flowing elliptical sway
           if (x < w * 0.35 && y < h * 0.88) {
             // Factor ranges from 0.4 (trunk base) to 1.0 (foliage top) so the entire tree sways together
             const baseFactor = Math.max(0, (h * 0.88 - y) / (h * 0.88));
             const factor = 0.4 + 0.6 * baseFactor;
             
-            // Obvious, slow wind sway (amplitude 2.8 low-res pixels = ~8.4 screen pixels)
-            dx += Math.sin(y * 0.04 + frame * 0.045) * 2.8 * factor;
-            // High-frequency leaves jitter
-            dx += Math.sin(x * 0.2 + y * 0.1 + frame * 0.12) * 0.35 * factor;
+            const time = frame * 0.04;
+            // Out-of-phase sin/cos waves depending on both x and y to create 2D circular/elliptical branch bending
+            const waveX = Math.sin(y * 0.06 + time) + Math.sin(x * 0.1 + time * 1.5) * 0.35;
+            const waveY = Math.cos(y * 0.05 + time * 0.8) + Math.cos(x * 0.08 + time * 1.2) * 0.25;
+            
+            dx += waveX * 2.2 * factor; // Gentle horizontal sway
+            dy += waveY * 1.2 * factor; // Gentle vertical lift/dip
           }
           
           // 2. Entire Grass & Foreground Plants Swaying (Lower screen) - obvious wind sway
