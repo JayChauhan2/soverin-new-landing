@@ -628,38 +628,55 @@ document.addEventListener("DOMContentLoaded", () => {
           let dx = 0;
           let dy = 0;
           
-          // 1. Entire Tree Swaying (Left side) - organic 2D flowing elliptical sway
-          if (x < w * 0.35 && y < h * 0.88) {
+          // Mathematically seamless base time step (wraps perfectly at frame 360)
+          const base_t = frame * (2 * Math.PI / 360);
+          
+          // Calculate brightness of source pixel BEFORE warp to isolate tree/sky
+          const rawIdx = (y * w + x) * 4;
+          const rawR = imgPixels[rawIdx];
+          const rawG = imgPixels[rawIdx + 1];
+          const rawB = imgPixels[rawIdx + 2];
+          const rawBrightness = (rawR * 0.299 + rawG * 0.587 + rawB * 0.114) / 255;
+          
+          // 1. Entire Tree Swaying (Left side) - organic 2D flowing elliptical sway (isolated from bright sky/clouds)
+          if (x < w * 0.32 && y < h * 0.88 && rawBrightness < 0.48) {
             // Factor ranges from 0.4 (trunk base) to 1.0 (foliage top) so the entire tree sways together
             const baseFactor = Math.max(0, (h * 0.88 - y) / (h * 0.88));
             const factor = 0.4 + 0.6 * baseFactor;
             
-            const time = frame * 0.04;
-            // Out-of-phase sin/cos waves depending on both x and y to create 2D circular/elliptical branch bending
-            const waveX = Math.sin(y * 0.06 + time) + Math.sin(x * 0.1 + time * 1.5) * 0.35;
-            const waveY = Math.cos(y * 0.05 + time * 0.8) + Math.cos(x * 0.08 + time * 1.2) * 0.25;
+            // Loop-friendly out-of-phase sin/cos waves for 2D circular branch bending
+            const tree_t = base_t * 2; // Loops 2 times per 360 frames
+            const waveX = Math.sin(y * 0.06 + tree_t) + Math.sin(x * 0.1 + tree_t * 2) * 0.35;
+            const waveY = Math.cos(y * 0.05 + tree_t) + Math.cos(x * 0.08 + tree_t * 3) * 0.25;
             
             dx += waveX * 2.2 * factor; // Gentle horizontal sway
             dy += waveY * 1.2 * factor; // Gentle vertical lift/dip
+          }
+          
+          // 2. Foreground Plants Swaying (Bottom-left corner) - very visible, light organic sways
+          if (x < w * 0.30 && y > h * 0.68 && rawBrightness < 0.48) {
+            const plant_t = base_t * 3; // Loops 3 times per 360 frames
+            dx += Math.sin(x * 0.08 + y * 0.05 + plant_t) * 2.6;
+            dy += Math.cos(x * 0.08 + y * 0.05 + plant_t) * 1.0;
           }
           
           // 2. Entire Grass & Foreground Plants Swaying (Lower screen) - obvious wind sway
           if (y > h * 0.55) {
             // Factor ranges from 0.5 (midground) to 1.0 (foreground bottom) so entire grass fields sway
             const baseFactor = (y - h * 0.55) / (h * 0.45);
-            const factor = 0.5 + 0.5 * baseFactor;
+            const factor = Math.pow(baseFactor, 2.8); 
             
-            // Obvious, slow wind wave sway (amplitude 2.2 low-res pixels = ~6.6 screen pixels)
-            dx += Math.sin(x * 0.03 + frame * 0.04) * 2.2 * factor;
-            // Secondary wind gust wave
-            dx += Math.sin(x * 0.08 - y * 0.04 + frame * 0.08) * 0.5 * factor;
+            const grass_t = base_t * 2; // Loops 2 times per 360 frames
+            dx += Math.sin(x * 0.03 + grass_t) * 2.2 * factor;
+            dx += Math.sin(x * 0.08 - y * 0.04 + grass_t * 3) * 0.5 * factor;
           }
           
-          // 3. Lake ripples (bottom-right water area) - flowing reflection warp
+          // 4. Lake ripples (bottom-right water area) - flowing reflection warp
           const isLakeArea = (y > h * 0.60) && (x > w * 0.32);
           if (isLakeArea) {
-            dx += Math.sin(y * 0.15 - frame * 0.05) * 0.5; // Horizontal flow
-            dy += Math.cos(x * 0.1 + frame * 0.06) * 0.4;  // Vertical ripple
+            const lake_t = base_t * 3; // Loops 3 times per 360 frames
+            dx += Math.sin(y * 0.15 - lake_t) * 0.5; // Horizontal flow
+            dy += Math.cos(x * 0.1 + lake_t) * 0.4;  // Vertical ripple
           }
           
           const srcX = Math.max(0, Math.min(w - 1, Math.round(x + dx)));
@@ -676,8 +693,9 @@ document.addEventListener("DOMContentLoaded", () => {
           const brightness = (r * 0.299 + g * 0.587 + b * 0.114) / 255;
           const bayerVal = bayerMatrix[matrixY][matrixX];
           
-          // Slow wave-based shimmer (frame * 0.05) to simulate a gentle constant sway
-          const wave = Math.sin(x * 0.1 + y * 0.1 + frame * 0.05) * 0.12;
+          // Slow loop-friendly wave shimmer (loops 2 times per 360 frames)
+          const shimmer_t = base_t * 2;
+          const wave = Math.sin(x * 0.1 + y * 0.1 + shimmer_t) * 0.12;
           const animBayer = (bayerVal + wave + 1.0) % 1.0;
           
           let drawDither = false;
@@ -691,13 +709,14 @@ document.addEventListener("DOMContentLoaded", () => {
           // Only draw light dither highlights (no dark shadow dither overlays to keep the image bright and clean)
           if (brightness >= 0.5 && brightness < 0.85) {
             if (isGreen) {
-              if (brightness > animBayer * 1.05) {
+              // Increased threshold (1.18) to significantly reduce grass dither density on left hill
+              if (brightness > animBayer * 1.18) {
                 drawDither = true;
                 color = [220, 255, 100, 255]; // Fully opaque bright light green/yellow dither
               }
             } else if (isWarm) {
-              // Higher threshold (1.14) to significantly reduce cloud dither density ("go easy")
-              if (brightness > animBayer * 1.14) {
+              // High threshold (1.26) to make cloud dither extremely sparse/subtle on the left side
+              if (brightness > animBayer * 1.26) {
                 drawDither = true;
                 color = [255, 200, 150, 255]; // Fully opaque soft peach/coral dither in clouds
               }
