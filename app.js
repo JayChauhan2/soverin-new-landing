@@ -525,4 +525,70 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  // ==========================================
+  // 8. Animated Retro Dither Overlay
+  // ==========================================
+  const ditherCanvas = document.getElementById("dither-canvas");
+  if (ditherCanvas) {
+    const ditherCtx = ditherCanvas.getContext("2d");
+    const pixelSize = 3; // Match the 3x nearest-neighbor upscaled image pixel ratio
+    const patterns = [];
+    
+    // Create 4 offscreen pattern canvases representing animation frames
+    for (let f = 0; f < 4; f++) {
+      const pCanvas = document.createElement("canvas");
+      pCanvas.width = 4 * pixelSize;
+      pCanvas.height = 4 * pixelSize;
+      const pCtx = pCanvas.getContext("2d");
+      pCtx.clearRect(0, 0, pCanvas.width, pCanvas.height);
+      pCtx.fillStyle = "rgba(2, 2, 4, 0.08)";
+      
+      for (let y = 0; y < 4; y++) {
+        for (let x = 0; x < 4; x++) {
+          let draw = false;
+          if (f === 0) {
+            draw = (x + y) % 4 === 0;
+          } else if (f === 1) {
+            draw = (x - y + 4) % 4 === 0;
+          } else if (f === 2) {
+            draw = (x + y + 2) % 4 === 0;
+          } else {
+            draw = (x - y + 6) % 4 === 0;
+          }
+          if (draw) {
+            pCtx.fillRect(x * pixelSize, y * pixelSize, pixelSize, pixelSize);
+          }
+        }
+      }
+      patterns.push(ditherCtx.createPattern(pCanvas, "repeat"));
+    }
+    
+    let frame = 0;
+    let lastTime = 0;
+    const fpsInterval = 1000 / 8; // 8 FPS for classic retro hardware refresh rates
+    
+    function resizeDitherCanvas() {
+      ditherCanvas.width = window.innerWidth;
+      ditherCanvas.height = window.innerHeight;
+    }
+    
+    resizeDitherCanvas();
+    window.addEventListener("resize", resizeDitherCanvas);
+    
+    function renderDither(timestamp) {
+      requestAnimationFrame(renderDither);
+      
+      if (timestamp - lastTime < fpsInterval) return;
+      lastTime = timestamp;
+      
+      ditherCtx.clearRect(0, 0, ditherCanvas.width, ditherCanvas.height);
+      ditherCtx.fillStyle = patterns[frame];
+      ditherCtx.fillRect(0, 0, ditherCanvas.width, ditherCanvas.height);
+      
+      frame = (frame + 1) % patterns.length;
+    }
+    
+    requestAnimationFrame(renderDither);
+  }
+
 });
