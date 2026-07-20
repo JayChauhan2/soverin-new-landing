@@ -579,7 +579,8 @@ document.addEventListener("DOMContentLoaded", () => {
         const renderW = imgW * s;
         const renderH = imgH * s;
         const dx = (w - renderW) / 2;
-        const dy = (h - renderH) / 2;
+        // Shift crop window down to show more of the bottom lake and mountain reflections instead of top sky
+        const dy = (h - renderH) * 0.75;
         
         offCtx.clearRect(0, 0, w, h);
         offCtx.drawImage(bgImg, dx, dy, renderW, renderH);
