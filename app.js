@@ -711,9 +711,8 @@ document.addEventListener("DOMContentLoaded", () => {
   // ==========================================
   const visionSection = document.getElementById("vision");
   if (visionSection) {
-    let lastX = 0;
-    let lastY = 0;
-    const minDistance = 15; // Minimum distance (pixels) between spawned trail pixels
+    let lastSnappedLeft = -1;
+    let lastSnappedTop = -1;
     
     visionSection.style.position = "relative";
     visionSection.style.overflow = "hidden";
@@ -723,20 +722,24 @@ document.addEventListener("DOMContentLoaded", () => {
       const x = e.clientX - rect.left;
       const y = e.clientY - rect.top;
       
-      const dist = Math.hypot(x - lastX, y - lastY);
-      if (dist < minDistance) return;
+      const gridSpacing = 16; // 16px grid spacing for a clean look
+      const snappedLeft = Math.floor(x / gridSpacing) * gridSpacing;
+      const snappedTop = Math.floor(y / gridSpacing) * gridSpacing;
       
-      lastX = x;
-      lastY = y;
+      // Avoid spawning multiple pixels in the same grid spot
+      if (snappedLeft === lastSnappedLeft && snappedTop === lastSnappedTop) return;
       
-      const pixelSize = 12; // 12x12 square pixel
+      lastSnappedLeft = snappedLeft;
+      lastSnappedTop = snappedTop;
+      
+      const pixelSize = 16;
       const pixel = document.createElement("div");
       pixel.style.position = "absolute";
       pixel.style.width = `${pixelSize}px`;
       pixel.style.height = `${pixelSize}px`;
       pixel.style.backgroundColor = "#006400"; // Dark green pixel color
-      pixel.style.left = `${x - pixelSize / 2}px`;
-      pixel.style.top = `${y - pixelSize / 2}px`;
+      pixel.style.left = `${snappedLeft}px`;
+      pixel.style.top = `${snappedTop}px`;
       pixel.style.pointerEvents = "none";
       pixel.style.zIndex = "10";
       pixel.style.opacity = "1";
