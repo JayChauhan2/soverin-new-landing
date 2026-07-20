@@ -625,18 +625,39 @@ document.addEventListener("DOMContentLoaded", () => {
           let drawDither = false;
           let color = [0, 0, 0, 0];
           
+          // Classify the local color of the background image
+          const isBlue = (b > r && b > g * 0.9);
+          const isGreen = (g > b && g > r * 0.9);
+          const isWarm = (r > b && r > g * 0.8); // Sunset tones (orange, peach, pink, red)
+          
           // Draw dark dither pixels in dark midtones to enhance shadow textures
           if (brightness >= 0.15 && brightness < 0.5) {
             if (brightness < animBayer * 0.85) {
               drawDither = true;
-              color = [2, 2, 4, 35]; // Dark dither block with ~14% opacity
+              if (isBlue) {
+                color = [10, 20, 80, 50]; // Deep navy shadow dither in water/lake
+              } else if (isGreen) {
+                color = [5, 40, 15, 60]; // Deep forest green shadow dither in grass
+              } else if (isWarm) {
+                color = [60, 20, 40, 50]; // Deep purple/rust shadow dither in sunset regions
+              } else {
+                color = [2, 2, 4, 35]; // Default dark shadow
+              }
             }
           }
           // Draw light dither pixels in light midtones to simulate glistening light
           else if (brightness >= 0.5 && brightness < 0.82) {
             if (brightness > animBayer * 1.05) {
               drawDither = true;
-              color = [255, 235, 205, 25]; // Warm highlight dither block with ~10% opacity
+              if (isBlue) {
+                color = [120, 230, 255, 60]; // Glistening light blue/cyan dither in water/lake
+              } else if (isGreen) {
+                color = [220, 255, 100, 70]; // Bright light green/yellow dither in grass
+              } else if (isWarm) {
+                color = [255, 200, 150, 60]; // Soft peach/coral dither in sunset clouds and peaks
+              } else {
+                color = [255, 235, 205, 25]; // Default warm highlight
+              }
             }
           }
           
