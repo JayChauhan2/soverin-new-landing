@@ -709,30 +709,15 @@ document.addEventListener("DOMContentLoaded", () => {
               color = [90, 215, 255, 70]; // Glistening light blue/cyan highlight ripple
             }
           } else {
-            // Standard shadow & highlight dither for land, grass, sky
-            // Draw dark dither pixels in dark midtones to enhance shadow textures
-            if (brightness >= 0.15 && brightness < 0.5) {
-              if (brightness < animBayer * 0.85) {
-                drawDither = true;
-                if (isGreen) {
-                  color = [5, 40, 15, 60]; // Deep forest green shadow dither in grass
-                } else if (isWarm) {
-                  color = [60, 20, 40, 50]; // Deep purple/rust shadow dither in sunset regions
-                } else {
-                  color = [2, 2, 4, 35]; // Default dark shadow
-                }
-              }
-            }
-            // Draw light dither pixels in light midtones to simulate glistening light
-            else if (brightness >= 0.5 && brightness < 0.85) {
+            // Only draw light dither highlights (no dark shadow dither overlays to keep the image bright and clean)
+            if (brightness >= 0.5 && brightness < 0.85) {
               if (brightness > animBayer * 1.05) {
-                drawDither = true;
                 if (isGreen) {
+                  drawDither = true;
                   color = [220, 255, 100, 70]; // Bright light green/yellow dither in grass
                 } else if (isWarm) {
+                  drawDither = true;
                   color = [255, 200, 150, 60]; // Soft peach/coral dither in sunset clouds and peaks
-                } else {
-                  color = [255, 235, 205, 25]; // Default warm highlight
                 }
               }
             }
