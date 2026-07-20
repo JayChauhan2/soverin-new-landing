@@ -428,19 +428,12 @@
             <!-- Row 2: Text left, Image right -->
             <div class="sf-row sf-row--flip" id="sf-row-1">
               <div class="sf-square sf-square--img" style="position: relative; overflow: hidden;">
-                <div class="sf-square--img__placeholder">
-                  <svg width="72" height="72" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <rect x="8" y="12" width="48" height="36" rx="2" stroke="white" stroke-width="1.5"/>
-                    <circle cx="22" cy="26" r="6" stroke="white" stroke-width="1.5"/>
-                    <path d="M8 40 L20 28 L32 38 L42 30 L56 42" stroke="white" stroke-width="1.5" stroke-linejoin="round"/>
-                  </svg>
-                  <span>Image Placeholder</span>
-                </div>
+                <canvas id="sf-world-canvas" width="500" height="460" style="position:absolute;inset:0;width:100%;height:100%;z-index:5;"></canvas>
               </div>
               <div class="sf-square sf-square--text">
                 <div class="sf-square--text__tag">Section 02</div>
-                <h3 class="sf-square--text__title">Living World Platform</h3>
-                <p class="sf-square--text__body">Every world on Soverin is persistent and shared. Economies, ecosystems, and factions evolve whether you're online or not — creating a universe that feels genuinely alive and consequential.</p>
+                <h3 class="sf-square--text__title">Living World Simulation</h3>
+                <p class="sf-square--text__body">Climate, migration, trade, and resource pressure continuously reshape every territory — so the world evolves alongside every strategic decision.</p>
                 <a href="#" class="sf-square--text__cta">Learn more →</a>
               </div>
             </div>
@@ -448,19 +441,12 @@
             <!-- Row 3: Image left, Text right -->
             <div class="sf-row" id="sf-row-2">
               <div class="sf-square sf-square--img" style="position: relative; overflow: hidden;">
-                <div class="sf-square--img__placeholder">
-                  <svg width="72" height="72" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <rect x="8" y="12" width="48" height="36" rx="2" stroke="white" stroke-width="1.5"/>
-                    <circle cx="22" cy="26" r="6" stroke="white" stroke-width="1.5"/>
-                    <path d="M8 40 L20 28 L32 38 L42 30 L56 42" stroke="white" stroke-width="1.5" stroke-linejoin="round"/>
-                  </svg>
-                  <span>Image Placeholder</span>
-                </div>
+                <canvas id="sf-chronicle-canvas" width="500" height="460" style="position:absolute;inset:0;width:100%;height:100%;z-index:5;"></canvas>
               </div>
               <div class="sf-square sf-square--text">
                 <div class="sf-square--text__tag">Section 03</div>
-                <h3 class="sf-square--text__title">Creator Economy Layer</h3>
-                <p class="sf-square--text__body">Build, monetize, and deploy your own games and mods directly inside Soverin. Our creator tools give independent developers first-class access to the same AI stack that powers the platform.</p>
+                <h3 class="sf-square--text__title">Chronicle Engine</h3>
+                <p class="sf-square--text__body">Every consequential choice becomes part of a persistent world history — an evolving Chronicle of alliances, betrayals, and civilizations.</p>
                 <a href="#" class="sf-square--text__cta">Learn more →</a>
               </div>
             </div>
@@ -764,6 +750,155 @@
                   }
                 }
               }
+
+              // ==========================================
+              // Section 2 + 3: dossier-backed canvas visuals
+              // They use the same progressive, on-scroll reveal as the BCM brain.
+              // ==========================================
+              function setupFeatureReveal(canvasId, rowId, painter) {
+                const featureCanvas = document.getElementById(canvasId);
+                const featureRow = document.getElementById(rowId);
+                if (!featureCanvas || !featureRow) return;
+
+                const featureCtx = featureCanvas.getContext('2d');
+                let reveal = 0;
+                let started = false;
+
+                const featureObserver = new IntersectionObserver(([entry]) => {
+                  if (entry.isIntersecting && !started) {
+                    started = true;
+                    const animate = (time) => {
+                      reveal = Math.min(1, reveal + 0.009);
+                      painter(featureCtx, featureCanvas.width, featureCanvas.height, reveal, time);
+                      requestAnimationFrame(animate);
+                    };
+                    requestAnimationFrame(animate);
+                  }
+                }, { threshold: 0.12 });
+                featureObserver.observe(featureRow);
+              }
+
+              function drawSystemLabel(ctx, label, x, y, align, opacity) {
+                ctx.save();
+                ctx.globalAlpha = opacity;
+                ctx.font = "700 11px 'Space Grotesk', sans-serif";
+                ctx.textBaseline = 'middle';
+                const width = ctx.measureText(label).width + 22;
+                const left = align === 'right' ? x - width : x;
+                ctx.fillStyle = 'rgba(255,255,255,0.68)';
+                ctx.fillRect(left, y - 12, width, 24);
+                ctx.strokeStyle = 'rgba(0,100,0,0.42)';
+                ctx.strokeRect(left, y - 12, width, 24);
+                ctx.fillStyle = '#006400';
+                ctx.fillText(label, left + 11, y);
+                ctx.restore();
+              }
+
+              setupFeatureReveal('sf-world-canvas', 'sf-row-1', (ctx, w, h, p, time) => {
+                ctx.clearRect(0, 0, w, h);
+                const regions = [
+                  [[70,125],[145,91],[205,132],[186,205],[104,218]],
+                  [[267,62],[352,90],[370,164],[308,194],[250,145]],
+                  [[319,267],[413,242],[454,307],[425,381],[342,390],[290,331]],
+                  [[72,287],[160,255],[223,302],[208,378],[115,404],[55,351]]
+                ];
+                regions.forEach((points, index) => {
+                  const local = Math.max(0, Math.min(1, p * 1.65 - index * 0.18));
+                  if (!local) return;
+                  ctx.save();
+                  ctx.globalAlpha = local;
+                  ctx.beginPath();
+                  points.forEach(([x, y], pointIndex) => pointIndex ? ctx.lineTo(x, y) : ctx.moveTo(x, y));
+                  ctx.closePath();
+                  ctx.fillStyle = index % 2 ? 'rgba(194,231,199,0.58)' : 'rgba(221,244,224,0.72)';
+                  ctx.fill();
+                  ctx.strokeStyle = '#006400';
+                  ctx.lineWidth = 1.4;
+                  ctx.setLineDash([4, 4]);
+                  ctx.stroke();
+                  ctx.setLineDash([]);
+                  for (let gx = points[0][0] + 10; gx < points[2][0]; gx += 13) {
+                    for (let gy = Math.min(...points.map((pt) => pt[1])) + 12; gy < Math.max(...points.map((pt) => pt[1])); gy += 13) {
+                      if ((gx + gy + index * 17) % 31 < 10) ctx.fillRect(gx, gy, 2, 2);
+                    }
+                  }
+                  ctx.restore();
+                });
+
+                const routes = [[[145,156],[292,130]], [[319,158],[370,277]], [[174,302],[322,321]], [[142,213],[123,298]]];
+                if (p > 0.38) {
+                  ctx.save();
+                  ctx.globalAlpha = Math.min(1, (p - 0.38) * 2.2);
+                  ctx.strokeStyle = 'rgba(0,100,0,0.62)';
+                  ctx.lineWidth = 2;
+                  ctx.setLineDash([6, 5]);
+                  routes.forEach(([a, b]) => { ctx.beginPath(); ctx.moveTo(...a); ctx.lineTo(...b); ctx.stroke(); });
+                  ctx.setLineDash([]);
+                  routes.forEach(([a, b], index) => {
+                    const t = ((time * 0.00022) + index * 0.23) % 1;
+                    const x = a[0] + (b[0] - a[0]) * t;
+                    const y = a[1] + (b[1] - a[1]) * t;
+                    ctx.fillStyle = '#006400';
+                    ctx.fillRect(x - 3, y - 3, 6, 6);
+                  });
+                  ctx.restore();
+                }
+                if (p > 0.7) {
+                  const alpha = Math.min(1, (p - 0.7) * 3.4);
+                  drawSystemLabel(ctx, 'CLIMATE', 38, 55, 'left', alpha);
+                  drawSystemLabel(ctx, 'MIGRATION', 462, 215, 'right', alpha);
+                  drawSystemLabel(ctx, 'RESOURCE FLOW', 462, 422, 'right', alpha);
+                }
+              });
+
+              setupFeatureReveal('sf-chronicle-canvas', 'sf-row-2', (ctx, w, h, p, time) => {
+                ctx.clearRect(0, 0, w, h);
+                const axisX = 112;
+                ctx.save();
+                ctx.globalAlpha = Math.min(1, p * 1.4);
+                ctx.strokeStyle = 'rgba(0,100,0,0.56)';
+                ctx.lineWidth = 2;
+                ctx.setLineDash([5, 5]);
+                ctx.beginPath(); ctx.moveTo(axisX, 62); ctx.lineTo(axisX, 400); ctx.stroke();
+                ctx.setLineDash([]);
+                ctx.restore();
+
+                const entries = [
+                  { y: 100, turn: 'TURN 14', title: 'THE FIRST PACT', body: 'Alliance forged across the eastern coast.' },
+                  { y: 220, turn: 'TURN 32', title: 'THE LONG WINTER', body: 'Migration reshapes the northern frontier.' },
+                  { y: 340, turn: 'TURN 51', title: 'A QUIET BETRAYAL', body: 'The trade accord is broken before dawn.' }
+                ];
+                entries.forEach((entry, index) => {
+                  const local = Math.max(0, Math.min(1, p * 1.55 - index * 0.24));
+                  if (!local) return;
+                  const cardX = 150;
+                  const cardW = 285;
+                  const cardH = 78;
+                  ctx.save();
+                  ctx.globalAlpha = local;
+                  ctx.fillStyle = 'rgba(255,255,255,0.72)';
+                  ctx.fillRect(cardX, entry.y - 38, cardW, cardH);
+                  ctx.strokeStyle = 'rgba(0,100,0,0.46)';
+                  ctx.strokeRect(cardX, entry.y - 38, cardW, cardH);
+                  ctx.fillStyle = '#006400';
+                  ctx.fillRect(axisX - 7, entry.y - 7, 14, 14);
+                  ctx.fillRect(cardX, entry.y - 38, 5, cardH);
+                  ctx.font = "700 10px 'Space Grotesk', sans-serif";
+                  ctx.fillText(entry.turn, cardX + 18, entry.y - 17);
+                  ctx.font = "700 13px 'Press Start 2P', monospace";
+                  ctx.fillText(entry.title, cardX + 18, entry.y + 4);
+                  ctx.font = "500 11px 'Space Grotesk', sans-serif";
+                  ctx.fillStyle = 'rgba(0,55,15,0.72)';
+                  ctx.fillText(entry.body, cardX + 18, entry.y + 24);
+                  for (let i = 0; i < 8; i++) {
+                    const shimmer = ((time * 0.001 + i * 0.17 + index) % 1);
+                    ctx.fillStyle = `rgba(0,100,0,${0.12 + shimmer * 0.16})`;
+                    ctx.fillRect(cardX + cardW - 26, entry.y - 24 + i * 7, 3, 3);
+                  }
+                  ctx.restore();
+                });
+                if (p > 0.72) drawSystemLabel(ctx, 'WORLD CHRONICLE', 250, 42, 'left', Math.min(1, (p - 0.72) * 3.5));
+              });
               // ==========================================
               // One restrained dither treatment is shared by every image square.
               // ==========================================
