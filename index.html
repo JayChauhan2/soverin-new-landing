@@ -794,51 +794,42 @@
                 ctx.restore();
               }
 
-              // Section 2: an original all-green pixel landscape. The sky is never
-              // painted, letting the card's own background remain transparent above it.
+              // Section 2: supplied green pixel landscape. White sky is keyed out
+              // so the card's own pale-green background shows through.
               const worldSource = document.createElement('canvas');
-              worldSource.width = 125;
-              worldSource.height = 115;
+              worldSource.width = 500;
+              worldSource.height = 460;
               const worldCtx = worldSource.getContext('2d');
               const worldCells = [];
-              worldCtx.imageSmoothingEnabled = false;
-              function worldShape(points, fill) {
-                worldCtx.beginPath();
-                points.forEach(([x, y], i) => i ? worldCtx.lineTo(x, y) : worldCtx.moveTo(x, y));
-                worldCtx.closePath();
-                worldCtx.fillStyle = fill;
-                worldCtx.fill();
-              }
-              // distant mountain silhouettes and foothills
-              worldShape([[0,77],[15,66],[27,73],[43,47],[58,76],[76,57],[96,80],[125,67],[125,115],[0,115]], '#0b6b29');
-              worldShape([[0,85],[23,72],[42,84],[61,67],[82,84],[104,71],[125,83],[125,115],[0,115]], '#2c9140');
-              // river and grass banks
-              worldShape([[0,91],[18,88],[36,92],[50,98],[67,94],[84,96],[103,105],[125,104],[125,115],[0,115]], '#006400');
-              worldShape([[0,90],[21,86],[43,91],[62,95],[79,93],[97,99],[125,98],[125,107],[101,106],[83,99],[65,100],[48,104],[30,98],[0,97]], '#69ad68');
-              // foreground tree: trunk, branches and blocky canopy
-              worldCtx.fillStyle = '#00501d'; worldCtx.fillRect(96, 47, 7, 53);
-              worldCtx.fillRect(89, 66, 13, 5); worldCtx.fillRect(100, 58, 11, 5);
-              [[84,26,18,20],[97,20,18,25],[108,30,14,23],[78,42,25,19],[101,44,22,22]].forEach(([x,y,w,h]) => worldCtx.fillRect(x,y,w,h));
-              worldCtx.fillStyle = '#0d742d';
-              [[87,29,12,14],[101,23,11,18],[110,34,9,14],[82,45,15,13],[104,47,14,13]].forEach(([x,y,w,h]) => worldCtx.fillRect(x,y,w,h));
-              // pixel-dither texture stays entirely green
-              for (let y = 44; y < 115; y += 3) {
-                for (let x = 0; x < 125; x += 3) {
-                  if ((x * 17 + y * 11) % 19 < 6) {
-                    worldCtx.fillStyle = y > 84 ? '#8ec68a' : '#1d7e32';
-                    worldCtx.fillRect(x, y, 1, 1);
+              const worldImage = new Image();
+              let worldReady = false;
+              worldImage.src = 'assets/living-world.png';
+              worldImage.onload = () => {
+                const scale = Math.max(worldSource.width / worldImage.naturalWidth, worldSource.height / worldImage.naturalHeight);
+                const imageWidth = worldImage.naturalWidth * scale;
+                const imageHeight = worldImage.naturalHeight * scale;
+                worldCtx.drawImage(worldImage, (worldSource.width - imageWidth) / 2, (worldSource.height - imageHeight) / 2, imageWidth, imageHeight);
+                const imageData = worldCtx.getImageData(0, 0, worldSource.width, worldSource.height);
+                for (let y = 0; y < worldSource.height * 0.67; y++) {
+                  for (let x = 0; x < worldSource.width; x++) {
+                    const i = (y * worldSource.width + x) * 4;
+                    const r = imageData.data[i], g = imageData.data[i + 1], b = imageData.data[i + 2];
+                    if (r > 238 && g > 238 && b > 238) imageData.data[i + 3] = 0;
                   }
                 }
-              }
-              for (let y = 0; y < 115; y += 2) for (let x = 0; x < 125; x += 2) worldCells.push({ x, y });
-              worldCells.sort(() => Math.random() - 0.5);
+                worldCtx.putImageData(imageData, 0, 0);
+                for (let y = 0; y < 460; y += 8) for (let x = 0; x < 500; x += 8) worldCells.push({ x, y });
+                worldCells.sort(() => Math.random() - 0.5);
+                worldReady = true;
+              };
 
               setupFeatureReveal('sf-world-canvas', 'sf-row-1', (ctx, w, h, p) => {
                 ctx.clearRect(0, 0, w, h);
+                if (!worldReady) return;
                 const visibleCells = Math.floor(worldCells.length * p);
                 for (let i = 0; i < visibleCells; i++) {
                   const cell = worldCells[i];
-                  ctx.drawImage(worldSource, cell.x, cell.y, 2, 2, cell.x * 4, cell.y * 4, 8, 8);
+                  ctx.drawImage(worldSource, cell.x, cell.y, 8, 8, cell.x, cell.y, 8, 8);
                 }
               });
 
