@@ -638,21 +638,13 @@ document.addEventListener("DOMContentLoaded", () => {
           const rawB = imgPixels[rawIdx + 2];
           const rawBrightness = (rawR * 0.299 + rawG * 0.587 + rawB * 0.114) / 255;
           
-          const plant_t = base_t * 3; // Loops 3 times per 360 frames
+          const isForegroundPlant = ((x < w * 0.30 && y > h * 0.68) || (x > w * 0.72 && y > h * 0.70)) && (rawBrightness < 0.48);
           
-          // 1. Foreground Plants Swaying (Bottom-left corner) - gentle rigid sway (no fluid distortion)
-          if (x < w * 0.30 && y > h * 0.68 && rawBrightness < 0.48) {
-            dx += Math.sin(plant_t) * 2.4;
-            dy += Math.cos(plant_t) * 0.8;
+          if (isForegroundPlant) {
+            // Keep foreground plants completely static (no sway)
           }
           
-          // 2. Foreground Plants Swaying (Bottom-right corner) - gentle rigid sway (no fluid distortion)
-          else if (x > w * 0.72 && y > h * 0.70 && rawBrightness < 0.48) {
-            dx += Math.sin(plant_t + Math.PI) * 2.2; // 180deg out of phase for asymmetric natural sway
-            dy += Math.cos(plant_t + Math.PI) * 0.7;
-          }
-          
-          // 3. Entire Tree Bending (Left side) - gentle, cohesive bending of foliage & branches (no fluid warp)
+          // 2. Entire Tree Bending (Left side) - gentle, cohesive bending of foliage & branches (no fluid warp)
           else if (x < w * 0.32 && y < h * 0.88 && rawBrightness < 0.48) {
             const baseFactor = Math.max(0, (h * 0.88 - y) / (h * 0.88));
             const factor = 0.4 + 0.6 * baseFactor;
@@ -662,7 +654,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const waveX = Math.sin(y * 0.012 + tree_t) + Math.sin(x * 0.015 + tree_t * 2) * 0.2;
             const waveY = Math.cos(y * 0.01 + tree_t) * 0.15;
             
-            dx += waveX * 1.5 * factor; // Reduced to be soft and subtle
+            dx += waveX * 1.5 * factor; // Soft and subtle sway
             dy += waveY * 0.8 * factor;
           }
           
