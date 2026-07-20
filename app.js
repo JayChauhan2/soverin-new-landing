@@ -623,8 +623,8 @@ document.addEventListener("DOMContentLoaded", () => {
           const rawIsBlue = (rawB > rawR && rawB > rawG * 0.9);
           const rawIsGreen = (rawG > rawR * 0.9 && rawG > rawB * 0.9 && rawG > 40);
           
-          let isTree = (x < w * 0.21 && y < h * 0.68 && rawBrightness < 0.48 && !rawIsBlue);
-          if (isTree && y > h * 0.53 && rawIsGreen) {
+          let isTree = (rawSrcX < 130 && rawSrcY < 235 && rawSrcY > 120 && rawBrightness < 0.48 && !rawIsBlue);
+          if (isTree && rawSrcY > 190 && rawIsGreen) {
             isTree = false;
           }
           
