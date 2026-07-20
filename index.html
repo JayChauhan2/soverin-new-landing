@@ -257,208 +257,233 @@
         <!-- Feature Sections -->
         <section id="features" class="s-features">
           <style>
-            .s-features { background: #fff; padding: 80px 0 40px; }
-            .s-features__list { display: flex; flex-direction: column; gap: 0; }
-            .s-feature-row {
-              display: flex;
-              width: 75%;
-              margin: 0 auto 64px;
-              min-height: 420px;
-              box-shadow: 0 4px 40px rgba(0,0,0,0.07);
-              border-radius: 4px;
-              overflow: hidden;
-            }
-            .s-feature-row.reverse { flex-direction: row-reverse; }
-            .s-feature-img {
-              flex: 1;
-              background: #e8e8e0;
-              display: flex;
-              align-items: center;
-              justify-content: center;
-              min-height: 380px;
+            .s-features {
+              background: linear-gradient(180deg, #0a0a12 0%, #0d1520 40%, #0a1a2e 100%);
               position: relative;
               overflow: hidden;
             }
-            .s-feature-img__inner {
-              width: 100%;
-              height: 100%;
-              object-fit: cover;
-              display: block;
+            /* Outer layout: sticky left nav + scrolling right content */
+            .sf-layout {
+              display: flex;
+              align-items: flex-start;
             }
-            .s-feature-img__placeholder {
+            /* Left sticky nav */
+            .sf-nav {
+              position: sticky;
+              top: 0;
+              height: 100vh;
+              width: 12.5%; /* ~12.5% so rows take 75% of page (leaving 12.5% right margin) */
+              display: flex;
+              flex-direction: column;
+              justify-content: center;
+              gap: 0;
+              padding: 0 0 0 5%;
+              flex-shrink: 0;
+            }
+            .sf-nav__item {
+              font-family: 'Space Grotesk', sans-serif;
+              font-size: 0.78rem;
+              font-weight: 600;
+              letter-spacing: 0.12em;
+              text-transform: uppercase;
+              color: rgba(255,255,255,0.28);
+              padding: 18px 0;
+              cursor: pointer;
+              transition: color 0.25s;
+              border-left: 2px solid transparent;
+              padding-left: 16px;
+              transition: color 0.25s, border-color 0.25s;
+            }
+            .sf-nav__item.is-active,
+            .sf-nav__item:hover {
+              color: rgba(255,255,255,0.9);
+              border-left-color: rgba(255,255,255,0.5);
+            }
+            /* Right content: rows stacked flush */
+            .sf-rows {
+              flex: 1; /* takes remaining ~87.5% */
+              display: flex;
+              flex-direction: column;
+            }
+            /* Each row = two equal squares side by side */
+            .sf-row {
+              display: flex;
+              width: 100%;
+              aspect-ratio: 3 / 1; /* wide short rows; adjust if you want taller */
+              min-height: 420px;
+            }
+            .sf-square {
+              flex: 1;
+              min-height: 420px;
+              position: relative;
+              overflow: hidden;
+            }
+            /* Image square */
+            .sf-square--img {
+              background: #111824;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+            }
+            .sf-square--img__placeholder {
               width: 100%;
               height: 100%;
               display: flex;
               flex-direction: column;
               align-items: center;
               justify-content: center;
-              gap: 12px;
-              background: linear-gradient(135deg, #d4d4c8 0%, #bcbcb0 100%);
+              gap: 14px;
+              background: linear-gradient(135deg, #141e2e 0%, #0d1520 100%);
+              border: 1px solid rgba(255,255,255,0.06);
             }
-            .s-feature-img__placeholder svg { opacity: 0.35; }
-            .s-feature-img__placeholder span {
+            .sf-square--img__placeholder svg { opacity: 0.2; }
+            .sf-square--img__placeholder span {
               font-family: 'Space Grotesk', sans-serif;
-              font-size: 0.75rem;
-              letter-spacing: 0.15em;
+              font-size: 0.7rem;
+              letter-spacing: 0.18em;
               text-transform: uppercase;
-              color: #666;
+              color: rgba(255,255,255,0.25);
             }
-            .s-feature-text {
-              flex: 1;
+            /* Text square */
+            .sf-square--text {
+              background: rgba(255,255,255,0.03);
+              border: 1px solid rgba(255,255,255,0.06);
               display: flex;
               flex-direction: column;
               justify-content: center;
-              padding: 56px 52px;
-              background: #fff;
+              padding: 52px 56px;
             }
-            .s-feature-text__tag {
+            .sf-square--text__tag {
               font-family: 'Press Start 2P', monospace;
-              font-size: 0.55rem;
-              letter-spacing: 0.2em;
+              font-size: 0.5rem;
+              letter-spacing: 0.22em;
               text-transform: uppercase;
-              color: #006400;
-              margin-bottom: 20px;
+              color: rgba(100,200,255,0.7);
+              margin-bottom: 18px;
             }
-            .s-feature-text__title {
+            .sf-square--text__title {
               font-family: 'Press Start 2P', monospace;
-              font-size: 1.15rem;
-              line-height: 1.7;
-              color: #111;
-              margin: 0 0 20px;
+              font-size: 1rem;
+              line-height: 1.8;
+              color: #fff;
+              margin: 0 0 18px;
             }
-            .s-feature-text__body {
+            .sf-square--text__body {
               font-family: 'Space Grotesk', sans-serif;
               font-size: 1rem;
-              line-height: 1.7;
-              color: #444;
-              margin: 0 0 32px;
+              line-height: 1.75;
+              color: rgba(255,255,255,0.55);
+              margin: 0 0 28px;
             }
-            .s-feature-text__cta {
+            .sf-square--text__cta {
               font-family: 'Space Grotesk', sans-serif;
-              font-size: 0.85rem;
+              font-size: 0.82rem;
               font-weight: 600;
-              color: #006400;
-              letter-spacing: 0.05em;
+              color: rgba(100,200,255,0.8);
+              letter-spacing: 0.06em;
               text-decoration: none;
-              display: inline-flex;
-              align-items: center;
-              gap: 6px;
             }
-            .s-feature-text__cta:hover { text-decoration: underline; }
-            .s-features__nav {
-              width: 75%;
-              margin: 0 auto 64px;
-              display: flex;
-              gap: 12px;
-            }
-            .s-features__nav-item {
-              flex: 1;
-              padding: 14px 20px;
-              border: 1.5px solid #e0e0d8;
-              border-radius: 4px;
-              cursor: pointer;
-              font-family: 'Space Grotesk', sans-serif;
-              font-size: 0.8rem;
-              font-weight: 600;
-              color: #888;
-              letter-spacing: 0.08em;
-              text-transform: uppercase;
-              background: transparent;
-              transition: border-color 0.2s, color 0.2s;
-              text-align: center;
-            }
-            .s-features__nav-item.active, .s-features__nav-item:hover {
-              border-color: #006400;
-              color: #006400;
-            }
+            .sf-square--text__cta:hover { color: #fff; }
+            /* Row 2 flipped */
+            .sf-row--flip { flex-direction: row-reverse; }
           </style>
 
-          <div style="width:75%;margin:0 auto 40px;">
-            <div style="font-family:'Press Start 2P',monospace;font-size:0.55rem;letter-spacing:0.2em;text-transform:uppercase;color:#006400;margin-bottom:16px;">Platform</div>
-            <h2 style="font-family:'Press Start 2P',monospace;font-size:1.5rem;line-height:1.6;color:#111;margin:0;">What Soverin Delivers</h2>
-          </div>
+          <div class="sf-layout">
 
-          <!-- Tabs -->
-          <div class="s-features__nav">
-            <div class="s-features__nav-item active" id="ftab-1">Section 1</div>
-            <div class="s-features__nav-item" id="ftab-2">Section 2</div>
-            <div class="s-features__nav-item" id="ftab-3">Section 3</div>
-          </div>
+            <!-- Sticky left nav -->
+            <nav class="sf-nav" id="sf-nav">
+              <div class="sf-nav__item is-active" data-row="0">Section 1</div>
+              <div class="sf-nav__item" data-row="1">Section 2</div>
+              <div class="sf-nav__item" data-row="2">Section 3</div>
+            </nav>
 
-          <div class="s-features__list">
+            <!-- Flush rows -->
+            <div class="sf-rows">
 
-            <!-- Feature Row 1: Image Left, Text Right -->
-            <div class="s-feature-row" id="frow-1">
-              <div class="s-feature-img">
-                <div class="s-feature-img__placeholder">
-                  <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <rect x="8" y="12" width="48" height="36" rx="2" stroke="#555" stroke-width="2"/>
-                    <circle cx="22" cy="26" r="6" stroke="#555" stroke-width="2"/>
-                    <path d="M8 40 L20 28 L32 38 L42 30 L56 42" stroke="#555" stroke-width="2" stroke-linejoin="round"/>
-                  </svg>
-                  <span>Image Placeholder</span>
+              <!-- Row 1: Image left, Text right -->
+              <div class="sf-row" id="sf-row-0">
+                <div class="sf-square sf-square--img">
+                  <div class="sf-square--img__placeholder">
+                    <svg width="72" height="72" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <rect x="8" y="12" width="48" height="36" rx="2" stroke="white" stroke-width="1.5"/>
+                      <circle cx="22" cy="26" r="6" stroke="white" stroke-width="1.5"/>
+                      <path d="M8 40 L20 28 L32 38 L42 30 L56 42" stroke="white" stroke-width="1.5" stroke-linejoin="round"/>
+                    </svg>
+                    <span>Image Placeholder</span>
+                  </div>
+                </div>
+                <div class="sf-square sf-square--text">
+                  <div class="sf-square--text__tag">Section 01</div>
+                  <h3 class="sf-square--text__title">AI-Native Game Engine</h3>
+                  <p class="sf-square--text__body">Soverin's core engine is built ground-up for AI generation — procedural worlds, dynamic NPCs, and emergent narratives that adapt in real time to every player's choices and playstyle.</p>
+                  <a href="#" class="sf-square--text__cta">Learn more →</a>
                 </div>
               </div>
-              <div class="s-feature-text">
-                <div class="s-feature-text__tag">Section 01</div>
-                <h3 class="s-feature-text__title">AI-Native Game Engine</h3>
-                <p class="s-feature-text__body">Soverin's core engine is built ground-up for AI generation — procedural worlds, dynamic NPCs, and emergent narratives that adapt in real time to every player's choices and playstyle.</p>
-                <a href="#" class="s-feature-text__cta">Learn more →</a>
-              </div>
-            </div>
 
-            <!-- Feature Row 2: Text Left, Image Right (reversed) -->
-            <div class="s-feature-row reverse" id="frow-2">
-              <div class="s-feature-img">
-                <div class="s-feature-img__placeholder">
-                  <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <rect x="8" y="12" width="48" height="36" rx="2" stroke="#555" stroke-width="2"/>
-                    <circle cx="22" cy="26" r="6" stroke="#555" stroke-width="2"/>
-                    <path d="M8 40 L20 28 L32 38 L42 30 L56 42" stroke="#555" stroke-width="2" stroke-linejoin="round"/>
-                  </svg>
-                  <span>Image Placeholder</span>
+              <!-- Row 2: Text left, Image right -->
+              <div class="sf-row sf-row--flip" id="sf-row-1">
+                <div class="sf-square sf-square--img">
+                  <div class="sf-square--img__placeholder">
+                    <svg width="72" height="72" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <rect x="8" y="12" width="48" height="36" rx="2" stroke="white" stroke-width="1.5"/>
+                      <circle cx="22" cy="26" r="6" stroke="white" stroke-width="1.5"/>
+                      <path d="M8 40 L20 28 L32 38 L42 30 L56 42" stroke="white" stroke-width="1.5" stroke-linejoin="round"/>
+                    </svg>
+                    <span>Image Placeholder</span>
+                  </div>
+                </div>
+                <div class="sf-square sf-square--text">
+                  <div class="sf-square--text__tag">Section 02</div>
+                  <h3 class="sf-square--text__title">Living World Platform</h3>
+                  <p class="sf-square--text__body">Every world on Soverin is persistent and shared. Economies, ecosystems, and factions evolve whether you're online or not — creating a universe that feels genuinely alive and consequential.</p>
+                  <a href="#" class="sf-square--text__cta">Learn more →</a>
                 </div>
               </div>
-              <div class="s-feature-text">
-                <div class="s-feature-text__tag">Section 02</div>
-                <h3 class="s-feature-text__title">Living World Platform</h3>
-                <p class="s-feature-text__body">Every world on Soverin is persistent and shared. Economies, ecosystems, and factions evolve whether you're online or not — creating a universe that feels genuinely alive and consequential.</p>
-                <a href="#" class="s-feature-text__cta">Learn more →</a>
-              </div>
-            </div>
 
-            <!-- Feature Row 3: Image Left, Text Right -->
-            <div class="s-feature-row" id="frow-3">
-              <div class="s-feature-img">
-                <div class="s-feature-img__placeholder">
-                  <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <rect x="8" y="12" width="48" height="36" rx="2" stroke="#555" stroke-width="2"/>
-                    <circle cx="22" cy="26" r="6" stroke="#555" stroke-width="2"/>
-                    <path d="M8 40 L20 28 L32 38 L42 30 L56 42" stroke="#555" stroke-width="2" stroke-linejoin="round"/>
-                  </svg>
-                  <span>Image Placeholder</span>
+              <!-- Row 3: Image left, Text right -->
+              <div class="sf-row" id="sf-row-2">
+                <div class="sf-square sf-square--img">
+                  <div class="sf-square--img__placeholder">
+                    <svg width="72" height="72" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <rect x="8" y="12" width="48" height="36" rx="2" stroke="white" stroke-width="1.5"/>
+                      <circle cx="22" cy="26" r="6" stroke="white" stroke-width="1.5"/>
+                      <path d="M8 40 L20 28 L32 38 L42 30 L56 42" stroke="white" stroke-width="1.5" stroke-linejoin="round"/>
+                    </svg>
+                    <span>Image Placeholder</span>
+                  </div>
+                </div>
+                <div class="sf-square sf-square--text">
+                  <div class="sf-square--text__tag">Section 03</div>
+                  <h3 class="sf-square--text__title">Creator Economy Layer</h3>
+                  <p class="sf-square--text__body">Build, monetize, and deploy your own games and mods directly inside Soverin. Our creator tools give independent developers first-class access to the same AI stack that powers the platform.</p>
+                  <a href="#" class="sf-square--text__cta">Learn more →</a>
                 </div>
               </div>
-              <div class="s-feature-text">
-                <div class="s-feature-text__tag">Section 03</div>
-                <h3 class="s-feature-text__title">Creator Economy Layer</h3>
-                <p class="s-feature-text__body">Build, monetize, and deploy your own games and mods directly inside Soverin. Our creator tools give independent developers first-class access to the same AI stack that powers the platform.</p>
-                <a href="#" class="s-feature-text__cta">Learn more →</a>
-              </div>
-            </div>
 
-          </div>
+            </div><!-- /.sf-rows -->
+          </div><!-- /.sf-layout -->
 
           <script>
             (function() {
-              const tabs = ['ftab-1','ftab-2','ftab-3'];
-              const rows = ['frow-1','frow-2','frow-3'];
-              tabs.forEach((tid, i) => {
-                document.getElementById(tid).addEventListener('click', () => {
-                  tabs.forEach(t => document.getElementById(t).classList.remove('active'));
-                  document.getElementById(tid).classList.add('active');
-                  document.getElementById(rows[i]).scrollIntoView({ behavior: 'smooth', block: 'center' });
+              const navItems = document.querySelectorAll('.sf-nav__item');
+              const rows = [
+                document.getElementById('sf-row-0'),
+                document.getElementById('sf-row-1'),
+                document.getElementById('sf-row-2'),
+              ];
+              // Scroll nav item into active on scroll
+              const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                  if (entry.isIntersecting) {
+                    const idx = rows.indexOf(entry.target);
+                    navItems.forEach((n, i) => n.classList.toggle('is-active', i === idx));
+                  }
                 });
+              }, { threshold: 0.5 });
+              rows.forEach(r => observer.observe(r));
+              // Click to scroll
+              navItems.forEach((item, i) => {
+                item.addEventListener('click', () => rows[i].scrollIntoView({ behavior: 'smooth', block: 'start' }));
               });
             })();
           </script>
