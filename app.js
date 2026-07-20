@@ -627,7 +627,7 @@ document.addEventListener("DOMContentLoaded", () => {
           
           // Classify the local color of the background image
           const isBlue = (b > r && b > g * 0.9);
-          const isGreen = (g > b && g > r * 0.9);
+          const isGreen = (g > b && g > r * 0.9) && (y > h * 0.48); // Dither only grass on the hill, not tree foliage above
           const isWarm = (r > b && r > g * 0.8); // Sunset tones (orange, peach, pink, red)
           
           // Draw dark dither pixels in dark midtones to enhance shadow textures
