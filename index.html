@@ -292,27 +292,28 @@
               display: flex;
               flex-direction: column;
               border: 1px solid rgba(255, 255, 255, 0.08);
+              border-radius: 12px;
+              padding: 32px;
+              gap: 32px;
               position: relative;
               z-index: 2;
+              background: rgba(2, 2, 4, 0.4);
             }
-            /* Each row = two perfectly equal squares side by side, flush */
+            /* Each row = two perfectly equal squares side by side */
             .sf-row {
               display: flex;
               width: 100%;
               min-height: 460px;
-            }
-            .sf-row + .sf-row {
-              border-top: 1px solid rgba(255, 255, 255, 0.08);
+              gap: 32px;
             }
             .sf-square {
-              width: 50%;
-              flex: 0 0 50%;
+              width: calc(50% - 16px);
+              flex: 0 0 calc(50% - 16px);
               position: relative;
               overflow: hidden;
               min-height: 460px;
-            }
-            .sf-row .sf-square:first-child {
-              border-right: 1px solid rgba(255, 255, 255, 0.08);
+              border: 1px solid rgba(255, 255, 255, 0.08);
+              border-radius: 8px;
             }
             /* Image square */
             .sf-square--img {
@@ -586,27 +587,27 @@
                   {
                     label: "PLAYER STIMULUS",
                     x: 35, y: 70, align: "left",
-                    brainTarget: { rx: -30, ry: -25 }
+                    brainTarget: { rx: -45, ry: -35 }
                   },
                   {
                     label: "PROCEDURAL LOGIC",
                     x: 35, y: 390, align: "left",
-                    brainTarget: { rx: -35, ry: 20 }
+                    brainTarget: { rx: -50, ry: 25 }
                   },
                   {
                     label: "PERSISTENT STATE",
                     x: 465, y: 70, align: "right",
-                    brainTarget: { rx: 30, ry: -30 }
+                    brainTarget: { rx: 45, ry: -40 }
                   },
                   {
                     label: "SYNAPTIC WEIGHTS",
                     x: 465, y: 230, align: "right",
-                    brainTarget: { rx: 35, ry: 5 }
+                    brainTarget: { rx: 50, ry: 5 }
                   },
                   {
                     label: "ADAPTIVE FEEDBACK",
                     x: 465, y: 390, align: "right",
-                    brainTarget: { rx: 20, ry: 35 }
+                    brainTarget: { rx: 30, ry: 50 }
                   }
                 ];
 
@@ -647,7 +648,7 @@
 
                   const centerX = w / 2;
                   const centerY = h / 2 - 10;
-                  const brainScale = 2.4;
+                  const brainScale = 3.3; // Scaled up brain size from 2.4 to 3.3
 
                   const bWidth = 90 * brainScale;
                   const bHeight = 70 * brainScale;
@@ -677,7 +678,7 @@
 
                       const sX = f.x;
                       const sY = f.y;
-                      const midX = f.align === "left" ? brainX - 30 : brainX + 30;
+                      const midX = f.align === "left" ? brainX - 45 : brainX + 45;
 
                       bCtx.moveTo(sX, sY);
                       if (linesProgress > 0) {
@@ -718,13 +719,13 @@
                         bCtx.save();
                         bCtx.globalAlpha = labelsProgress;
 
-                        bCtx.font = "bold 9px 'Space Grotesk', sans-serif";
+                        bCtx.font = "bold 12px 'Space Grotesk', sans-serif"; // Increased font size from 9px to 12px
                         bCtx.textBaseline = "middle";
 
                         const textWidth = bCtx.measureText(f.label).width;
-                        const boxW = textWidth + 16;
-                        const boxH = 20;
-                        const boxX = f.align === "left" ? f.x - 8 : f.x - boxW + 8;
+                        const boxW = textWidth + 24; // Increased padding
+                        const boxH = 26; // Increased box height from 20 to 26
+                        const boxX = f.align === "left" ? f.x - 12 : f.x - boxW + 12;
                         const boxY = f.y - boxH / 2;
 
                         bCtx.fillStyle = 'rgba(2, 2, 4, 0.9)';
@@ -745,7 +746,7 @@
                         bCtx.fillRect(boxX + boxW - 0.5, boxY + boxH - 3, 1.5, 4);
 
                         bCtx.fillStyle = '#ffffff';
-                        bCtx.fillText(f.label, boxX + 8, f.y);
+                        bCtx.fillText(f.label, boxX + 12, f.y);
                         bCtx.restore();
                       }
                     });
