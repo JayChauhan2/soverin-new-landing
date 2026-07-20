@@ -271,11 +271,11 @@
               transform: translateY(-50%) rotate(-90deg);
               left: 3%;
               font-family: 'Space Grotesk', sans-serif;
-              font-size: 0.85rem;
+              font-size: 0.95rem;
               font-weight: 700;
               letter-spacing: 0.25em;
               text-transform: uppercase;
-              color: rgba(255, 255, 255, 0.85);
+              color: #ffffff;
               z-index: 50;
               pointer-events: none;
               opacity: 1;
@@ -308,6 +308,7 @@
               overflow: hidden;
               min-height: 460px;
               border: 1px solid rgba(255, 255, 255, 0.08);
+              z-index: 2;
             }
             .sf-row .sf-square + .sf-square {
               border-left: none;
@@ -315,12 +316,22 @@
             .sf-row + .sf-row .sf-square {
               border-top: none;
             }
-            /* Image square */
+            /* Image square — base, backgrounds set individually per square */
             .sf-square--img {
               display: flex;
               align-items: center;
               justify-content: center;
-              background: #ffffff !important;
+              position: relative;
+            }
+            /* Per-square backgrounds */
+            #sf-row-0 .sf-square--img {
+              background: linear-gradient(135deg, #e8f5e2 0%, #b8dc90 50%, #7db84a 100%) !important;
+            }
+            #sf-row-1 .sf-square--img {
+              background: #8fc87a !important;
+            }
+            #sf-row-2 .sf-square--img {
+              background: linear-gradient(160deg, #f5f7ff 0%, #e8ecf8 40%, #d0d8f0 100%) !important;
             }
             .sf-square--img__placeholder {
               width: 100%;
@@ -394,7 +405,7 @@
 
             <!-- Row 1: Image left, Text right -->
             <div class="sf-row" id="sf-row-0">
-              <div class="sf-square sf-square--img" style="position: relative; overflow: hidden; background: #ffffff;">
+              <div class="sf-square sf-square--img" style="position: relative; overflow: hidden;">
                 <canvas id="sf-brain-canvas" width="500" height="460" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: block; object-fit: contain; z-index: 5;"></canvas>
                 <img id="sf-brain-img" src="assets/brain_dither.png" style="display: none;" />
               </div>
@@ -408,7 +419,7 @@
 
             <!-- Row 2: Text left, Image right -->
             <div class="sf-row sf-row--flip" id="sf-row-1">
-              <div class="sf-square sf-square--img">
+              <div class="sf-square sf-square--img" style="position: relative; overflow: hidden;">
                 <div class="sf-square--img__placeholder">
                   <svg width="72" height="72" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <rect x="8" y="12" width="48" height="36" rx="2" stroke="white" stroke-width="1.5"/>
@@ -428,7 +439,7 @@
 
             <!-- Row 3: Image left, Text right -->
             <div class="sf-row" id="sf-row-2">
-              <div class="sf-square sf-square--img">
+              <div class="sf-square sf-square--img" style="position: relative; overflow: hidden;">
                 <div class="sf-square--img__placeholder">
                   <svg width="72" height="72" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <rect x="8" y="12" width="48" height="36" rx="2" stroke="white" stroke-width="1.5"/>
@@ -497,8 +508,10 @@
                 if (width > 0 && height > 0) {
                   ctx.clearRect(0, 0, width, height);
 
-                  // Dot grid spacing (12px grid spacing for clean fine dots)
-                  const spacing = 12;
+                  // A restrained halftone field: tiny marks, generous spacing.
+                  // The card layer sits above this canvas, so it only lives in the
+                  // surrounding negative space, never across the square content.
+                  const spacing = 18;
                   
                   // Halftone-style dot grid fading from bottom-left to top-right
                   for (let y = spacing / 2; y < height; y += spacing) {
@@ -513,16 +526,18 @@
                       const wave = Math.sin(x * 0.008 - y * 0.006 + frame * 0.015) * 0.12;
                       val = Math.max(0, Math.min(1, val + wave));
 
-                      // Maximum radius of a dot is 2px for a fine, premium aesthetic
-                      const maxRadius = 2.0;
+                      // Keep the dots deliberately small; the reference is texture,
+                      // not a prominent pixel pattern.
+                      const maxRadius = 0.8;
                       const radius = val * maxRadius;
 
-                      if (radius > 0.3) {
+                      if (radius > 0.18) {
                         ctx.beginPath();
                         ctx.arc(x, y, radius, 0, Math.PI * 2);
-                        // Soft blue/white matching the theme
-                        const alpha = 0.04 + val * 0.12;
-                        ctx.fillStyle = `rgba(140, 190, 255, ${alpha})`;
+                        // Soft white with a faint green cast, tuned to recede behind
+                        // the content instead of competing with it.
+                        const alpha = 0.025 + val * 0.075;
+                        ctx.fillStyle = `rgba(185, 255, 204, ${alpha})`;
                         ctx.fill();
                       }
                     }
@@ -758,6 +773,78 @@
                   }
                 }
               }
+              // ==========================================
+              // Per-image-square: dot dither overlays
+              // Each square gets a different mode.
+              // ==========================================
+              function paintImgDither(el, mode) {
+                // Section 2: solid green — no canvas overlay
+                if (mode === 'none') return;
+
+                const dc = document.createElement('canvas');
+                dc.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:2;';
+                el.appendChild(dc);
+
+                const dctx = dc.getContext('2d');
+                const dpr  = window.devicePixelRatio || 1;
+
+                function resize() {
+                  const r = el.getBoundingClientRect();
+                  if (!r.width || !r.height) return;
+                  dc.width  = r.width  * dpr;
+                  dc.height = r.height * dpr;
+                  dctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+                  draw(r.width, r.height);
+                }
+
+                function draw(w, h) {
+                  dctx.clearRect(0, 0, w, h);
+                  const spacing = 14;
+                  const maxR    = 2.2;
+
+                  for (let y = spacing / 2; y < h; y += spacing) {
+                    for (let x = spacing / 2; x < w; x += spacing) {
+                      const nx = x / w;
+                      const ny = y / h;
+                      let weight, color;
+
+                      if (mode === 'green-corners') {
+                        // Section 1: green dots dense at bottom corners, fade to clear at top centre
+                        const bl = (1 - nx) * ny;
+                        const br = nx * ny;
+                        weight = Math.pow(Math.max(bl, br), 0.7);
+                        color = `rgba(0, 80, 30, ${0.05 + weight * 0.20})`;
+                      } else if (mode === 'blue-uniform') {
+                        // Section 3: uniform small dots across the whole surface
+                        // Slightly denser toward edges, barely visible in the centre
+                        const edgeDist = Math.min(nx, 1 - nx, ny, 1 - ny);
+                        weight = 0.25 + (1 - edgeDist * 4) * 0.0; // nearly flat
+                        weight = 0.35; // uniform weight, like the reference
+                        color = `rgba(100, 120, 180, 0.18)`;
+                      }
+
+                      const radius = weight * maxR;
+                      if (radius < 0.2) continue;
+
+                      dctx.beginPath();
+                      dctx.arc(x, y, radius, 0, Math.PI * 2);
+                      dctx.fillStyle = color;
+                      dctx.fill();
+                    }
+                  }
+                }
+
+                const ro = new ResizeObserver(() => resize());
+                ro.observe(el);
+                resize();
+              }
+
+              const rows = document.querySelectorAll('.sf-row');
+              if (rows[0]) paintImgDither(rows[0].querySelector('.sf-square--img'), 'green-corners');
+              if (rows[1]) paintImgDither(rows[1].querySelector('.sf-square--img'), 'none');
+              if (rows[2]) paintImgDither(rows[2].querySelector('.sf-square--img'), 'blue-uniform');
+
+
             })();
           </script>
         </section>
