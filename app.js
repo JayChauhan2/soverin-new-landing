@@ -687,63 +687,18 @@ document.addEventListener("DOMContentLoaded", () => {
           const isGreen = (g > b && g > r * 0.9) && (y > h * 0.55); // Grass dither pushed lower (starts at 55% screen height)
           const isWarm = (r > b && r > g * 0.8); // Sunset tones (orange, peach, pink, red)
           
-          // Dynamic proximity check: check if a green grass pixel exists within a small neighborhood
-          let isNearGreen = false;
-          if (isBlue && y > h * 0.65 && x > w * 0.35 && brightness >= 0.12 && brightness < 0.55) {
-            // Check vertical neighbors within radius 4 using same displacement to maintain alignment
-            for (let dy = -4; dy <= 4; dy++) {
-              if (dy === 0) continue;
-              const ny = y + dy;
-              if (ny >= 0 && ny < h) {
-                const nX = Math.max(0, Math.min(w - 1, Math.round(x + dx)));
-                const nIdx = (ny * w + nX) * 4;
-                const nr = imgPixels[nIdx];
-                const ng = imgPixels[nIdx + 1];
-                const nb = imgPixels[nIdx + 2];
-                if (ng > nb && ng > nr * 0.9) {
-                  isNearGreen = true;
-                  break;
-                }
+          // Only draw light dither highlights (no dark shadow dither overlays to keep the image bright and clean)
+          if (brightness >= 0.5 && brightness < 0.85) {
+            if (isGreen) {
+              if (brightness > animBayer * 1.05) {
+                drawDither = true;
+                color = [220, 255, 100, 255]; // Fully opaque bright light green/yellow dither
               }
-            }
-            // Check horizontal neighbors within radius 4
-            if (!isNearGreen) {
-              for (let dx2 = -4; dx2 <= 4; dx2++) {
-                if (dx2 === 0) continue;
-                const nX = Math.max(0, Math.min(w - 1, Math.round(x + dx + dx2)));
-                if (nX >= 0 && nX < w) {
-                  const nIdx = (y * w + nX) * 4;
-                  const nr = imgPixels[nIdx];
-                  const ng = imgPixels[nIdx + 1];
-                  const nb = imgPixels[nIdx + 2];
-                  if (ng > nb && ng > nr * 0.9) {
-                    isNearGreen = true;
-                    break;
-                  }
-                }
-              }
-            }
-          }
-          
-          if (isBlue && isNearGreen && brightness >= 0.12 && brightness < 0.55) {
-            if (brightness < animBayer * 0.72) {
-              drawDither = true;
-              color = [10, 25, 75, 255]; // Fully opaque navy shadow ripple (prevents black background bleed)
-            }
-          } else {
-            // Only draw light dither highlights (no dark shadow dither overlays to keep the image bright and clean)
-            if (brightness >= 0.5 && brightness < 0.85) {
-              if (isGreen) {
-                if (brightness > animBayer * 1.05) {
-                  drawDither = true;
-                  color = [220, 255, 100, 255]; // Fully opaque bright light green/yellow dither
-                }
-              } else if (isWarm) {
-                // Higher threshold (1.14) to significantly reduce cloud dither density ("go easy")
-                if (brightness > animBayer * 1.14) {
-                  drawDither = true;
-                  color = [255, 200, 150, 255]; // Fully opaque soft peach/coral dither in clouds
-                }
+            } else if (isWarm) {
+              // Higher threshold (1.14) to significantly reduce cloud dither density ("go easy")
+              if (brightness > animBayer * 1.14) {
+                drawDither = true;
+                color = [255, 200, 150, 255]; // Fully opaque soft peach/coral dither in clouds
               }
             }
           }
