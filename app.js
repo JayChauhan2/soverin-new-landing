@@ -5,6 +5,7 @@
 import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js";
 import { GLTFLoader } from "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/loaders/GLTFLoader.js";
 import { DRACOLoader } from "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/loaders/DRACOLoader.js";
+import { BG_WIDTH, BG_HEIGHT, BG_PALETTE, BG_PIXELS } from "./assets/nature_bg_data.js";
 
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -526,32 +527,30 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // ==========================================
-  // 8. Animated Image-Based Dither Overlay
+  // 8. Animated Image-Based Dither Overlay (Code-Only Pixel Canvas)
   // ==========================================
   const ditherCanvas = document.getElementById("dither-canvas");
-  if (ditherCanvas) {
+  if (ditherCanvas && typeof BG_PIXELS !== "undefined") {
     const ditherCtx = ditherCanvas.getContext("2d");
     const scale = 3; // Match the 3x nearest-neighbor upscaled image pixel ratio
     let w = 0;
     let h = 0;
     
-    // Offscreen canvas to analyze background image pixel brightness
-    const offCanvas = document.createElement("canvas");
-    const offCtx = offCanvas.getContext("2d");
-    
-    const bgImg = new Image();
-    bgImg.src = "assets/nature_bg.jpg";
-    
-    let imgPixels = null;
-    let ditherInitialized = false;
-    
-    bgImg.onload = () => {
-      initDither();
-    };
-    
-    if (bgImg.complete) {
-      initDither();
+    // Unpack BG_PIXELS and BG_PALETTE into a flat RGBA memory grid at load time
+    const imgPixels = new Uint8ClampedArray(BG_WIDTH * BG_HEIGHT * 4);
+    for (let i = 0; i < BG_WIDTH * BG_HEIGHT; i++) {
+      const hex = BG_PIXELS.substring(i * 2, i * 2 + 2);
+      const paletteIdx = parseInt(hex, 16);
+      const color = BG_PALETTE[paletteIdx] || [0, 0, 0];
+      const offset = i * 4;
+      imgPixels[offset] = color[0];
+      imgPixels[offset + 1] = color[1];
+      imgPixels[offset + 2] = color[2];
+      imgPixels[offset + 3] = 255; // Fully opaque
     }
+    
+    let ditherInitialized = false;
+    initDither();
     
     function initDither() {
       if (ditherInitialized) return;
@@ -567,31 +566,6 @@ document.addEventListener("DOMContentLoaded", () => {
       
       ditherCanvas.width = w;
       ditherCanvas.height = h;
-      
-      offCanvas.width = w;
-      offCanvas.height = h;
-      
-      // Calculate cover-fit dimensions to perfectly align canvas with object-fit: cover image
-      const imgW = bgImg.naturalWidth;
-      const imgH = bgImg.naturalHeight;
-      if (imgW && imgH) {
-        const s = Math.max(w / imgW, h / imgH);
-        const renderW = imgW * s;
-        const renderH = imgH * s;
-        const dx = (w - renderW) / 2;
-        // Shift crop window down to show more of the bottom lake and mountain reflections instead of top sky
-        const dy = (h - renderH) * 0.75;
-        
-        offCtx.clearRect(0, 0, w, h);
-        offCtx.drawImage(bgImg, dx, dy, renderW, renderH);
-        
-        try {
-          const imgData = offCtx.getImageData(0, 0, w, h);
-          imgPixels = imgData.data;
-        } catch (e) {
-          console.error("Dither pixel extraction error:", e);
-        }
-      }
     }
     
     const bayerMatrix = [
@@ -608,7 +582,6 @@ document.addEventListener("DOMContentLoaded", () => {
     function renderLoop(timestamp) {
       requestAnimationFrame(renderLoop);
       
-      if (!imgPixels) return;
       if (timestamp - lastTime < fpsInterval) return;
       lastTime = timestamp;
       
@@ -618,6 +591,12 @@ document.addEventListener("DOMContentLoaded", () => {
       const outData = outImgData.data;
       
       frame = (frame + 1) % 360;
+      
+      // Calculate cover-fit dimensions to map screen coordinates to 256x144 memory grid
+      const s = Math.max(w / BG_WIDTH, h / BG_HEIGHT);
+      const offsetX = (w - BG_WIDTH * s) / 2;
+      // Shift crop window down to show more of the bottom lake and mountain reflections instead of top sky
+      const offsetY = (h - BG_HEIGHT * s) * 0.75;
       
       for (let y = 0; y < h; y++) {
         const matrixY = y % 4;
@@ -632,10 +611,13 @@ document.addEventListener("DOMContentLoaded", () => {
           const base_t = frame * (2 * Math.PI / 360);
           
           // Calculate brightness of source pixel BEFORE warp to isolate tree/sky
-          const rawIdx = (y * w + x) * 4;
-          const rawR = imgPixels[rawIdx];
-          const rawG = imgPixels[rawIdx + 1];
-          const rawB = imgPixels[rawIdx + 2];
+          const rawSrcX = Math.max(0, Math.min(BG_WIDTH - 1, Math.floor((x - offsetX) / s)));
+          const rawSrcY = Math.max(0, Math.min(BG_HEIGHT - 1, Math.floor((y - offsetY) / s)));
+          const rawSrcIdx = (rawSrcY * BG_WIDTH + rawSrcX) * 4;
+          
+          const rawR = imgPixels[rawSrcIdx];
+          const rawG = imgPixels[rawSrcIdx + 1];
+          const rawB = imgPixels[rawSrcIdx + 2];
           const rawBrightness = (rawR * 0.299 + rawG * 0.587 + rawB * 0.114) / 255;
           
           const isForegroundPlant = ((x < w * 0.30 && y > h * 0.68) || (x > w * 0.72 && y > h * 0.70)) && (rawBrightness < 0.48);
@@ -671,16 +653,17 @@ document.addEventListener("DOMContentLoaded", () => {
             dy += Math.cos(x * 0.1 + lake_t) * 0.4;  // Vertical ripple
           }
           
-          const srcX = Math.max(0, Math.min(w - 1, Math.round(x + dx)));
-          const srcY = Math.max(0, Math.min(h - 1, Math.round(y + dy)));
-          const srcIdx = (srcY * w + srcX) * 4;
+          // Map warped coordinate back to low-res source grid space
+          const warpX = x + dx;
+          const warpY = y + dy;
+          const srcX = Math.max(0, Math.min(BG_WIDTH - 1, Math.floor((warpX - offsetX) / s)));
+          const srcY = Math.max(0, Math.min(BG_HEIGHT - 1, Math.floor((warpY - offsetY) / s)));
+          const srcIdx = (srcY * BG_WIDTH + srcX) * 4;
           
           const r = imgPixels[srcIdx];
           const g = imgPixels[srcIdx + 1];
           const b = imgPixels[srcIdx + 2];
           const a = imgPixels[srcIdx + 3];
-          
-          if (a === 0) continue;
           
           const brightness = (r * 0.299 + g * 0.587 + b * 0.114) / 255;
           const bayerVal = bayerMatrix[matrixY][matrixX];
