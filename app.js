@@ -625,19 +625,31 @@ document.addEventListener("DOMContentLoaded", () => {
           const idx = (y * w + x) * 4;
           
           let dx = 0;
-          // 1. Tree swaying (left side) - ultra-soft, gentle micro-sway
+          let dy = 0;
+          
+          // 1. Tree swaying (left side) - branches sway and leaves jitter
           if (x < w * 0.32 && y < h * 0.85) {
             const factor = Math.max(0, (h * 0.85 - y) / (h * 0.85));
-            dx += Math.sin(y * 0.05 + frame * 0.04) * 0.8 * factor; // Very subtle micro-sway
+            dx += Math.sin(y * 0.05 + frame * 0.04) * 0.7 * factor; // Main branch sway
+            dx += Math.sin(x * 0.2 + y * 0.1 + frame * 0.12) * 0.25 * factor; // Micro leaf jitter
           }
-          // 2. Grass swaying (lower screen) - ultra-soft, gentle micro-sway
+          
+          // 2. Grass swaying (lower screen) - gentle rolling grass waves
           if (y > h * 0.55) {
             const factor = (y - h * 0.55) / (h * 0.45);
-            dx += Math.sin(x * 0.04 + frame * 0.035) * 0.4 * factor; // Very subtle micro-sway
+            dx += Math.sin(x * 0.04 + frame * 0.035) * 0.45 * factor; // Main sway
+            dx += Math.sin(x * 0.1 - y * 0.05 + frame * 0.08) * 0.18 * factor; // Wind gust wave
+          }
+          
+          // 3. Lake ripples (bottom-right water area) - flowing reflection warp
+          const isLakeArea = (y > h * 0.60) && (x > w * 0.32);
+          if (isLakeArea) {
+            dx += Math.sin(y * 0.15 - frame * 0.05) * 0.5; // Horizontal flow
+            dy += Math.cos(x * 0.1 + frame * 0.06) * 0.4;  // Vertical ripple
           }
           
           const srcX = Math.max(0, Math.min(w - 1, Math.round(x + dx)));
-          const srcY = y;
+          const srcY = Math.max(0, Math.min(h - 1, Math.round(y + dy)));
           const srcIdx = (srcY * w + srcX) * 4;
           
           const r = imgPixels[srcIdx];
