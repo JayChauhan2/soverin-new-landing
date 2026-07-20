@@ -316,22 +316,15 @@
             .sf-row + .sf-row .sf-square {
               border-top: none;
             }
-            /* Image square — base, backgrounds set individually per square */
+            /* Image squares share the same deep, neutral treatment. */
             .sf-square--img {
               display: flex;
               align-items: center;
               justify-content: center;
               position: relative;
-            }
-            /* Per-square backgrounds */
-            #sf-row-0 .sf-square--img {
-              background: linear-gradient(135deg, #e8f5e2 0%, #b8dc90 50%, #7db84a 100%) !important;
-            }
-            #sf-row-1 .sf-square--img {
-              background: #8fc87a !important;
-            }
-            #sf-row-2 .sf-square--img {
-              background: linear-gradient(160deg, #f5f7ff 0%, #e8ecf8 40%, #d0d8f0 100%) !important;
+              background:
+                radial-gradient(circle at 15% 100%, rgba(0, 100, 0, 0.34), transparent 58%),
+                linear-gradient(135deg, #07110a 0%, #0b1d10 100%) !important;
             }
             .sf-square--img__placeholder {
               width: 100%;
@@ -346,14 +339,14 @@
             .sf-square--img__placeholder svg rect,
             .sf-square--img__placeholder svg circle,
             .sf-square--img__placeholder svg path {
-              stroke: #000000 !important;
+              stroke: rgba(255, 255, 255, 0.72) !important;
             }
             .sf-square--img__placeholder span {
               font-family: 'Space Grotesk', sans-serif;
               font-size: 0.68rem;
               letter-spacing: 0.18em;
               text-transform: uppercase;
-              color: rgba(0, 0, 0, 0.4);
+              color: rgba(255, 255, 255, 0.52);
             }
             /* Text square */
             .sf-square--text {
@@ -774,13 +767,9 @@
                 }
               }
               // ==========================================
-              // Per-image-square: dot dither overlays
-              // Each square gets a different mode.
+              // One restrained dither treatment is shared by every image square.
               // ==========================================
-              function paintImgDither(el, mode) {
-                // Section 2: solid green — no canvas overlay
-                if (mode === 'none') return;
-
+              function paintImgDither(el) {
                 const dc = document.createElement('canvas');
                 dc.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:2;';
                 el.appendChild(dc);
@@ -799,36 +788,21 @@
 
                 function draw(w, h) {
                   dctx.clearRect(0, 0, w, h);
-                  const spacing = 14;
-                  const maxR    = 2.2;
+                  const spacing = 18;
+                  const maxR    = 0.85;
 
                   for (let y = spacing / 2; y < h; y += spacing) {
                     for (let x = spacing / 2; x < w; x += spacing) {
                       const nx = x / w;
                       const ny = y / h;
-                      let weight, color;
-
-                      if (mode === 'green-corners') {
-                        // Section 1: green dots dense at bottom corners, fade to clear at top centre
-                        const bl = (1 - nx) * ny;
-                        const br = nx * ny;
-                        weight = Math.pow(Math.max(bl, br), 0.7);
-                        color = `rgba(0, 80, 30, ${0.05 + weight * 0.20})`;
-                      } else if (mode === 'blue-uniform') {
-                        // Section 3: uniform small dots across the whole surface
-                        // Slightly denser toward edges, barely visible in the centre
-                        const edgeDist = Math.min(nx, 1 - nx, ny, 1 - ny);
-                        weight = 0.25 + (1 - edgeDist * 4) * 0.0; // nearly flat
-                        weight = 0.35; // uniform weight, like the reference
-                        color = `rgba(100, 120, 180, 0.18)`;
-                      }
+                      const weight = Math.max(0, 0.82 - nx * 0.3 - (1 - ny) * 0.24);
 
                       const radius = weight * maxR;
                       if (radius < 0.2) continue;
 
                       dctx.beginPath();
                       dctx.arc(x, y, radius, 0, Math.PI * 2);
-                      dctx.fillStyle = color;
+                      dctx.fillStyle = `rgba(185, 255, 204, ${0.025 + weight * 0.08})`;
                       dctx.fill();
                     }
                   }
@@ -840,9 +814,7 @@
               }
 
               const rows = document.querySelectorAll('.sf-row');
-              if (rows[0]) paintImgDither(rows[0].querySelector('.sf-square--img'), 'green-corners');
-              if (rows[1]) paintImgDither(rows[1].querySelector('.sf-square--img'), 'none');
-              if (rows[2]) paintImgDither(rows[2].querySelector('.sf-square--img'), 'blue-uniform');
+              rows.forEach((row) => paintImgDither(row.querySelector('.sf-square--img')));
 
 
             })();
