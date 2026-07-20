@@ -773,7 +773,7 @@
                     const animate = (time) => {
                       reveal = Math.min(1, reveal + 0.009);
                       painter(featureCtx, featureCanvas.width, featureCanvas.height, reveal, time);
-                      requestAnimationFrame(animate);
+                      if (reveal < 1) requestAnimationFrame(animate);
                     };
                     requestAnimationFrame(animate);
                   }
@@ -797,22 +797,43 @@
                 ctx.restore();
               }
 
+              const featureGridSize = 3.3;
+              function makeBrainStyleGrid(imageData, width, height) {
+                const cells = [];
+                for (let y = 0; y < height; y += featureGridSize) {
+                  for (let x = 0; x < width; x += featureGridSize) {
+                    const i = (Math.floor(y) * width + Math.floor(x)) * 4;
+                    if (imageData.data[i + 3] < 40) continue;
+                    const luminance = (imageData.data[i] * 0.2126 + imageData.data[i + 1] * 0.7152 + imageData.data[i + 2] * 0.0722) / 255;
+                    const color = luminance > 0.72 ? '#b8efbe' : luminance > 0.48 ? '#59ad60' : luminance > 0.22 ? '#147a28' : '#004312';
+                    cells.push({ x, y, color });
+                  }
+                }
+                return cells.sort(() => Math.random() - 0.5);
+              }
+
+              function drawBrainStyleGrid(ctx, cells, progress) {
+                const count = Math.floor(cells.length * progress);
+                for (let i = 0; i < count; i++) {
+                  const cell = cells[i];
+                  ctx.fillStyle = cell.color;
+                  ctx.fillRect(cell.x, cell.y, featureGridSize - 0.65, featureGridSize - 0.65);
+                }
+              }
+
               // Section 2: supplied green pixel landscape. White sky is keyed out
               // so the card's own pale-green background shows through.
               const worldSource = document.createElement('canvas');
-              // 150 × 138 maps exactly to the 500 × 460 card at 3.33px per source
-              // pixel — the same scale used by the brain materialization.
-              worldSource.width = 150;
-              worldSource.height = 138;
+              worldSource.width = 500;
+              worldSource.height = 460;
               const worldCtx = worldSource.getContext('2d');
-              worldCtx.imageSmoothingEnabled = false;
-              const worldCells = [];
+              worldCtx.imageSmoothingEnabled = true;
+              let worldCells = [];
               const worldImage = new Image();
               let worldReady = false;
               worldImage.src = 'assets/living-world.png';
               worldImage.onload = () => {
-                // A left-anchored crop at the card aspect ratio fills the full height
-                // without warping, preserving the mountain-and-river composition.
+                // A left-anchored crop fills the holder while preserving the original aspect ratio.
                 const cropWidth = worldImage.naturalHeight * (worldSource.width / worldSource.height);
                 worldCtx.drawImage(worldImage, 0, 0, cropWidth, worldImage.naturalHeight, 0, 0, worldSource.width, worldSource.height);
                 const imageData = worldCtx.getImageData(0, 0, worldSource.width, worldSource.height);
@@ -823,22 +844,14 @@
                     if (r > 238 && g > 238 && b > 238) imageData.data[i + 3] = 0;
                   }
                 }
-                worldCtx.putImageData(imageData, 0, 0);
-                for (let y = 0; y < worldSource.height; y++) for (let x = 0; x < worldSource.width; x++) worldCells.push({ x, y });
-                worldCells.sort(() => Math.random() - 0.5);
+                worldCells = makeBrainStyleGrid(imageData, worldSource.width, worldSource.height);
                 worldReady = true;
               };
 
               setupFeatureReveal('sf-world-canvas', 'sf-row-1', (ctx, w, h, p) => {
                 ctx.clearRect(0, 0, w, h);
                 if (!worldReady) return;
-                ctx.imageSmoothingEnabled = false;
-                const visibleCells = Math.floor(worldCells.length * p);
-                const pixelScale = w / worldSource.width;
-                for (let i = 0; i < visibleCells; i++) {
-                  const cell = worldCells[i];
-                  ctx.drawImage(worldSource, cell.x, cell.y, 1, 1, cell.x * pixelScale, cell.y * pixelScale, pixelScale, pixelScale);
-                }
+                drawBrainStyleGrid(ctx, worldCells, p);
               });
 
               const globeSource = document.createElement('canvas');
@@ -846,11 +859,13 @@
               globeSource.height = 460;
               const globeCtx = globeSource.getContext('2d');
               globeCtx.imageSmoothingEnabled = true;
+              let globeCells = [];
               const globeImage = new Image();
               let globeReady = false;
               globeImage.src = 'assets/globe-hands.png';
               globeImage.onload = () => {
-                const scale = Math.min(globeSource.width / globeImage.naturalWidth, globeSource.height / globeImage.naturalHeight);
+                // Cover the holder so the hands reach all the way to its edges.
+                const scale = Math.max(globeSource.width / globeImage.naturalWidth, globeSource.height / globeImage.naturalHeight);
                 const imageWidth = globeImage.naturalWidth * scale;
                 const imageHeight = globeImage.naturalHeight * scale;
                 globeCtx.drawImage(globeImage, (globeSource.width - imageWidth) / 2, (globeSource.height - imageHeight) / 2, imageWidth, imageHeight);
@@ -858,18 +873,14 @@
                 for (let i = 0; i < imageData.data.length; i += 4) {
                   if (imageData.data[i] > 242 && imageData.data[i + 1] > 242 && imageData.data[i + 2] > 242) imageData.data[i + 3] = 0;
                 }
-                globeCtx.putImageData(imageData, 0, 0);
+                globeCells = makeBrainStyleGrid(imageData, globeSource.width, globeSource.height);
                 globeReady = true;
               };
 
               setupFeatureReveal('sf-chronicle-canvas', 'sf-row-2', (ctx, w, h, p) => {
                 ctx.clearRect(0, 0, w, h);
                 if (!globeReady) return;
-                ctx.save();
-                ctx.globalAlpha = Math.min(1, p * 1.35);
-                ctx.imageSmoothingEnabled = true;
-                ctx.drawImage(globeSource, 0, 0, w, h);
-                ctx.restore();
+                drawBrainStyleGrid(ctx, globeCells, p);
               });
               // ==========================================
               // One restrained dither treatment is shared by every image square.
