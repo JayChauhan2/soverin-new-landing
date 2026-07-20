@@ -122,25 +122,14 @@
       <section id="home" class="s-h-home">
         <div class="s_h_home_bg_video">
           <div class="s_h_home_bg_grad"></div>
-          <div class="des_bg_video w-embed">
-            <!-- DESKTOP Video -->
-            <video class="video-desktop" muted loop playsinline poster="https://cdn.prod.website-files.com/69523705e6ef6f1b4fbf357d/6970787eea82fb25fc4a5082_cover-des-video.avif">
-              <source src="https://webflow-resources.b-cdn.net/GruSpace_LaunchVideo_v06.1_Landscape_NoEndText_fixEnd_web1080-2.mp4" type="video/mp4" />
-            </video>
-          </div>
-          <div class="mob_bg_video w-embed">
-            <!-- MOBILE Video -->
-            <video class="video-mobile" muted loop playsinline poster="https://cdn.prod.website-files.com/69523705e6ef6f1b4fbf357d/6970789cbcc32bc7637dbaea_cover-mob-video.avif">
-              <source src="https://webflow-resources.b-cdn.net/GruSpace_LaunchVideo_v06.1_Portrait_NoEndText_fixEnd_web720-2.mp4" type="video/mp4" />
-            </video>
-          </div>
+          <img src="assets/nature_bg.jpg" alt="Nature background" class="video-desktop video-mobile" style="width: 100%; height: 100%; object-fit: cover;" />
         </div>
         
         <div class="s_h_home_container u-container">
           <div class="s_h_home_content_wrap">
             <div class="s_h_home_logos_muted_wrap">
-              <!-- Mute / Unmute Button -->
-              <div id="mute-btn-wrap" class="s_h_home_muted_wrap" style="cursor: pointer;">
+              <!-- Mute / Unmute Button (Hidden as background is an image) -->
+              <div id="mute-btn-wrap" class="s_h_home_muted_wrap" style="cursor: pointer; display: none;">
                 <div class="s_h_home_muted_icon_wrap">
                   <!-- Muted State Icon (White) -->
                   <div class="s_h_home_muted_icon_noactive w-embed" id="icon-muted">

@@ -43,7 +43,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function playHeroVideo() {
-    if (!heroVideo) return;
+    if (!heroVideo || typeof heroVideo.play !== "function") return;
     ensureVideoSrc(heroVideo);
     heroVideo.muted = true;
     heroVideo.playsInline = true;
