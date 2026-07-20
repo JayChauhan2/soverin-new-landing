@@ -543,6 +543,7 @@ document.addEventListener("DOMContentLoaded", () => {
     bgImg.src = "assets/nature_bg.jpg";
     
     let imgPixels = null;
+    let ditherInitialized = false;
     
     bgImg.onload = () => {
       initDither();
@@ -553,6 +554,8 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     
     function initDither() {
+      if (ditherInitialized) return;
+      ditherInitialized = true;
       resizeCanvas();
       window.addEventListener("resize", resizeCanvas);
       requestAnimationFrame(renderLoop);
@@ -568,12 +571,25 @@ document.addEventListener("DOMContentLoaded", () => {
       offCanvas.width = w;
       offCanvas.height = h;
       
-      offCtx.drawImage(bgImg, 0, 0, w, h);
-      try {
-        const imgData = offCtx.getImageData(0, 0, w, h);
-        imgPixels = imgData.data;
-      } catch (e) {
-        console.error("Dither pixel extraction error:", e);
+      // Calculate cover-fit dimensions to perfectly align canvas with object-fit: cover image
+      const imgW = bgImg.naturalWidth;
+      const imgH = bgImg.naturalHeight;
+      if (imgW && imgH) {
+        const s = Math.max(w / imgW, h / imgH);
+        const renderW = imgW * s;
+        const renderH = imgH * s;
+        const dx = (w - renderW) / 2;
+        const dy = (h - renderH) / 2;
+        
+        offCtx.clearRect(0, 0, w, h);
+        offCtx.drawImage(bgImg, dx, dy, renderW, renderH);
+        
+        try {
+          const imgData = offCtx.getImageData(0, 0, w, h);
+          imgPixels = imgData.data;
+        } catch (e) {
+          console.error("Dither pixel extraction error:", e);
+        }
       }
     }
     
@@ -627,7 +643,7 @@ document.addEventListener("DOMContentLoaded", () => {
           
           // Classify the local color of the background image
           const isBlue = (b > r && b > g * 0.9);
-          const isGreen = (g > b && g > r * 0.9) && (y > h * 0.48); // Dither only grass on the hill, not tree foliage above
+          const isGreen = (g > b && g > r * 0.9) && (y > h * 0.55); // Grass dither pushed lower (starts at 55% screen height)
           const isWarm = (r > b && r > g * 0.8); // Sunset tones (orange, peach, pink, red)
           
           // Draw dark dither pixels in dark midtones to enhance shadow textures
