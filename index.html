@@ -258,44 +258,33 @@
         <section id="features" class="s-features">
           <style>
             .s-features {
-              background: linear-gradient(180deg, #0a0a12 0%, #0d1520 40%, #0a1a2e 100%);
+              background: #000000 !important;
               position: relative;
             }
             .s-features * {
               box-sizing: border-box;
             }
-            /* Fixed left nav — floats in the left margin, takes ZERO layout space */
-            .sf-nav {
+            /* Rotated 'HOW' side label floating in left margin */
+            .sf-side-title {
               position: fixed;
               top: 50%;
-              transform: translateY(-50%);
-              left: 2.5%;
-              display: flex;
-              flex-direction: column;
-              gap: 16px;
+              transform: translateY(-50%) rotate(-90deg);
+              left: 1.5%;
+              font-family: 'Press Start 2P', monospace;
+              font-size: 2.2rem;
+              font-weight: 900;
+              letter-spacing: 0.15em;
+              text-transform: uppercase;
+              color: rgba(0, 255, 60, 0.32);
+              text-shadow: 0 0 10px rgba(0, 255, 60, 0.25);
               z-index: 50;
               pointer-events: none;
               opacity: 0;
-              transition: opacity 0.3s;
-            }
-            .sf-nav.is-visible {
-              pointer-events: auto;
-              opacity: 1;
-            }
-            .sf-nav__item {
-              font-family: 'Space Grotesk', sans-serif;
-              font-size: 0.72rem;
-              font-weight: 600;
-              letter-spacing: 0.12em;
-              text-transform: uppercase;
-              color: rgba(255, 255, 255, 0.28);
-              padding: 6px 0;
-              cursor: pointer;
-              transition: color 0.25s;
+              transition: opacity 0.3s ease;
               white-space: nowrap;
             }
-            .sf-nav__item.is-active {
-              color: rgba(255, 255, 255, 0.95);
+            .sf-side-title.is-visible {
+              opacity: 1;
             }
             /* Rows — centered at 75% width, take the full available space */
             .sf-rows {
@@ -304,6 +293,8 @@
               display: flex;
               flex-direction: column;
               border: 1px solid rgba(255, 255, 255, 0.08);
+              position: relative;
+              z-index: 2;
             }
             /* Each row = two perfectly equal squares side by side, flush */
             .sf-row {
@@ -390,12 +381,8 @@
             .sf-row--flip { flex-direction: row-reverse; }
           </style>
 
-          <!-- Fixed nav: overlays the left margin, zero layout impact -->
-          <nav class="sf-nav" id="sf-nav">
-            <div class="sf-nav__item is-active" data-row="0">Section 1</div>
-            <div class="sf-nav__item" data-row="1">Section 2</div>
-            <div class="sf-nav__item" data-row="2">Section 3</div>
-          </nav>
+          <!-- Side label "HOW": overlays the left margin, zero layout impact -->
+          <div class="sf-side-title" id="sf-side-title">HOW</div>
 
           <!-- Rows: 75% centered, stacked flush -->
           <div class="sf-rows">
@@ -465,35 +452,96 @@
           <script>
             (function() {
               const section = document.getElementById('features');
-              const nav = document.getElementById('sf-nav');
-              const navItems = document.querySelectorAll('.sf-nav__item');
-              const rows = [
-                document.getElementById('sf-row-0'),
-                document.getElementById('sf-row-1'),
-                document.getElementById('sf-row-2'),
-              ];
+              const sideTitle = document.getElementById('sf-side-title');
 
-              // Show/hide nav based on section visibility
+              // Show/hide side title based on section visibility
               const sectionObserver = new IntersectionObserver(([e]) => {
-                nav.classList.toggle('is-visible', e.isIntersecting);
+                sideTitle.classList.toggle('is-visible', e.isIntersecting);
               }, { threshold: 0.05 });
               sectionObserver.observe(section);
 
-              // Highlight active row
-              const rowObserver = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                  if (entry.isIntersecting) {
-                    const idx = rows.indexOf(entry.target);
-                    navItems.forEach((n, i) => n.classList.toggle('is-active', i === idx));
-                  }
-                });
-              }, { threshold: 0.5 });
-              rows.forEach(r => rowObserver.observe(r));
+              // ==========================================
+              // Background Green Pixel Dither Canvas Animation
+              // ==========================================
+              const canvas = document.createElement('canvas');
+              canvas.id = 'features-dither-canvas';
+              canvas.style.position = 'absolute';
+              canvas.style.top = '0';
+              canvas.style.left = '0';
+              canvas.style.width = '100%';
+              canvas.style.height = '100%';
+              canvas.style.zIndex = '1';
+              canvas.style.pointerEvents = 'none';
+              canvas.style.imageRendering = 'pixelated';
+              section.appendChild(canvas);
 
-              // Click to scroll
-              navItems.forEach((item, i) => {
-                item.addEventListener('click', () => rows[i].scrollIntoView({ behavior: 'smooth', block: 'start' }));
-              });
+              const ctx = canvas.getContext('2d');
+
+              // Offscreen low-res canvas for crisp pixelation
+              const offscreen = document.createElement('canvas');
+              const octx = offscreen.getContext('2d');
+
+              const pixelScale = 6; // 1 pixel offscreen = 6x6 on main canvas
+
+              function resizeCanvas() {
+                const rect = section.getBoundingClientRect();
+                canvas.width = rect.width;
+                canvas.height = rect.height;
+                offscreen.width = Math.ceil(rect.width / pixelScale);
+                offscreen.height = Math.ceil(rect.height / pixelScale);
+              }
+
+              resizeCanvas();
+              window.addEventListener('resize', resizeCanvas, { passive: true });
+
+              let frame = 0;
+              function renderLoop() {
+                frame++;
+                const w = offscreen.width;
+                const h = offscreen.height;
+
+                if (w > 0 && h > 0) {
+                  octx.clearRect(0, 0, w, h);
+                  
+                  const imgData = octx.createImageData(w, h);
+                  const data = imgData.data;
+
+                  // Generate PC-98 dither grid with green wave shimmer
+                  for (let y = 0; y < h; y++) {
+                    const isEvenY = y % 2 === 0;
+                    const waveY = Math.sin(y * 0.08 + frame * 0.04);
+                    
+                    for (let x = 0; x < w; x++) {
+                      const isEvenX = x % 2 === 0;
+
+                      // Checkerboard dither condition
+                      if ((isEvenY && isEvenX) || (!isEvenY && !isEvenX)) {
+                        const waveX = Math.cos(x * 0.08 - frame * 0.02);
+                        const wave = waveY * waveX;
+
+                        // Light up checkerboard pixels
+                        if (wave > -0.05) {
+                          const pixelIdx = (y * w + x) * 4;
+                          const greenVal = Math.floor(40 + 90 * (wave * 0.5 + 0.5));
+                          
+                          data[pixelIdx] = 0;                         // Red
+                          data[pixelIdx + 1] = greenVal;              // Green
+                          data[pixelIdx + 2] = Math.floor(greenVal * 0.15); // Blue
+                          data[pixelIdx + 3] = Math.floor(25 + 35 * (wave * 0.5 + 0.5)); // Alpha
+                        }
+                      }
+                    }
+                  }
+                  octx.putImageData(imgData, 0, 0);
+
+                  ctx.clearRect(0, 0, canvas.width, canvas.height);
+                  ctx.drawImage(offscreen, 0, 0, canvas.width, canvas.height);
+                }
+
+                requestAnimationFrame(renderLoop);
+              }
+
+              renderLoop();
             })();
           </script>
         </section>
