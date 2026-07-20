@@ -841,53 +841,40 @@
                 }
               });
 
-              setupFeatureReveal('sf-chronicle-canvas', 'sf-row-2', (ctx, w, h, p, time) => {
-                ctx.clearRect(0, 0, w, h);
-                const axisX = 112;
-                ctx.save();
-                ctx.globalAlpha = Math.min(1, p * 1.4);
-                ctx.strokeStyle = 'rgba(0,100,0,0.56)';
-                ctx.lineWidth = 2;
-                ctx.setLineDash([5, 5]);
-                ctx.beginPath(); ctx.moveTo(axisX, 62); ctx.lineTo(axisX, 400); ctx.stroke();
-                ctx.setLineDash([]);
-                ctx.restore();
+              const globeSource = document.createElement('canvas');
+              globeSource.width = 150;
+              globeSource.height = 138;
+              const globeCtx = globeSource.getContext('2d');
+              globeCtx.imageSmoothingEnabled = false;
+              const globeCells = [];
+              const globeImage = new Image();
+              let globeReady = false;
+              globeImage.src = 'assets/globe-hands.png';
+              globeImage.onload = () => {
+                const scale = Math.min(globeSource.width / globeImage.naturalWidth, globeSource.height / globeImage.naturalHeight);
+                const imageWidth = globeImage.naturalWidth * scale;
+                const imageHeight = globeImage.naturalHeight * scale;
+                globeCtx.drawImage(globeImage, (globeSource.width - imageWidth) / 2, (globeSource.height - imageHeight) / 2, imageWidth, imageHeight);
+                const imageData = globeCtx.getImageData(0, 0, globeSource.width, globeSource.height);
+                for (let i = 0; i < imageData.data.length; i += 4) {
+                  if (imageData.data[i] > 242 && imageData.data[i + 1] > 242 && imageData.data[i + 2] > 242) imageData.data[i + 3] = 0;
+                }
+                globeCtx.putImageData(imageData, 0, 0);
+                for (let y = 0; y < globeSource.height; y++) for (let x = 0; x < globeSource.width; x++) globeCells.push({ x, y });
+                globeCells.sort(() => Math.random() - 0.5);
+                globeReady = true;
+              };
 
-                const entries = [
-                  { y: 100, turn: 'TURN 14', title: 'THE FIRST PACT', body: 'Alliance forged across the eastern coast.' },
-                  { y: 220, turn: 'TURN 32', title: 'THE LONG WINTER', body: 'Migration reshapes the northern frontier.' },
-                  { y: 340, turn: 'TURN 51', title: 'A QUIET BETRAYAL', body: 'The trade accord is broken before dawn.' }
-                ];
-                entries.forEach((entry, index) => {
-                  const local = Math.max(0, Math.min(1, p * 1.55 - index * 0.24));
-                  if (!local) return;
-                  const cardX = 150;
-                  const cardW = 285;
-                  const cardH = 78;
-                  ctx.save();
-                  ctx.globalAlpha = local;
-                  ctx.fillStyle = 'rgba(255,255,255,0.72)';
-                  ctx.fillRect(cardX, entry.y - 38, cardW, cardH);
-                  ctx.strokeStyle = 'rgba(0,100,0,0.46)';
-                  ctx.strokeRect(cardX, entry.y - 38, cardW, cardH);
-                  ctx.fillStyle = '#006400';
-                  ctx.fillRect(axisX - 7, entry.y - 7, 14, 14);
-                  ctx.fillRect(cardX, entry.y - 38, 5, cardH);
-                  ctx.font = "700 10px 'Space Grotesk', sans-serif";
-                  ctx.fillText(entry.turn, cardX + 18, entry.y - 17);
-                  ctx.font = "700 13px 'Press Start 2P', monospace";
-                  ctx.fillText(entry.title, cardX + 18, entry.y + 4);
-                  ctx.font = "500 11px 'Space Grotesk', sans-serif";
-                  ctx.fillStyle = 'rgba(0,55,15,0.72)';
-                  ctx.fillText(entry.body, cardX + 18, entry.y + 24);
-                  for (let i = 0; i < 8; i++) {
-                    const shimmer = ((time * 0.001 + i * 0.17 + index) % 1);
-                    ctx.fillStyle = `rgba(0,100,0,${0.12 + shimmer * 0.16})`;
-                    ctx.fillRect(cardX + cardW - 26, entry.y - 24 + i * 7, 3, 3);
-                  }
-                  ctx.restore();
-                });
-                if (p > 0.72) drawSystemLabel(ctx, 'WORLD CHRONICLE', 250, 42, 'left', Math.min(1, (p - 0.72) * 3.5));
+              setupFeatureReveal('sf-chronicle-canvas', 'sf-row-2', (ctx, w, h, p) => {
+                ctx.clearRect(0, 0, w, h);
+                if (!globeReady) return;
+                ctx.imageSmoothingEnabled = false;
+                const visibleCells = Math.floor(globeCells.length * p);
+                const pixelScale = w / globeSource.width;
+                for (let i = 0; i < visibleCells; i++) {
+                  const cell = globeCells[i];
+                  ctx.drawImage(globeSource, cell.x, cell.y, 1, 1, cell.x * pixelScale, cell.y * pixelScale, pixelScale, pixelScale);
+                }
               });
               // ==========================================
               // One restrained dither treatment is shared by every image square.
