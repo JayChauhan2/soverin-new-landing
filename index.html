@@ -802,18 +802,16 @@
               worldSource.width = 150;
               worldSource.height = 138;
               const worldCtx = worldSource.getContext('2d');
+              worldCtx.imageSmoothingEnabled = false;
               const worldCells = [];
               const worldImage = new Image();
               let worldReady = false;
               worldImage.src = 'assets/living-world.png';
               worldImage.onload = () => {
-                // Use only the left 75%: mountain + river stay prominent and the
-                // composition fits the near-square card without horizontal distortion.
-                const cropWidth = worldImage.naturalWidth * 0.75;
-                const scale = Math.min(worldSource.width / cropWidth, worldSource.height / worldImage.naturalHeight);
-                const imageWidth = cropWidth * scale;
-                const imageHeight = worldImage.naturalHeight * scale;
-                worldCtx.drawImage(worldImage, 0, 0, cropWidth, worldImage.naturalHeight, (worldSource.width - imageWidth) / 2, (worldSource.height - imageHeight) / 2, imageWidth, imageHeight);
+                // A left-anchored crop at the card aspect ratio fills the full height
+                // without warping, preserving the mountain-and-river composition.
+                const cropWidth = worldImage.naturalHeight * (worldSource.width / worldSource.height);
+                worldCtx.drawImage(worldImage, 0, 0, cropWidth, worldImage.naturalHeight, 0, 0, worldSource.width, worldSource.height);
                 const imageData = worldCtx.getImageData(0, 0, worldSource.width, worldSource.height);
                 for (let y = 0; y < worldSource.height * 0.67; y++) {
                   for (let x = 0; x < worldSource.width; x++) {
@@ -831,6 +829,7 @@
               setupFeatureReveal('sf-world-canvas', 'sf-row-1', (ctx, w, h, p) => {
                 ctx.clearRect(0, 0, w, h);
                 if (!worldReady) return;
+                ctx.imageSmoothingEnabled = false;
                 const visibleCells = Math.floor(worldCells.length * p);
                 const pixelScale = w / worldSource.width;
                 for (let i = 0; i < visibleCells; i++) {
