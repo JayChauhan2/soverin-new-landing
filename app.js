@@ -653,16 +653,23 @@ document.addEventListener("DOMContentLoaded", () => {
             dy += waveY * 1.2 * factor; // Gentle vertical lift/dip
           }
           
-          // 2. Foreground Plants Swaying (Bottom-left corner) - very visible, light organic sways
+          // 2. Foreground Plants Swaying (Bottom-left corner) - very visible, organic sways matching reference
           if (x < w * 0.30 && y > h * 0.68 && rawBrightness < 0.48) {
             const plant_t = base_t * 3; // Loops 3 times per 360 frames
-            dx += Math.sin(x * 0.08 + y * 0.05 + plant_t) * 2.6;
-            dy += Math.cos(x * 0.08 + y * 0.05 + plant_t) * 1.0;
+            dx += Math.sin(x * 0.08 + y * 0.05 + plant_t) * 3.2;
+            dy += Math.cos(x * 0.08 + y * 0.05 + plant_t) * 1.5;
           }
           
-          // 2. Entire Grass & Foreground Plants Swaying (Lower screen) - obvious wind sway
+          // 3. Foreground Plants Swaying (Bottom-right corner) - very visible, organic sways matching reference
+          if (x > w * 0.72 && y > h * 0.70 && rawBrightness < 0.48) {
+            const plant_t = base_t * 3; // Loops 3 times per 360 frames
+            dx += Math.sin(x * 0.08 + y * 0.05 - plant_t) * 2.8;
+            dy += Math.cos(x * 0.08 + y * 0.05 - plant_t) * 1.2;
+          }
+          
+          // 4. Entire Grass Swaying (Lower screen) - obvious wind sway, but exponentially damped in distance
           if (y > h * 0.55) {
-            // Factor ranges from 0.5 (midground) to 1.0 (foreground bottom) so entire grass fields sway
+            // Exponential distance factor: distant hills and mountains stay perfectly static (factor close to 0)
             const baseFactor = (y - h * 0.55) / (h * 0.45);
             const factor = Math.pow(baseFactor, 2.8); 
             
@@ -671,12 +678,12 @@ document.addEventListener("DOMContentLoaded", () => {
             dx += Math.sin(x * 0.08 - y * 0.04 + grass_t * 3) * 0.5 * factor;
           }
           
-          // 4. Lake ripples (bottom-right water area) - flowing reflection warp
+          // 5. Lake ripples (bottom-right water area) - flowing reflection warp matching reference
           const isLakeArea = (y > h * 0.60) && (x > w * 0.32);
           if (isLakeArea) {
             const lake_t = base_t * 3; // Loops 3 times per 360 frames
-            dx += Math.sin(y * 0.15 - lake_t) * 0.5; // Horizontal flow
-            dy += Math.cos(x * 0.1 + lake_t) * 0.4;  // Vertical ripple
+            dx += Math.sin(y * 0.15 - lake_t) * 0.8; // Horizontal flow
+            dy += Math.cos(x * 0.1 + lake_t) * 0.6;  // Vertical ripple
           }
           
           const srcX = Math.max(0, Math.min(w - 1, Math.round(x + dx)));
