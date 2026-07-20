@@ -646,21 +646,18 @@ document.addEventListener("DOMContentLoaded", () => {
           const isGreen = (g > b && g > r * 0.9) && (y > h * 0.55); // Grass dither pushed lower (starts at 55% screen height)
           const isWarm = (r > b && r > g * 0.8); // Sunset tones (orange, peach, pink, red)
           
-          const isLakeArea = (y > h * 0.64) && (x > w * 0.32); // Constrain water dither to the bottom-right lake area
+          // Bounding coordinates matching the user's screenshot markings for selective lake dither
+          const isLakeDitherZone = 
+            (x > w * 0.54 && x < w * 0.98 && y > h * 0.58 && y < h * 0.76) || // Region 1 (upper-right reflection zone)
+            (x > w * 0.46 && x < w * 0.92 && y > h * 0.74 && y < h * 0.90);   // Region 2 (lower-middle/right zone)
           
-          if (isBlue && isLakeArea && brightness >= 0.12 && brightness < 0.55) {
-            // Static spatial noise pattern (no frame factor) for fixed ripple patches
-            const rippleNoise = Math.sin(x * 0.08 - y * 0.05) + Math.cos(x * 0.04 + y * 0.06);
-            
-            // Only draw water dither in the peak areas of the static noise wave
-            if (rippleNoise > 0.65) {
-              if (brightness < animBayer * 0.72) {
-                drawDither = true;
-                color = [10, 25, 75, 45]; // Deep navy shadow ripple
-              } else if (brightness > animBayer * 0.88) {
-                drawDither = true;
-                color = [90, 215, 255, 70]; // Glistening light blue/cyan highlight ripple
-              }
+          if (isBlue && isLakeDitherZone && brightness >= 0.12 && brightness < 0.55) {
+            if (brightness < animBayer * 0.72) {
+              drawDither = true;
+              color = [10, 25, 75, 45]; // Deep navy shadow ripple
+            } else if (brightness > animBayer * 0.88) {
+              drawDither = true;
+              color = [90, 215, 255, 70]; // Glistening light blue/cyan highlight ripple
             }
           } else {
             // Standard shadow & highlight dither for land, grass, sky
