@@ -157,20 +157,7 @@
                 </div>
               </div>
               
-              <!-- Backed Logos -->
-              <div id="w-node-_053225eb-fe38-1b91-71ab-02ef281214f2-df9c20da" class="s_h_home_logos_wrap">
-                <div class="s_h_home_content_logos_wrap">
-                  <div class="s_h_home_logo_text">Backed by</div>
-                  <div class="s_h_home_logos_list">
-                    <div class="s_h_home_logo_wrap">
-                      <img src="https://cdn.prod.website-files.com/69523705e6ef6f1b4fbf357d/69526a31636987ccd79f88fb_Y%20-%20Combinator.png" loading="lazy" alt="Y - Combinator" class="s_h_home_logo"/>
-                    </div>
-                    <div class="s_h_home_logo_wrap">
-                      <img src="https://cdn.prod.website-files.com/69523705e6ef6f1b4fbf357d/69526aea1f07ca75871c5c89_NVIDIA.png" loading="lazy" alt="NVIDIA" class="s_h_home_logo"/>
-                    </div>
-                  </div>
-                </div>
-              </div>
+
             </div>
           </div>
         </div>
@@ -265,6 +252,216 @@
               </div>
             </div>
           </div>
+        </section>
+
+        <!-- Feature Sections -->
+        <section id="features" class="s-features">
+          <style>
+            .s-features { background: #fff; padding: 80px 0 40px; }
+            .s-features__list { display: flex; flex-direction: column; gap: 0; }
+            .s-feature-row {
+              display: flex;
+              width: 75%;
+              margin: 0 auto 64px;
+              min-height: 420px;
+              box-shadow: 0 4px 40px rgba(0,0,0,0.07);
+              border-radius: 4px;
+              overflow: hidden;
+            }
+            .s-feature-row.reverse { flex-direction: row-reverse; }
+            .s-feature-img {
+              flex: 1;
+              background: #e8e8e0;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              min-height: 380px;
+              position: relative;
+              overflow: hidden;
+            }
+            .s-feature-img__inner {
+              width: 100%;
+              height: 100%;
+              object-fit: cover;
+              display: block;
+            }
+            .s-feature-img__placeholder {
+              width: 100%;
+              height: 100%;
+              display: flex;
+              flex-direction: column;
+              align-items: center;
+              justify-content: center;
+              gap: 12px;
+              background: linear-gradient(135deg, #d4d4c8 0%, #bcbcb0 100%);
+            }
+            .s-feature-img__placeholder svg { opacity: 0.35; }
+            .s-feature-img__placeholder span {
+              font-family: 'Space Grotesk', sans-serif;
+              font-size: 0.75rem;
+              letter-spacing: 0.15em;
+              text-transform: uppercase;
+              color: #666;
+            }
+            .s-feature-text {
+              flex: 1;
+              display: flex;
+              flex-direction: column;
+              justify-content: center;
+              padding: 56px 52px;
+              background: #fff;
+            }
+            .s-feature-text__tag {
+              font-family: 'Press Start 2P', monospace;
+              font-size: 0.55rem;
+              letter-spacing: 0.2em;
+              text-transform: uppercase;
+              color: #006400;
+              margin-bottom: 20px;
+            }
+            .s-feature-text__title {
+              font-family: 'Press Start 2P', monospace;
+              font-size: 1.15rem;
+              line-height: 1.7;
+              color: #111;
+              margin: 0 0 20px;
+            }
+            .s-feature-text__body {
+              font-family: 'Space Grotesk', sans-serif;
+              font-size: 1rem;
+              line-height: 1.7;
+              color: #444;
+              margin: 0 0 32px;
+            }
+            .s-feature-text__cta {
+              font-family: 'Space Grotesk', sans-serif;
+              font-size: 0.85rem;
+              font-weight: 600;
+              color: #006400;
+              letter-spacing: 0.05em;
+              text-decoration: none;
+              display: inline-flex;
+              align-items: center;
+              gap: 6px;
+            }
+            .s-feature-text__cta:hover { text-decoration: underline; }
+            .s-features__nav {
+              width: 75%;
+              margin: 0 auto 64px;
+              display: flex;
+              gap: 12px;
+            }
+            .s-features__nav-item {
+              flex: 1;
+              padding: 14px 20px;
+              border: 1.5px solid #e0e0d8;
+              border-radius: 4px;
+              cursor: pointer;
+              font-family: 'Space Grotesk', sans-serif;
+              font-size: 0.8rem;
+              font-weight: 600;
+              color: #888;
+              letter-spacing: 0.08em;
+              text-transform: uppercase;
+              background: transparent;
+              transition: border-color 0.2s, color 0.2s;
+              text-align: center;
+            }
+            .s-features__nav-item.active, .s-features__nav-item:hover {
+              border-color: #006400;
+              color: #006400;
+            }
+          </style>
+
+          <div style="width:75%;margin:0 auto 40px;">
+            <div style="font-family:'Press Start 2P',monospace;font-size:0.55rem;letter-spacing:0.2em;text-transform:uppercase;color:#006400;margin-bottom:16px;">Platform</div>
+            <h2 style="font-family:'Press Start 2P',monospace;font-size:1.5rem;line-height:1.6;color:#111;margin:0;">What Soverin Delivers</h2>
+          </div>
+
+          <!-- Tabs -->
+          <div class="s-features__nav">
+            <div class="s-features__nav-item active" id="ftab-1">Section 1</div>
+            <div class="s-features__nav-item" id="ftab-2">Section 2</div>
+            <div class="s-features__nav-item" id="ftab-3">Section 3</div>
+          </div>
+
+          <div class="s-features__list">
+
+            <!-- Feature Row 1: Image Left, Text Right -->
+            <div class="s-feature-row" id="frow-1">
+              <div class="s-feature-img">
+                <div class="s-feature-img__placeholder">
+                  <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="8" y="12" width="48" height="36" rx="2" stroke="#555" stroke-width="2"/>
+                    <circle cx="22" cy="26" r="6" stroke="#555" stroke-width="2"/>
+                    <path d="M8 40 L20 28 L32 38 L42 30 L56 42" stroke="#555" stroke-width="2" stroke-linejoin="round"/>
+                  </svg>
+                  <span>Image Placeholder</span>
+                </div>
+              </div>
+              <div class="s-feature-text">
+                <div class="s-feature-text__tag">Section 01</div>
+                <h3 class="s-feature-text__title">AI-Native Game Engine</h3>
+                <p class="s-feature-text__body">Soverin's core engine is built ground-up for AI generation — procedural worlds, dynamic NPCs, and emergent narratives that adapt in real time to every player's choices and playstyle.</p>
+                <a href="#" class="s-feature-text__cta">Learn more →</a>
+              </div>
+            </div>
+
+            <!-- Feature Row 2: Text Left, Image Right (reversed) -->
+            <div class="s-feature-row reverse" id="frow-2">
+              <div class="s-feature-img">
+                <div class="s-feature-img__placeholder">
+                  <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="8" y="12" width="48" height="36" rx="2" stroke="#555" stroke-width="2"/>
+                    <circle cx="22" cy="26" r="6" stroke="#555" stroke-width="2"/>
+                    <path d="M8 40 L20 28 L32 38 L42 30 L56 42" stroke="#555" stroke-width="2" stroke-linejoin="round"/>
+                  </svg>
+                  <span>Image Placeholder</span>
+                </div>
+              </div>
+              <div class="s-feature-text">
+                <div class="s-feature-text__tag">Section 02</div>
+                <h3 class="s-feature-text__title">Living World Platform</h3>
+                <p class="s-feature-text__body">Every world on Soverin is persistent and shared. Economies, ecosystems, and factions evolve whether you're online or not — creating a universe that feels genuinely alive and consequential.</p>
+                <a href="#" class="s-feature-text__cta">Learn more →</a>
+              </div>
+            </div>
+
+            <!-- Feature Row 3: Image Left, Text Right -->
+            <div class="s-feature-row" id="frow-3">
+              <div class="s-feature-img">
+                <div class="s-feature-img__placeholder">
+                  <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="8" y="12" width="48" height="36" rx="2" stroke="#555" stroke-width="2"/>
+                    <circle cx="22" cy="26" r="6" stroke="#555" stroke-width="2"/>
+                    <path d="M8 40 L20 28 L32 38 L42 30 L56 42" stroke="#555" stroke-width="2" stroke-linejoin="round"/>
+                  </svg>
+                  <span>Image Placeholder</span>
+                </div>
+              </div>
+              <div class="s-feature-text">
+                <div class="s-feature-text__tag">Section 03</div>
+                <h3 class="s-feature-text__title">Creator Economy Layer</h3>
+                <p class="s-feature-text__body">Build, monetize, and deploy your own games and mods directly inside Soverin. Our creator tools give independent developers first-class access to the same AI stack that powers the platform.</p>
+                <a href="#" class="s-feature-text__cta">Learn more →</a>
+              </div>
+            </div>
+
+          </div>
+
+          <script>
+            (function() {
+              const tabs = ['ftab-1','ftab-2','ftab-3'];
+              const rows = ['frow-1','frow-2','frow-3'];
+              tabs.forEach((tid, i) => {
+                document.getElementById(tid).addEventListener('click', () => {
+                  tabs.forEach(t => document.getElementById(t).classList.remove('active'));
+                  document.getElementById(tid).classList.add('active');
+                  document.getElementById(rows[i]).scrollIntoView({ behavior: 'smooth', block: 'center' });
+                });
+              });
+            })();
+          </script>
         </section>
 
         <!-- Section 3: Roadmap (Signature Scrub-Canvas Timeline) -->
