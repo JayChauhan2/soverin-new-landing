@@ -804,9 +804,9 @@
                   for (let x = 0; x < width; x += featureGridSize) {
                     const i = (Math.floor(y) * width + Math.floor(x)) * 4;
                     if (imageData.data[i + 3] < 40) continue;
-                    const luminance = (imageData.data[i] * 0.2126 + imageData.data[i + 1] * 0.7152 + imageData.data[i + 2] * 0.0722) / 255;
-                    const color = luminance > 0.72 ? '#b8efbe' : luminance > 0.48 ? '#59ad60' : luminance > 0.22 ? '#147a28' : '#004312';
-                    cells.push({ x, y, color });
+                    // Match the brain exactly: silhouette comes from density and the
+                    // grid gaps, never from gradients or depth-based color shifts.
+                    cells.push({ x, y, color: '#006400' });
                   }
                 }
                 return cells.sort(() => Math.random() - 0.5);
