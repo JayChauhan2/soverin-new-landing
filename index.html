@@ -269,14 +269,13 @@
               position: fixed;
               top: 50%;
               transform: translateY(-50%) rotate(-90deg);
-              left: 1.5%;
-              font-family: 'Press Start 2P', monospace;
-              font-size: 2.2rem;
-              font-weight: 900;
-              letter-spacing: 0.15em;
+              left: 3%;
+              font-family: 'Space Grotesk', sans-serif;
+              font-size: 0.85rem;
+              font-weight: 700;
+              letter-spacing: 0.25em;
               text-transform: uppercase;
-              color: rgba(0, 255, 60, 0.32);
-              text-shadow: 0 0 10px rgba(0, 255, 60, 0.25);
+              color: rgba(255, 255, 255, 0.85);
               z-index: 50;
               pointer-events: none;
               opacity: 0;
@@ -341,7 +340,7 @@
             }
             /* Text square */
             .sf-square--text {
-              background: rgba(255, 255, 255, 0.015);
+              background: #020204;
               display: flex;
               flex-direction: column;
               justify-content: center;
@@ -461,7 +460,7 @@
               sectionObserver.observe(section);
 
               // ==========================================
-              // Background Green Pixel Dither Canvas Animation
+              // Background Fine Dot Dither Canvas Animation
               // ==========================================
               const canvas = document.createElement('canvas');
               canvas.id = 'features-dither-canvas';
@@ -472,23 +471,16 @@
               canvas.style.height = '100%';
               canvas.style.zIndex = '1';
               canvas.style.pointerEvents = 'none';
-              canvas.style.imageRendering = 'pixelated';
               section.appendChild(canvas);
 
               const ctx = canvas.getContext('2d');
 
-              // Offscreen low-res canvas for crisp pixelation
-              const offscreen = document.createElement('canvas');
-              const octx = offscreen.getContext('2d');
-
-              const pixelScale = 6; // 1 pixel offscreen = 6x6 on main canvas
-
               function resizeCanvas() {
                 const rect = section.getBoundingClientRect();
-                canvas.width = rect.width;
-                canvas.height = rect.height;
-                offscreen.width = Math.ceil(rect.width / pixelScale);
-                offscreen.height = Math.ceil(rect.height / pixelScale);
+                const dpr = window.devicePixelRatio || 1;
+                canvas.width = rect.width * dpr;
+                canvas.height = rect.height * dpr;
+                ctx.scale(dpr, dpr);
               }
 
               resizeCanvas();
@@ -497,45 +489,44 @@
               let frame = 0;
               function renderLoop() {
                 frame++;
-                const w = offscreen.width;
-                const h = offscreen.height;
+                
+                const rect = section.getBoundingClientRect();
+                const width = rect.width;
+                const height = rect.height;
 
-                if (w > 0 && h > 0) {
-                  octx.clearRect(0, 0, w, h);
+                if (width > 0 && height > 0) {
+                  ctx.clearRect(0, 0, width, height);
+
+                  // Dot grid spacing (12px grid spacing for clean fine dots)
+                  const spacing = 12;
                   
-                  const imgData = octx.createImageData(w, h);
-                  const data = imgData.data;
+                  // Halftone-style dot grid fading from bottom-left to top-right
+                  for (let y = spacing / 2; y < height; y += spacing) {
+                    for (let x = spacing / 2; x < width; x += spacing) {
+                      const dx = x / width;
+                      const dy = y / height;
 
-                  // Generate PC-98 dither grid with green wave shimmer
-                  for (let y = 0; y < h; y++) {
-                    const isEvenY = y % 2 === 0;
-                    const waveY = Math.sin(y * 0.08 + frame * 0.04);
-                    
-                    for (let x = 0; x < w; x++) {
-                      const isEvenX = x % 2 === 0;
+                      // Linear gradient factor (max weight on bottom-left, min on top-right)
+                      let val = (1 - dx) * 0.65 + (1 - dy) * 0.35;
 
-                      // Checkerboard dither condition
-                      if ((isEvenY && isEvenX) || (!isEvenY && !isEvenX)) {
-                        const waveX = Math.cos(x * 0.08 - frame * 0.02);
-                        const wave = waveY * waveX;
+                      // Micro-animation: a very subtle floating wave shimmer
+                      const wave = Math.sin(x * 0.008 - y * 0.006 + frame * 0.015) * 0.12;
+                      val = Math.max(0, Math.min(1, val + wave));
 
-                        // Light up checkerboard pixels
-                        if (wave > -0.05) {
-                          const pixelIdx = (y * w + x) * 4;
-                          const greenVal = Math.floor(40 + 90 * (wave * 0.5 + 0.5));
-                          
-                          data[pixelIdx] = 0;                         // Red
-                          data[pixelIdx + 1] = greenVal;              // Green
-                          data[pixelIdx + 2] = Math.floor(greenVal * 0.15); // Blue
-                          data[pixelIdx + 3] = Math.floor(25 + 35 * (wave * 0.5 + 0.5)); // Alpha
-                        }
+                      // Maximum radius of a dot is 2px for a fine, premium aesthetic
+                      const maxRadius = 2.0;
+                      const radius = val * maxRadius;
+
+                      if (radius > 0.3) {
+                        ctx.beginPath();
+                        ctx.arc(x, y, radius, 0, Math.PI * 2);
+                        // Soft blue/white matching the theme
+                        const alpha = 0.04 + val * 0.12;
+                        ctx.fillStyle = `rgba(140, 190, 255, ${alpha})`;
+                        ctx.fill();
                       }
                     }
                   }
-                  octx.putImageData(imgData, 0, 0);
-
-                  ctx.clearRect(0, 0, canvas.width, canvas.height);
-                  ctx.drawImage(offscreen, 0, 0, canvas.width, canvas.height);
                 }
 
                 requestAnimationFrame(renderLoop);
