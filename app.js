@@ -620,7 +620,14 @@ document.addEventListener("DOMContentLoaded", () => {
           const rawB = imgPixels[rawSrcIdx + 2];
           const rawBrightness = (rawR * 0.299 + rawG * 0.587 + rawB * 0.114) / 255;
           
-          const isTree = (x < w * 0.32 && y < h * 0.88 && rawBrightness < 0.48);
+          const rawIsBlue = (rawB > rawR && rawB > rawG * 0.9);
+          const rawIsGreen = (rawG > rawR * 0.9 && rawG > rawB * 0.9 && rawG > 40);
+          
+          let isTree = (x < w * 0.21 && y < h * 0.68 && rawBrightness < 0.48 && !rawIsBlue);
+          if (isTree && y > h * 0.53 && rawIsGreen) {
+            isTree = false;
+          }
+          
           if (isTree) {
             // Shake the tree violently left to right!
             dx += Math.sin(frame * 0.8) * 15;
