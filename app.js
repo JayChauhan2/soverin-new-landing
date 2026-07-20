@@ -620,37 +620,10 @@ document.addEventListener("DOMContentLoaded", () => {
           const rawB = imgPixels[rawSrcIdx + 2];
           const rawBrightness = (rawR * 0.299 + rawG * 0.587 + rawB * 0.114) / 255;
           
-          const isForegroundPlant = ((x < w * 0.30 && y > h * 0.68) || (x > w * 0.72 && y > h * 0.70)) && (rawBrightness < 0.48);
-          
-          if (isForegroundPlant) {
-            // Keep foreground plants completely static (no sway)
-          }
-          
-          // 2. Entire Tree Bending (Left side) - smooth linear horizontal bending (no fluid warp)
-          else if (x < w * 0.32 && y < h * 0.88 && rawBrightness < 0.48) {
-            const baseFactor = Math.max(0, (h * 0.88 - y) / (h * 0.88));
-            const factor = 0.4 + 0.6 * baseFactor;
-            
-            const tree_t = base_t * 2;
-            // Smooth float displacement (no rounding to prevent freezing, horizontal-only to prevent fluid warp)
-            dx += Math.sin(tree_t) * 4.0 * factor;
-          }
-          
-          // 4. Grass Hill Swaying (Lower screen) - very subtle back and forth sway (no fluid ripples)
-          else if (y > h * 0.55) {
-            const baseFactor = (y - h * 0.55) / (h * 0.45);
-            const factor = Math.pow(baseFactor, 2.8); // Locks distant hills/mountains completely static
-            
-            const grass_t = base_t * 2;
-            dx += Math.sin(grass_t) * 1.8 * factor; // Low amplitude, no spatial x/y waves to prevent fluid look
-          }
-          
-          // 5. Lake ripples (bottom-right water area) - flowing reflection warp
-          const isLakeArea = (y > h * 0.60) && (x > w * 0.32);
-          if (isLakeArea) {
-            const lake_t = base_t * 3;
-            dx += Math.sin(y * 0.15 - lake_t) * 0.6; // Horizontal flow
-            dy += Math.cos(x * 0.1 + lake_t) * 0.4;  // Vertical ripple
+          const isTree = (x < w * 0.32 && y < h * 0.88 && rawBrightness < 0.48);
+          if (isTree) {
+            // Shake the tree violently left to right!
+            dx += Math.sin(frame * 0.8) * 15;
           }
           
           // Map warped coordinate back to low-res source grid space
