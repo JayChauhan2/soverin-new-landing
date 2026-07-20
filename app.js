@@ -624,10 +624,26 @@ document.addEventListener("DOMContentLoaded", () => {
           const matrixX = x % 4;
           const idx = (y * w + x) * 4;
           
-          const r = imgPixels[idx];
-          const g = imgPixels[idx + 1];
-          const b = imgPixels[idx + 2];
-          const a = imgPixels[idx + 3];
+          let dx = 0;
+          // 1. Tree swaying (left side) - ultra-soft, gentle micro-sway
+          if (x < w * 0.32 && y < h * 0.85) {
+            const factor = Math.max(0, (h * 0.85 - y) / (h * 0.85));
+            dx += Math.sin(y * 0.05 + frame * 0.04) * 0.8 * factor; // Very subtle micro-sway
+          }
+          // 2. Grass swaying (lower screen) - ultra-soft, gentle micro-sway
+          if (y > h * 0.55) {
+            const factor = (y - h * 0.55) / (h * 0.45);
+            dx += Math.sin(x * 0.04 + frame * 0.035) * 0.4 * factor; // Very subtle micro-sway
+          }
+          
+          const srcX = Math.max(0, Math.min(w - 1, Math.round(x + dx)));
+          const srcY = y;
+          const srcIdx = (srcY * w + srcX) * 4;
+          
+          const r = imgPixels[srcIdx];
+          const g = imgPixels[srcIdx + 1];
+          const b = imgPixels[srcIdx + 2];
+          const a = imgPixels[srcIdx + 3];
           
           if (a === 0) continue;
           
@@ -649,12 +665,13 @@ document.addEventListener("DOMContentLoaded", () => {
           // Dynamic proximity check: check if a green grass pixel exists within a small neighborhood
           let isNearGreen = false;
           if (isBlue && y > h * 0.65 && x > w * 0.35 && brightness >= 0.12 && brightness < 0.55) {
-            // Check vertical neighbors within radius 4
+            // Check vertical neighbors within radius 4 using same displacement to maintain alignment
             for (let dy = -4; dy <= 4; dy++) {
               if (dy === 0) continue;
               const ny = y + dy;
               if (ny >= 0 && ny < h) {
-                const nIdx = (ny * w + x) * 4;
+                const nX = Math.max(0, Math.min(w - 1, Math.round(x + dx)));
+                const nIdx = (ny * w + nX) * 4;
                 const nr = imgPixels[nIdx];
                 const ng = imgPixels[nIdx + 1];
                 const nb = imgPixels[nIdx + 2];
@@ -666,11 +683,11 @@ document.addEventListener("DOMContentLoaded", () => {
             }
             // Check horizontal neighbors within radius 4
             if (!isNearGreen) {
-              for (let dx = -4; dx <= 4; dx++) {
-                if (dx === 0) continue;
-                const nx = x + dx;
-                if (nx >= 0 && nx < w) {
-                  const nIdx = (y * w + nx) * 4;
+              for (let dx2 = -4; dx2 <= 4; dx2++) {
+                if (dx2 === 0) continue;
+                const nX = Math.max(0, Math.min(w - 1, Math.round(x + dx + dx2)));
+                if (nX >= 0 && nX < w) {
+                  const nIdx = (y * w + nX) * 4;
                   const nr = imgPixels[nIdx];
                   const ng = imgPixels[nIdx + 1];
                   const nb = imgPixels[nIdx + 2];
@@ -727,7 +744,11 @@ document.addEventListener("DOMContentLoaded", () => {
             outData[idx + 2] = color[2];
             outData[idx + 3] = color[3];
           } else {
-            outData[idx + 3] = 0;
+            // Draw the background pixel (warped) directly onto the canvas
+            outData[idx] = r;
+            outData[idx + 1] = g;
+            outData[idx + 2] = b;
+            outData[idx + 3] = a;
           }
         }
       }
