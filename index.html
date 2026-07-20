@@ -294,7 +294,7 @@
               border: 1px solid rgba(255, 255, 255, 0.08);
               border-radius: 12px;
               padding: 32px;
-              gap: 32px;
+              gap: 0;
               position: relative;
               z-index: 2;
               background: rgba(2, 2, 4, 0.4);
@@ -315,6 +315,9 @@
             }
             .sf-row .sf-square + .sf-square {
               border-left: none;
+            }
+            .sf-row + .sf-row .sf-square {
+              border-top: none;
             }
             /* Image square */
             .sf-square--img {
