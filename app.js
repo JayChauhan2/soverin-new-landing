@@ -646,10 +646,10 @@ document.addEventListener("DOMContentLoaded", () => {
           const isGreen = (g > b && g > r * 0.9) && (y > h * 0.55); // Grass dither pushed lower (starts at 55% screen height)
           const isWarm = (r > b && r > g * 0.8); // Sunset tones (orange, peach, pink, red)
           
-          // Bounding coordinates matching the user's screenshot markings for selective lake dither
+          // Bounding coordinates matching the user's screenshot markings for selective lake dither (narrowed to hug the shoreline)
           const isLakeDitherZone = 
-            (x > w * 0.54 && x < w * 0.98 && y > h * 0.58 && y < h * 0.76) || // Region 1 (upper-right reflection zone)
-            (x > w * 0.46 && x < w * 0.92 && y > h * 0.74 && y < h * 0.90);   // Region 2 (lower-middle/right zone)
+            (x > w * 0.56 && x < w * 0.98 && y > h * 0.61 && y < h * 0.66) || // Region 1 (narrow shoreline band under the right green bank)
+            (x > w * 0.46 && x < w * 0.92 && y > h * 0.78 && y < h * 0.83);   // Region 2 (narrow shoreline band above the bottom grass)
           
           if (isBlue && isLakeDitherZone && brightness >= 0.12 && brightness < 0.55) {
             if (brightness < animBayer * 0.72) {
