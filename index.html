@@ -278,8 +278,14 @@
               color: #ffffff;
               z-index: 50;
               pointer-events: none;
-              opacity: 1;
+              opacity: 0;
+              visibility: hidden;
+              transition: opacity 180ms ease, visibility 180ms ease;
               white-space: nowrap;
+            }
+            .sf-side-title.is-visible {
+              opacity: 1;
+              visibility: visible;
             }
             /* Rows — centered at 75% width, take the full available space */
             .sf-rows {
@@ -323,6 +329,16 @@
               justify-content: center;
               position: relative;
               background: #b8dc90 !important;
+            }
+            #sf-row-0 .sf-square--img {
+              background:
+                radial-gradient(ellipse at 50% 46%, rgba(255, 255, 255, 0.98) 0%, rgba(250, 255, 250, 0.9) 30%, rgba(223, 244, 226, 0.22) 67%, transparent 100%),
+                linear-gradient(135deg, #d7efda 0%, #f9fdf9 53%, #d4eed9 100%) !important;
+            }
+            #sf-row-2 .sf-square--img {
+              background:
+                radial-gradient(ellipse at 50% 58%, rgba(255, 255, 255, 0.92) 0%, rgba(244, 250, 255, 0.72) 48%, transparent 100%),
+                linear-gradient(135deg, #d8ebff 0%, #f7fbff 54%, #d4e9ff 100%) !important;
             }
             .sf-square--img__placeholder {
               width: 100%;
@@ -519,7 +535,7 @@
 
                       // Keep the dots deliberately small; the reference is texture,
                       // not a prominent pixel pattern.
-                      const maxRadius = 0.8;
+                      const maxRadius = 1.1;
                       const radius = val * maxRadius;
 
                       if (radius > 0.18) {
@@ -527,7 +543,7 @@
                         ctx.arc(x, y, radius, 0, Math.PI * 2);
                         // Soft white with a faint green cast, tuned to recede behind
                         // the content instead of competing with it.
-                        const alpha = 0.025 + val * 0.075;
+                        const alpha = 0.05 + val * 0.12;
                         ctx.fillStyle = `rgba(185, 255, 204, ${alpha})`;
                         ctx.fill();
                       }
@@ -767,7 +783,7 @@
               // ==========================================
               // One restrained dither treatment is shared by every image square.
               // ==========================================
-              function paintImgDither(el) {
+              function paintImgDither(el, mode) {
                 const dc = document.createElement('canvas');
                 dc.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:2;';
                 el.appendChild(dc);
@@ -793,14 +809,27 @@
                     for (let x = spacing / 2; x < w; x += spacing) {
                       const nx = x / w;
                       const ny = y / h;
-                      const weight = Math.max(0, 0.82 - nx * 0.3 - (1 - ny) * 0.24);
+                      let weight;
+                      let color;
+
+                      if (mode === 'brain') {
+                        const edge = Math.abs(nx - 0.5) * 2;
+                        weight = Math.max(0, ny * 0.72 + edge * 0.26 - 0.12);
+                        color = `rgba(35, 142, 70, ${0.02 + weight * 0.11})`;
+                      } else if (mode === 'blue') {
+                        weight = 0.42;
+                        color = 'rgba(93, 157, 225, 0.15)';
+                      } else {
+                        weight = Math.max(0, 0.82 - nx * 0.3 - (1 - ny) * 0.24);
+                        color = `rgba(0, 70, 24, ${0.035 + weight * 0.11})`;
+                      }
 
                       const radius = weight * maxR;
                       if (radius < 0.2) continue;
 
                       dctx.beginPath();
                       dctx.arc(x, y, radius, 0, Math.PI * 2);
-                      dctx.fillStyle = `rgba(0, 70, 24, ${0.035 + weight * 0.11})`;
+                      dctx.fillStyle = color;
                       dctx.fill();
                     }
                   }
@@ -812,7 +841,9 @@
               }
 
               const rows = document.querySelectorAll('.sf-row');
-              rows.forEach((row) => paintImgDither(row.querySelector('.sf-square--img')));
+              if (rows[0]) paintImgDither(rows[0].querySelector('.sf-square--img'), 'brain');
+              if (rows[1]) paintImgDither(rows[1].querySelector('.sf-square--img'), 'green');
+              if (rows[2]) paintImgDither(rows[2].querySelector('.sf-square--img'), 'blue');
 
 
             })();
