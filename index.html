@@ -316,15 +316,13 @@
             .sf-row + .sf-row .sf-square {
               border-top: none;
             }
-            /* Image squares share the same deep, neutral treatment. */
+            /* Image squares share one consistent light-green treatment. */
             .sf-square--img {
               display: flex;
               align-items: center;
               justify-content: center;
               position: relative;
-              background:
-                radial-gradient(circle at 15% 100%, rgba(0, 100, 0, 0.34), transparent 58%),
-                linear-gradient(135deg, #07110a 0%, #0b1d10 100%) !important;
+              background: #b8dc90 !important;
             }
             .sf-square--img__placeholder {
               width: 100%;
@@ -339,14 +337,14 @@
             .sf-square--img__placeholder svg rect,
             .sf-square--img__placeholder svg circle,
             .sf-square--img__placeholder svg path {
-              stroke: rgba(255, 255, 255, 0.72) !important;
+              stroke: rgba(0, 50, 18, 0.68) !important;
             }
             .sf-square--img__placeholder span {
               font-family: 'Space Grotesk', sans-serif;
               font-size: 0.68rem;
               letter-spacing: 0.18em;
               text-transform: uppercase;
-              color: rgba(255, 255, 255, 0.52);
+              color: rgba(0, 50, 18, 0.56);
             }
             /* Text square */
             .sf-square--text {
@@ -802,7 +800,7 @@
 
                       dctx.beginPath();
                       dctx.arc(x, y, radius, 0, Math.PI * 2);
-                      dctx.fillStyle = `rgba(185, 255, 204, ${0.025 + weight * 0.08})`;
+                      dctx.fillStyle = `rgba(0, 70, 24, ${0.035 + weight * 0.11})`;
                       dctx.fill();
                     }
                   }
