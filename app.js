@@ -532,7 +532,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const ditherCanvas = document.getElementById("dither-canvas");
   if (ditherCanvas && typeof BG_PIXELS !== "undefined") {
     const ditherCtx = ditherCanvas.getContext("2d");
-    const scale = 3; // Match the 3x nearest-neighbor upscaled image pixel ratio
+    const scale = 2; // Match the 2x nearest-neighbor upscaled image pixel ratio
     let w = 0;
     let h = 0;
     
@@ -633,7 +633,7 @@ document.addEventListener("DOMContentLoaded", () => {
             
             const tree_t = base_t * 2;
             // Smooth float displacement (no rounding to prevent freezing, horizontal-only to prevent fluid warp)
-            dx += Math.sin(tree_t) * 2.8 * factor;
+            dx += Math.sin(tree_t) * 4.0 * factor;
           }
           
           // 4. Grass Hill Swaying (Lower screen) - very subtle back and forth sway (no fluid ripples)
@@ -642,7 +642,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const factor = Math.pow(baseFactor, 2.8); // Locks distant hills/mountains completely static
             
             const grass_t = base_t * 2;
-            dx += Math.sin(grass_t) * 1.2 * factor; // Low amplitude, no spatial x/y waves to prevent fluid look
+            dx += Math.sin(grass_t) * 1.8 * factor; // Low amplitude, no spatial x/y waves to prevent fluid look
           }
           
           // 5. Lake ripples (bottom-right water area) - flowing reflection warp
