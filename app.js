@@ -648,7 +648,7 @@ document.addEventListener("DOMContentLoaded", () => {
           
           // Dynamic proximity check: check if a green grass pixel exists within a small neighborhood
           let isNearGreen = false;
-          if (isBlue && y > h * 0.58 && x > w * 0.35 && brightness >= 0.12 && brightness < 0.55) {
+          if (isBlue && y > h * 0.65 && x > w * 0.35 && brightness >= 0.12 && brightness < 0.55) {
             // Check vertical neighbors within radius 4
             for (let dy = -4; dy <= 4; dy++) {
               if (dy === 0) continue;
