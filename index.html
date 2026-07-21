@@ -829,7 +829,7 @@
                 }
               }
 
-              // Section 2: supplied green pixel landscape. White sky is keyed out
+              // Section 2: supplied green pixel skyline. White sky is keyed out
               // so the card's own pale-green background shows through.
               const worldSource = document.createElement('canvas');
               worldSource.width = 500;
@@ -839,7 +839,7 @@
               let worldCells = [];
               const worldImage = new Image();
               let worldReady = false;
-              worldImage.src = 'assets/living-world.png';
+              worldImage.src = 'assets/living-world-skyline.png';
               worldImage.onload = () => {
                 // A left-anchored crop fills the holder while preserving the original aspect ratio.
                 const cropWidth = worldImage.naturalHeight * (worldSource.width / worldSource.height);
