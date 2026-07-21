@@ -379,6 +379,35 @@
               justify-content: center;
               padding: 52px 56px;
             }
+            .sf-square--text > * {
+              position: relative;
+              z-index: 1;
+            }
+            .sf-square--text::after {
+              content: '';
+              position: absolute;
+              inset: 0;
+              pointer-events: none;
+              opacity: 0.52;
+              background:
+                linear-gradient(#fff 0 0) 7% 93% / 2px 2px no-repeat,
+                linear-gradient(#fff 0 0) 13% 88% / 1px 1px no-repeat,
+                linear-gradient(#fff 0 0) 19% 96% / 2px 2px no-repeat,
+                linear-gradient(#fff 0 0) 24% 91% / 1px 1px no-repeat,
+                linear-gradient(#fff 0 0) 31% 86% / 2px 2px no-repeat,
+                linear-gradient(#fff 0 0) 36% 95% / 1px 1px no-repeat,
+                linear-gradient(#fff 0 0) 42% 90% / 2px 2px no-repeat,
+                linear-gradient(#fff 0 0) 48% 97% / 1px 1px no-repeat,
+                linear-gradient(#fff 0 0) 54% 84% / 1px 1px no-repeat,
+                linear-gradient(#fff 0 0) 59% 92% / 2px 2px no-repeat,
+                linear-gradient(#fff 0 0) 64% 88% / 1px 1px no-repeat,
+                linear-gradient(#fff 0 0) 69% 96% / 2px 2px no-repeat,
+                linear-gradient(#fff 0 0) 74% 90% / 1px 1px no-repeat,
+                linear-gradient(#fff 0 0) 79% 85% / 2px 2px no-repeat,
+                linear-gradient(#fff 0 0) 84% 94% / 2px 2px no-repeat,
+                linear-gradient(#fff 0 0) 90% 89% / 1px 1px no-repeat,
+                linear-gradient(#fff 0 0) 95% 96% / 2px 2px no-repeat;
+            }
             .sf-square--text__tag {
               font-family: 'Press Start 2P', monospace;
               font-size: 0.48rem;
@@ -909,25 +938,25 @@
                 if (!leftToRight) ctx.scale(-1, 1);
                 ctx.rotate(-0.045);
 
-                // Side-profile commercial airliner: long cabin, raised tail,
-                // one visible swept wing, and two small under-wing engines.
+                // Full side-profile passenger airliner: long rounded cabin,
+                // conventional tail and one broad visible wing.
                 ctx.beginPath();
-                ctx.moveTo(31, -1);
-                ctx.quadraticCurveTo(28, -5.5, 21, -6.2);
-                ctx.lineTo(-16, -6.2);
-                ctx.lineTo(-23, -13.5);
-                ctx.lineTo(-28, -13.5);
-                ctx.lineTo(-26, -6.2);
-                ctx.lineTo(-34, -4.5);
-                ctx.lineTo(-37, -1);
-                ctx.lineTo(-34, 2.5);
-                ctx.lineTo(-23, 4.2);
-                ctx.lineTo(-5, 4.2);
-                ctx.lineTo(3, 15);
-                ctx.lineTo(8, 15);
-                ctx.lineTo(5, 4.2);
-                ctx.lineTo(21, 3.2);
-                ctx.quadraticCurveTo(29, 2.7, 31, -1);
+                ctx.moveTo(34, -1);
+                ctx.quadraticCurveTo(32, -5.8, 23, -6.8);
+                ctx.lineTo(-19, -6.8);
+                ctx.lineTo(-24, -16);
+                ctx.lineTo(-30, -16);
+                ctx.lineTo(-28, -6.8);
+                ctx.lineTo(-37, -4.8);
+                ctx.lineTo(-40, -1.2);
+                ctx.lineTo(-37, 2.8);
+                ctx.lineTo(-24, 4.6);
+                ctx.lineTo(-8, 4.6);
+                ctx.lineTo(4, 14.5);
+                ctx.lineTo(14, 14.5);
+                ctx.lineTo(7, 4.6);
+                ctx.lineTo(23, 3.5);
+                ctx.quadraticCurveTo(32, 2.8, 34, -1);
                 ctx.closePath();
                 // The silhouette is composed from square dither cells, matching
                 // the brain's visual language rather than a solid pasted-on icon.
@@ -935,14 +964,23 @@
                 ctx.clip();
                 ctx.fillStyle = '#081009';
                 for (let py = -14; py <= 15; py += 3.2) {
-                  for (let px = -36; px <= 30; px += 3.2) {
-                    const key = Math.floor(px * 3 + py * 7 + cycleIndex);
-                    if (key % 5 !== 0) ctx.fillRect(px, py, 2.45, 2.45);
+                  for (let px = -40; px <= 33; px += 3.2) {
+                    // Dense cells retain a solid body, with only the brain-like
+                    // hairline grid gaps between each square.
+                    ctx.fillRect(px, py, 2.9, 2.9);
                   }
                 }
-                ctx.fillStyle = 'rgba(0, 100, 0, 0.7)';
-                for (let px = -18; px < 21; px += 6.4) ctx.fillRect(px, -2.2, 1.45, 1.45);
+                ctx.fillStyle = 'rgba(0, 100, 0, 0.66)';
+                for (let px = -14; px < 23; px += 6.4) ctx.fillRect(px, -2.1, 1.55, 1.55);
                 ctx.restore();
+
+                // Two understated engine pods under the wing, also pixel-built.
+                ctx.fillStyle = '#081009';
+                for (const engineX of [1, 10]) {
+                  for (let py = 11; py < 15; py += 2.1) {
+                    for (let px = engineX; px < engineX + 5; px += 2.1) ctx.fillRect(px, py, 1.85, 1.85);
+                  }
+                }
                 ctx.restore();
               }
 
