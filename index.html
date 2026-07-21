@@ -968,7 +968,7 @@
                         const checker = (col + row + phase) % 2 === 0;
                         const isFilled = checker && fade > 0 && hash > (1 - fade) * 0.33;
                         if (isFilled) {
-                          fieldCtx.fillStyle = `rgba(255,255,255,${0.42 + fade * 0.54})`;
+                          fieldCtx.fillStyle = `rgba(255,255,255,${0.18 + fade * 0.38})`;
                           fieldCtx.fillRect(x, y, pixel, pixel);
                         }
                       }
