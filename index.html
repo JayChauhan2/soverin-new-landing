@@ -1070,8 +1070,8 @@
 
                 function draw(w, h) {
                   dctx.clearRect(0, 0, w, h);
-                  const spacing = mode === 'light-green' ? 18 : 16;
-                  const maxR    = mode === 'light-green' ? 2.05 : 1.55;
+                  const spacing = mode === 'light-green' ? 18 : mode === 'green' ? 14 : 16;
+                  const maxR    = mode === 'light-green' ? 2.05 : mode === 'green' ? 2.2 : 1.55;
 
                   for (let y = spacing / 2; y < h; y += spacing) {
                     for (let x = spacing / 2; x < w; x += spacing) {
@@ -1093,7 +1093,7 @@
                         color = `rgba(0, 100, 0, ${0.09 + weight * 0.25})`;
                       } else {
                         weight = Math.max(0, 0.82 - nx * 0.3 - (1 - ny) * 0.24);
-                        color = `rgba(0, 70, 24, ${0.035 + weight * 0.11})`;
+                        color = `rgba(0, 82, 25, ${0.12 + weight * 0.23})`;
                       }
 
                       const radius = weight * maxR;
