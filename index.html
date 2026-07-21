@@ -829,58 +829,6 @@
                 }
               }
 
-              function drawHandSignals(ctx, progress, time) {
-                if (progress < 0.68) return;
-                const lineProgress = Math.min(1, (progress - 0.68) / 0.32);
-                const globe = { x: 250, y: 166 };
-                const hands = [
-                  { x: 72, y: 192, bend: 128 },
-                  { x: 148, y: 302, bend: 186 },
-                  { x: 352, y: 302, bend: 314 },
-                  { x: 428, y: 192, bend: 372 },
-                  { x: 250, y: 385, bend: 250 }
-                ];
-
-                hands.forEach((hand, index) => {
-                  const mid = { x: hand.bend, y: hand.y };
-                  const firstHalf = Math.min(1, lineProgress * 2);
-                  const secondHalf = Math.max(0, Math.min(1, (lineProgress - 0.5) * 2));
-
-                  ctx.save();
-                  ctx.beginPath();
-                  ctx.strokeStyle = 'rgba(0, 100, 0, 0.35)';
-                  ctx.lineWidth = 1;
-                  ctx.setLineDash([3, 3]);
-                  ctx.moveTo(hand.x, hand.y);
-                  ctx.lineTo(hand.x + (mid.x - hand.x) * firstHalf, hand.y);
-                  if (lineProgress > 0.5) {
-                    ctx.lineTo(mid.x + (globe.x - mid.x) * secondHalf, mid.y + (globe.y - mid.y) * secondHalf);
-                  }
-                  ctx.stroke();
-
-                  if (lineProgress > 0.5) {
-                    // Deliberate, ambient transmission — much slower than the brain pulses.
-                    const signal = ((time * 0.00018) + index * 0.17) % 1;
-                    let x;
-                    let y;
-                    if (signal < 0.5) {
-                      const t = signal * 2;
-                      x = hand.x + (mid.x - hand.x) * t;
-                      y = hand.y;
-                    } else {
-                      const t = (signal - 0.5) * 2;
-                      x = mid.x + (globe.x - mid.x) * t;
-                      y = mid.y + (globe.y - mid.y) * t;
-                    }
-                    ctx.fillStyle = '#006400';
-                    ctx.beginPath();
-                    ctx.arc(x, y, 2.5, 0, Math.PI * 2);
-                    ctx.fill();
-                  }
-                  ctx.restore();
-                });
-              }
-
               // Section 2: supplied green pixel landscape. White sky is keyed out
               // so the card's own pale-green background shows through.
               const worldSource = document.createElement('canvas');
@@ -942,7 +890,6 @@
                 ctx.clearRect(0, 0, w, h);
                 if (!globeReady) return;
                 drawBrainStyleGrid(ctx, globeCells, p);
-                drawHandSignals(ctx, p, performance.now());
               });
               // ==========================================
               // One restrained dither treatment is shared by every image square.
