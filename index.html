@@ -341,6 +341,12 @@
                 radial-gradient(ellipse at 50% 58%, rgba(255, 255, 255, 0.92) 0%, rgba(246, 253, 247, 0.72) 48%, transparent 100%),
                 linear-gradient(135deg, #d7efda 0%, #f9fdf9 54%, #d4eed9 100%) !important;
             }
+            /* The globe artwork starts square; give it extra vertical presence in
+               this wide card rather than letting the hands read horizontally pulled. */
+            #sf-row-2 #sf-chronicle-canvas {
+              transform: translateY(12px) scaleY(1.2);
+              transform-origin: center center;
+            }
             /* The image cards are intentionally borderless; only the text-card grid remains. */
             .sf-square--img {
               border: none;
@@ -853,7 +859,8 @@
                   ctx.stroke();
 
                   if (lineProgress > 0.5) {
-                    const signal = ((time * 0.001) + index * 0.17) % 1;
+                    // Deliberate, ambient transmission — much slower than the brain pulses.
+                    const signal = ((time * 0.00018) + index * 0.17) % 1;
                     let x;
                     let y;
                     if (signal < 0.5) {
