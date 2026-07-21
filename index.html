@@ -936,7 +936,8 @@
                 ctx.save();
                 ctx.translate(x, y);
                 if (!leftToRight) ctx.scale(-1, 1);
-                ctx.rotate(-0.045);
+                // Keep the fuselage level with its horizontal flight path.
+                ctx.rotate(0);
 
                 // Long, level passenger airliner profile based on the supplied
                 // side-view reference: rounded nose, cabin, low wing and tail fin.
