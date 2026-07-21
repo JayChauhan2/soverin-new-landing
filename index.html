@@ -416,6 +416,8 @@
                 linear-gradient(#fff 0 0) calc(77% + 18px) 91% / 6px 6px no-repeat,
                 linear-gradient(#fff 0 0) calc(77% + 24px) 79% / 6px 6px no-repeat;
             }
+            /* Drawn by the text-card pixel canvas below. */
+            .sf-square--text::after { display: none; }
             .sf-square--text__tag {
               font-family: 'Press Start 2P', monospace;
               font-size: 0.48rem;
@@ -860,9 +862,51 @@
                 for (let i = 0; i < count; i++) {
                   const cell = cells[i];
                   ctx.fillStyle = cell.color;
-                  ctx.fillRect(cell.x, cell.y, featureGridSize - 0.65, featureGridSize - 0.65);
+                  // Match the brain: dense #006400 cells with only hairline gaps.
+                  ctx.fillRect(cell.x, cell.y, featureGridSize - 0.2, featureGridSize - 0.2);
                 }
               }
+
+              function addTextCardPixelFields() {
+                document.querySelectorAll('.sf-square--text').forEach((card, cardIndex) => {
+                  const layer = document.createElement('canvas');
+                  layer.setAttribute('aria-hidden', 'true');
+                  layer.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0;';
+                  card.appendChild(layer);
+                  const fieldCtx = layer.getContext('2d');
+
+                  const paint = () => {
+                    const rect = card.getBoundingClientRect();
+                    if (!rect.width || !rect.height) return;
+                    const dpr = window.devicePixelRatio || 1;
+                    layer.width = Math.round(rect.width * dpr);
+                    layer.height = Math.round(rect.height * dpr);
+                    fieldCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+                    fieldCtx.clearRect(0, 0, rect.width, rect.height);
+
+                    const cell = 11;
+                    const pixel = 10;
+                    const startY = Math.floor(rect.height * 0.7 / cell) * cell;
+                    for (let y = startY, row = 0; y < rect.height; y += cell, row++) {
+                      for (let x = 0, col = 0; x < rect.width; x += cell, col++) {
+                        const hash = ((col * 17 + row * 31 + cardIndex * 13) % 19) / 19;
+                        const checker = (col + row) % 2 === 0;
+                        const nearBottom = y > rect.height * 0.86;
+                        // Checker-like, but with deliberate gaps and uneven clusters.
+                        if ((checker && hash > 0.16) || (!checker && (nearBottom ? hash > 0.64 : hash > 0.84))) {
+                          fieldCtx.fillStyle = `rgba(255,255,255,${0.56 + hash * 0.34})`;
+                          fieldCtx.fillRect(x, y, pixel, pixel);
+                        }
+                      }
+                    }
+                  };
+
+                  new ResizeObserver(paint).observe(card);
+                  paint();
+                });
+              }
+
+              addTextCardPixelFields();
 
               // Section 2: supplied green pixel skyline. White sky is keyed out
               // so the card's own pale-green background shows through.
