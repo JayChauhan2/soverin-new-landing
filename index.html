@@ -341,7 +341,8 @@
                 radial-gradient(ellipse at 50% 58%, rgba(255, 255, 255, 0.92) 0%, rgba(246, 253, 247, 0.72) 48%, transparent 100%),
                 linear-gradient(135deg, #d7efda 0%, #f9fdf9 54%, #d4eed9 100%) !important;
             }
-            #sf-row-1 .sf-square--img {
+            /* The image cards are intentionally borderless; only the text-card grid remains. */
+            .sf-square--img {
               border: none;
             }
             .sf-square--img__placeholder {
@@ -773,7 +774,8 @@
                     const animate = (time) => {
                       reveal = Math.min(1, reveal + 0.009);
                       painter(featureCtx, featureCanvas.width, featureCanvas.height, reveal, time);
-                      if (reveal < 1) requestAnimationFrame(animate);
+                      // Keep the canvas alive once revealed so visual telemetry can pulse.
+                      requestAnimationFrame(animate);
                     };
                     requestAnimationFrame(animate);
                   }
@@ -821,6 +823,57 @@
                 }
               }
 
+              function drawHandSignals(ctx, progress, time) {
+                if (progress < 0.68) return;
+                const lineProgress = Math.min(1, (progress - 0.68) / 0.32);
+                const globe = { x: 250, y: 166 };
+                const hands = [
+                  { x: 72, y: 192, bend: 128 },
+                  { x: 148, y: 302, bend: 186 },
+                  { x: 352, y: 302, bend: 314 },
+                  { x: 428, y: 192, bend: 372 },
+                  { x: 250, y: 385, bend: 250 }
+                ];
+
+                hands.forEach((hand, index) => {
+                  const mid = { x: hand.bend, y: hand.y };
+                  const firstHalf = Math.min(1, lineProgress * 2);
+                  const secondHalf = Math.max(0, Math.min(1, (lineProgress - 0.5) * 2));
+
+                  ctx.save();
+                  ctx.beginPath();
+                  ctx.strokeStyle = 'rgba(0, 100, 0, 0.35)';
+                  ctx.lineWidth = 1;
+                  ctx.setLineDash([3, 3]);
+                  ctx.moveTo(hand.x, hand.y);
+                  ctx.lineTo(hand.x + (mid.x - hand.x) * firstHalf, hand.y);
+                  if (lineProgress > 0.5) {
+                    ctx.lineTo(mid.x + (globe.x - mid.x) * secondHalf, mid.y + (globe.y - mid.y) * secondHalf);
+                  }
+                  ctx.stroke();
+
+                  if (lineProgress > 0.5) {
+                    const signal = ((time * 0.001) + index * 0.17) % 1;
+                    let x;
+                    let y;
+                    if (signal < 0.5) {
+                      const t = signal * 2;
+                      x = hand.x + (mid.x - hand.x) * t;
+                      y = hand.y;
+                    } else {
+                      const t = (signal - 0.5) * 2;
+                      x = mid.x + (globe.x - mid.x) * t;
+                      y = mid.y + (globe.y - mid.y) * t;
+                    }
+                    ctx.fillStyle = '#006400';
+                    ctx.beginPath();
+                    ctx.arc(x, y, 2.5, 0, Math.PI * 2);
+                    ctx.fill();
+                  }
+                  ctx.restore();
+                });
+              }
+
               // Section 2: supplied green pixel landscape. White sky is keyed out
               // so the card's own pale-green background shows through.
               const worldSource = document.createElement('canvas');
@@ -864,11 +917,12 @@
               let globeReady = false;
               globeImage.src = 'assets/globe-hands.png';
               globeImage.onload = () => {
-                // Cover the holder so the hands reach all the way to its edges.
-                const scale = Math.max(globeSource.width / globeImage.naturalWidth, globeSource.height / globeImage.naturalHeight);
+                // Preserve the source artwork's proportions; move it down a touch
+                // rather than widening it to make the square source fit this card.
+                const scale = globeSource.width / globeImage.naturalWidth;
                 const imageWidth = globeImage.naturalWidth * scale;
                 const imageHeight = globeImage.naturalHeight * scale;
-                globeCtx.drawImage(globeImage, (globeSource.width - imageWidth) / 2, (globeSource.height - imageHeight) / 2, imageWidth, imageHeight);
+                globeCtx.drawImage(globeImage, (globeSource.width - imageWidth) / 2, 18, imageWidth, imageHeight);
                 const imageData = globeCtx.getImageData(0, 0, globeSource.width, globeSource.height);
                 for (let i = 0; i < imageData.data.length; i += 4) {
                   if (imageData.data[i] > 242 && imageData.data[i + 1] > 242 && imageData.data[i + 2] > 242) imageData.data[i + 3] = 0;
@@ -881,6 +935,7 @@
                 ctx.clearRect(0, 0, w, h);
                 if (!globeReady) return;
                 drawBrainStyleGrid(ctx, globeCells, p);
+                drawHandSignals(ctx, p, performance.now());
               });
               // ==========================================
               // One restrained dither treatment is shared by every image square.
