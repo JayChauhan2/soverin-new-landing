@@ -890,7 +890,9 @@
                 const skylineWidth = skylineHeight * (worldSource.width / worldSource.height);
                 worldCtx.drawImage(worldImage, 0, 0, skylineWidth, skylineHeight, 0, 28, worldSource.width, worldSource.height);
                 const imageData = worldCtx.getImageData(0, 0, worldSource.width, worldSource.height);
-                for (let y = 0; y < worldSource.height * 0.67; y++) {
+                // Key the white source background across the entire canvas. Limiting
+                // this to the upper area turned the lower sky into a solid green block.
+                for (let y = 0; y < worldSource.height; y++) {
                   for (let x = 0; x < worldSource.width; x++) {
                     const i = (y * worldSource.width + x) * 4;
                     const r = imageData.data[i], g = imageData.data[i + 1], b = imageData.data[i + 2];
