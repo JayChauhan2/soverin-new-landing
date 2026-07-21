@@ -945,9 +945,9 @@
                     fieldCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
                     fieldCtx.clearRect(0, 0, rect.width, rect.height);
 
-                    const cell = 18;
-                    const pixel = 17;
-                    const startY = Math.floor(rect.height * 0.1 / cell) * cell;
+                    const cell = 14;
+                    const pixel = 13;
+                    const startY = Math.floor(rect.height * 0.58 / cell) * cell;
                     for (let y = startY, row = 0; y < rect.height; y += cell, row++) {
                       for (let x = 0, col = 0; x < rect.width; x += cell, col++) {
                         const hash = ((col * 17 + row * 31 + cardIndex * 13) % 19) / 19;
@@ -962,7 +962,7 @@
                         const ripple = Math.sin((nx * (6 + activeCardPattern) + cardIndex * 1.7) * Math.PI) * 0.045;
                         // A full lower checker field, with a card-specific edge that
                         // climbs high like the supplied reference rather than a flat band.
-                        const fieldTop = 0.79 - edge * profile + ripple;
+                        const fieldTop = Math.max(0.64, 0.82 - edge * profile * 0.35 + ripple);
                         const fade = Math.max(0, Math.min(1, (ny - fieldTop) / 0.24));
                         const phase = (activeCardPattern + cardIndex * 3) % 2;
                         const checker = (col + row + phase) % 2 === 0;
