@@ -869,12 +869,38 @@
                 // 500px artboard, so it stays believable beside the towers.
                 const cycle = 14800;
                 const flyby = 4600;
+                const trailLifetime = 3000;
                 const cycleIndex = Math.floor(time / cycle);
                 const elapsed = time % cycle;
+                const leftToRight = cycleIndex % 2 === 0;
+                const direction = leftToRight ? 1 : -1;
+                const vanishedFor = Math.max(0, elapsed - flyby);
+                const planeElapsed = Math.min(elapsed, flyby);
+
+                // Render the trail from the plane's past positions in world space.
+                // It remains after the aircraft moves on, then disperses naturally.
+                if (vanishedFor < trailLifetime) {
+                  const oldest = Math.min(2600, planeElapsed);
+                  const fadeOut = 1 - vanishedFor / trailLifetime;
+                  for (let age = vanishedFor; age < oldest; age += 58) {
+                    const past = (planeElapsed - age) / flyby;
+                    const pastX = leftToRight ? -34 + past * 568 : 534 - past * 568;
+                    const pastY = 84 + (cycleIndex % 3) * 42 + Math.sin(past * Math.PI) * -9;
+                    const ageRatio = age / oldest;
+                    const alpha = (0.38 * (1 - ageRatio) + 0.04) * fadeOut;
+                    const spread = 1.15 + ageRatio * 1.9;
+                    const drift = Math.sin(age * 0.017) * ageRatio * 3;
+                    ctx.fillStyle = `rgba(0, 82, 24, ${alpha})`;
+                    ctx.fillRect(pastX - direction * 16, pastY + drift - spread / 2, spread, spread);
+                    if (Math.floor(age / 58) % 2 === 0) {
+                      ctx.fillStyle = `rgba(0, 82, 24, ${alpha * 0.62})`;
+                      ctx.fillRect(pastX - direction * 16, pastY - drift + 2, spread * 0.72, spread * 0.72);
+                    }
+                  }
+                }
                 if (elapsed > flyby) return;
 
                 const t = elapsed / flyby;
-                const leftToRight = cycleIndex % 2 === 0;
                 const x = leftToRight ? -34 + t * 568 : 534 - t * 568;
                 const y = 84 + (cycleIndex % 3) * 42 + Math.sin(t * Math.PI) * -9;
 
@@ -882,20 +908,6 @@
                 ctx.translate(x, y);
                 if (!leftToRight) ctx.scale(-1, 1);
                 ctx.rotate(-0.045);
-
-                // A clearly visible, softly dispersing contrail from the tail.
-                for (const offset of [-3.2, 0, 3.2]) {
-                  const trail = ctx.createLinearGradient(-128, 0, -20, 0);
-                  trail.addColorStop(0, 'rgba(0, 78, 24, 0)');
-                  trail.addColorStop(0.3, 'rgba(0, 78, 24, 0.16)');
-                  trail.addColorStop(1, 'rgba(0, 78, 24, 0.56)');
-                  ctx.beginPath();
-                  ctx.strokeStyle = trail;
-                  ctx.lineWidth = offset === 0 ? 1.35 : 0.95;
-                  ctx.moveTo(-126, offset + Math.sin(t * 9) * 1.1);
-                  ctx.quadraticCurveTo(-72, offset - 1.8, -22, offset * 0.38);
-                  ctx.stroke();
-                }
 
                 // Side-profile commercial airliner: long cabin, raised tail,
                 // one visible swept wing, and two small under-wing engines.
@@ -917,24 +929,19 @@
                 ctx.lineTo(21, 3.2);
                 ctx.quadraticCurveTo(29, 2.7, 31, -1);
                 ctx.closePath();
-                ctx.globalAlpha = 0.94;
-                ctx.fillStyle = '#040604';
-                ctx.fill();
-
-                // Engine nacelles under the visible wing.
-                ctx.fillRect(-1, 10, 5.5, 3.2);
-                ctx.fillRect(7, 8.5, 5.5, 3.2);
-
-                // Small, clipped green pixels give the black plane the same
-                // dither language as the rest of the feature artwork.
+                // The silhouette is composed from square dither cells, matching
+                // the brain's visual language rather than a solid pasted-on icon.
                 ctx.save();
                 ctx.clip();
-                ctx.fillStyle = 'rgba(0, 100, 0, 0.55)';
-                for (let py = -12; py <= 13; py += 4) {
-                  for (let px = -31; px <= 27; px += 4) {
-                    if ((px * 5 + py * 3 + cycleIndex) % 3 === 0) ctx.fillRect(px, py, 2, 2);
+                ctx.fillStyle = '#081009';
+                for (let py = -14; py <= 15; py += 3.2) {
+                  for (let px = -36; px <= 30; px += 3.2) {
+                    const key = Math.floor(px * 3 + py * 7 + cycleIndex);
+                    if (key % 5 !== 0) ctx.fillRect(px, py, 2.45, 2.45);
                   }
                 }
+                ctx.fillStyle = 'rgba(0, 100, 0, 0.7)';
+                for (let px = -18; px < 21; px += 6.4) ctx.fillRect(px, -2.2, 1.45, 1.45);
                 ctx.restore();
                 ctx.restore();
               }
