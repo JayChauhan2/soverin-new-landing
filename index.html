@@ -883,59 +883,56 @@
                 if (!leftToRight) ctx.scale(-1, 1);
                 ctx.rotate(-0.045);
 
-                // A fine, double contrail fades from the tail instead of reading
-                // like a graphic line glued behind the aircraft.
-                for (const offset of [-2.1, 2.1]) {
+                // A clearly visible, softly dispersing contrail from the tail.
+                for (const offset of [-3.2, 0, 3.2]) {
                   const trail = ctx.createLinearGradient(-128, 0, -20, 0);
-                  trail.addColorStop(0, 'rgba(0, 66, 20, 0)');
-                  trail.addColorStop(0.45, 'rgba(0, 66, 20, 0.08)');
-                  trail.addColorStop(1, 'rgba(0, 66, 20, 0.31)');
+                  trail.addColorStop(0, 'rgba(0, 78, 24, 0)');
+                  trail.addColorStop(0.3, 'rgba(0, 78, 24, 0.16)');
+                  trail.addColorStop(1, 'rgba(0, 78, 24, 0.56)');
                   ctx.beginPath();
                   ctx.strokeStyle = trail;
-                  ctx.lineWidth = 0.8;
-                  ctx.setLineDash([1, 3]);
-                  ctx.moveTo(-126, offset + Math.sin(t * 9) * 0.8);
-                  ctx.quadraticCurveTo(-72, offset - 1.2, -22, offset * 0.45);
+                  ctx.lineWidth = offset === 0 ? 1.35 : 0.95;
+                  ctx.moveTo(-126, offset + Math.sin(t * 9) * 1.1);
+                  ctx.quadraticCurveTo(-72, offset - 1.8, -22, offset * 0.38);
                   ctx.stroke();
                 }
-                ctx.setLineDash([]);
 
-                // Compact top-down jet silhouette: pointed nose, swept wings,
-                // narrow fuselage and distinct stabilizers.
+                // Side-profile commercial airliner: long cabin, raised tail,
+                // one visible swept wing, and two small under-wing engines.
                 ctx.beginPath();
-                ctx.moveTo(23, 0);
-                ctx.lineTo(10, -2.2);
-                ctx.lineTo(2, -4.5);
-                ctx.lineTo(-7, -17);
-                ctx.lineTo(-12, -17);
-                ctx.lineTo(-7, -3);
-                ctx.lineTo(-20, -5.5);
-                ctx.lineTo(-28, -10.5);
-                ctx.lineTo(-31, -9);
-                ctx.lineTo(-25, -1.8);
-                ctx.lineTo(-35, 0);
-                ctx.lineTo(-25, 1.8);
-                ctx.lineTo(-31, 9);
-                ctx.lineTo(-28, 10.5);
-                ctx.lineTo(-20, 5.5);
-                ctx.lineTo(-7, 3);
-                ctx.lineTo(-12, 17);
-                ctx.lineTo(-7, 17);
-                ctx.lineTo(2, 4.5);
-                ctx.lineTo(10, 2.2);
+                ctx.moveTo(31, -1);
+                ctx.quadraticCurveTo(28, -5.5, 21, -6.2);
+                ctx.lineTo(-16, -6.2);
+                ctx.lineTo(-23, -13.5);
+                ctx.lineTo(-28, -13.5);
+                ctx.lineTo(-26, -6.2);
+                ctx.lineTo(-34, -4.5);
+                ctx.lineTo(-37, -1);
+                ctx.lineTo(-34, 2.5);
+                ctx.lineTo(-23, 4.2);
+                ctx.lineTo(-5, 4.2);
+                ctx.lineTo(3, 15);
+                ctx.lineTo(8, 15);
+                ctx.lineTo(5, 4.2);
+                ctx.lineTo(21, 3.2);
+                ctx.quadraticCurveTo(29, 2.7, 31, -1);
                 ctx.closePath();
                 ctx.globalAlpha = 0.94;
                 ctx.fillStyle = '#040604';
                 ctx.fill();
+
+                // Engine nacelles under the visible wing.
+                ctx.fillRect(-1, 10, 5.5, 3.2);
+                ctx.fillRect(7, 8.5, 5.5, 3.2);
 
                 // Small, clipped green pixels give the black plane the same
                 // dither language as the rest of the feature artwork.
                 ctx.save();
                 ctx.clip();
                 ctx.fillStyle = 'rgba(0, 100, 0, 0.55)';
-                for (let py = -15; py <= 15; py += 3) {
-                  for (let px = -28; px <= 19; px += 3) {
-                    if ((px * 5 + py * 3 + cycleIndex) % 4 === 0) ctx.fillRect(px, py, 1.1, 1.1);
+                for (let py = -12; py <= 13; py += 4) {
+                  for (let px = -31; px <= 27; px += 4) {
+                    if ((px * 5 + py * 3 + cycleIndex) % 3 === 0) ctx.fillRect(px, py, 2, 2);
                   }
                 }
                 ctx.restore();
