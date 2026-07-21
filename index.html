@@ -840,9 +840,11 @@
               worldImage.src = 'assets/living-world-skyline.png';
               worldImage.onload = () => {
                 // A left-anchored crop fills the holder while preserving the original aspect ratio.
-                const cropWidth = worldImage.naturalHeight * (worldSource.width / worldSource.height);
-                // Crop the asset's solid foreground block completely below the card.
-                worldCtx.drawImage(worldImage, 0, 0, cropWidth, worldImage.naturalHeight, 0, 122, worldSource.width, worldSource.height);
+                // Use only the upper skyline portion. The source's lower 22% is a
+                // flat foreground block, so it is omitted before rendering.
+                const skylineHeight = worldImage.naturalHeight * 0.78;
+                const skylineWidth = skylineHeight * (worldSource.width / worldSource.height);
+                worldCtx.drawImage(worldImage, 0, 0, skylineWidth, skylineHeight, 0, 28, worldSource.width, worldSource.height);
                 const imageData = worldCtx.getImageData(0, 0, worldSource.width, worldSource.height);
                 for (let y = 0; y < worldSource.height * 0.67; y++) {
                   for (let x = 0; x < worldSource.width; x++) {
