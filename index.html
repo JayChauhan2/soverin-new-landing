@@ -882,6 +882,20 @@
                 for (let i = 0; i < imageData.data.length; i += 4) {
                   if (imageData.data[i] > 242 && imageData.data[i + 1] > 242 && imageData.data[i + 2] > 242) imageData.data[i + 3] = 0;
                 }
+                // The source includes a loose halftone halo around the globe. Trim
+                // only that upper-centre area to a precise circular silhouette;
+                // hands outside this zone remain untouched.
+                const globeCenter = { x: 250, y: 172 };
+                const globeRadius = 120;
+                for (let y = 50; y < 295; y++) {
+                  for (let x = 120; x < 380; x++) {
+                    const dx = x - globeCenter.x;
+                    const dy = y - globeCenter.y;
+                    if (dx * dx + dy * dy > globeRadius * globeRadius) {
+                      imageData.data[(y * globeSource.width + x) * 4 + 3] = 0;
+                    }
+                  }
+                }
                 globeCells = makeBrainStyleGrid(imageData, globeSource.width, globeSource.height);
                 globeReady = true;
               };
