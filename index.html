@@ -388,25 +388,40 @@
               position: absolute;
               inset: 0;
               pointer-events: none;
-              opacity: 0.52;
+              opacity: 0.68;
               background:
-                linear-gradient(#fff 0 0) 7% 93% / 2px 2px no-repeat,
-                linear-gradient(#fff 0 0) 13% 88% / 1px 1px no-repeat,
-                linear-gradient(#fff 0 0) 19% 96% / 2px 2px no-repeat,
-                linear-gradient(#fff 0 0) 24% 91% / 1px 1px no-repeat,
-                linear-gradient(#fff 0 0) 31% 86% / 2px 2px no-repeat,
-                linear-gradient(#fff 0 0) 36% 95% / 1px 1px no-repeat,
-                linear-gradient(#fff 0 0) 42% 90% / 2px 2px no-repeat,
-                linear-gradient(#fff 0 0) 48% 97% / 1px 1px no-repeat,
-                linear-gradient(#fff 0 0) 54% 84% / 1px 1px no-repeat,
-                linear-gradient(#fff 0 0) 59% 92% / 2px 2px no-repeat,
-                linear-gradient(#fff 0 0) 64% 88% / 1px 1px no-repeat,
-                linear-gradient(#fff 0 0) 69% 96% / 2px 2px no-repeat,
-                linear-gradient(#fff 0 0) 74% 90% / 1px 1px no-repeat,
-                linear-gradient(#fff 0 0) 79% 85% / 2px 2px no-repeat,
-                linear-gradient(#fff 0 0) 84% 94% / 2px 2px no-repeat,
-                linear-gradient(#fff 0 0) 90% 89% / 1px 1px no-repeat,
-                linear-gradient(#fff 0 0) 95% 96% / 2px 2px no-repeat;
+                linear-gradient(#fff 0 0) 4% 92% / 4px 4px no-repeat,
+                linear-gradient(#fff 0 0) 7% 83% / 3px 3px no-repeat,
+                linear-gradient(#fff 0 0) 10% 97% / 3px 3px no-repeat,
+                linear-gradient(#fff 0 0) 13% 88% / 4px 4px no-repeat,
+                linear-gradient(#fff 0 0) 16% 94% / 3px 3px no-repeat,
+                linear-gradient(#fff 0 0) 19% 78% / 3px 3px no-repeat,
+                linear-gradient(#fff 0 0) 22% 96% / 4px 4px no-repeat,
+                linear-gradient(#fff 0 0) 25% 87% / 3px 3px no-repeat,
+                linear-gradient(#fff 0 0) 28% 92% / 4px 4px no-repeat,
+                linear-gradient(#fff 0 0) 31% 82% / 3px 3px no-repeat,
+                linear-gradient(#fff 0 0) 34% 98% / 3px 3px no-repeat,
+                linear-gradient(#fff 0 0) 37% 89% / 4px 4px no-repeat,
+                linear-gradient(#fff 0 0) 40% 95% / 3px 3px no-repeat,
+                linear-gradient(#fff 0 0) 43% 77% / 3px 3px no-repeat,
+                linear-gradient(#fff 0 0) 46% 93% / 4px 4px no-repeat,
+                linear-gradient(#fff 0 0) 49% 86% / 3px 3px no-repeat,
+                linear-gradient(#fff 0 0) 52% 97% / 3px 3px no-repeat,
+                linear-gradient(#fff 0 0) 55% 90% / 4px 4px no-repeat,
+                linear-gradient(#fff 0 0) 58% 81% / 3px 3px no-repeat,
+                linear-gradient(#fff 0 0) 61% 95% / 4px 4px no-repeat,
+                linear-gradient(#fff 0 0) 64% 88% / 3px 3px no-repeat,
+                linear-gradient(#fff 0 0) 67% 98% / 3px 3px no-repeat,
+                linear-gradient(#fff 0 0) 70% 84% / 4px 4px no-repeat,
+                linear-gradient(#fff 0 0) 73% 93% / 3px 3px no-repeat,
+                linear-gradient(#fff 0 0) 76% 79% / 3px 3px no-repeat,
+                linear-gradient(#fff 0 0) 79% 96% / 4px 4px no-repeat,
+                linear-gradient(#fff 0 0) 82% 87% / 3px 3px no-repeat,
+                linear-gradient(#fff 0 0) 85% 94% / 4px 4px no-repeat,
+                linear-gradient(#fff 0 0) 88% 82% / 3px 3px no-repeat,
+                linear-gradient(#fff 0 0) 91% 98% / 3px 3px no-repeat,
+                linear-gradient(#fff 0 0) 94% 89% / 4px 4px no-repeat,
+                linear-gradient(#fff 0 0) 97% 95% / 3px 3px no-repeat;
             }
             .sf-square--text__tag {
               font-family: 'Press Start 2P', monospace;
@@ -903,6 +918,9 @@
                 const elapsed = time % cycle;
                 const leftToRight = cycleIndex % 2 === 0;
                 const direction = leftToRight ? 1 : -1;
+                const planeX = (progress) => leftToRight
+                  ? -70 + progress * 660
+                  : 570 - progress * 640;
                 const vanishedFor = Math.max(0, elapsed - flyby);
                 const planeElapsed = Math.min(elapsed, flyby);
 
@@ -913,7 +931,7 @@
                   const fadeOut = 1 - vanishedFor / trailLifetime;
                   for (let age = vanishedFor; age < oldest; age += 58) {
                     const past = (planeElapsed - age) / flyby;
-                    const pastX = leftToRight ? -34 + past * 568 : 534 - past * 568;
+                    const pastX = planeX(past);
                     const pastY = 84 + (cycleIndex % 3) * 42 + Math.sin(past * Math.PI) * -9;
                     const ageRatio = age / oldest;
                     const alpha = (0.38 * (1 - ageRatio) + 0.04) * fadeOut;
@@ -930,7 +948,7 @@
                 if (elapsed > flyby) return;
 
                 const t = elapsed / flyby;
-                const x = leftToRight ? -34 + t * 568 : 534 - t * 568;
+                const x = planeX(t);
                 const y = 84 + (cycleIndex % 3) * 42 + Math.sin(t * Math.PI) * -9;
 
                 ctx.save();
