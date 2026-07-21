@@ -892,9 +892,10 @@
                         const hash = ((col * 17 + row * 31 + cardIndex * 13) % 19) / 19;
                         const checker = (col + row) % 2 === 0;
                         const nearBottom = y > rect.height * 0.86;
+                        const fade = Math.pow((y - startY) / (rect.height - startY), 1.45);
                         // Checker-like, but with deliberate gaps and uneven clusters.
-                        if ((checker && hash > 0.16) || (!checker && (nearBottom ? hash > 0.64 : hash > 0.84))) {
-                          fieldCtx.fillStyle = `rgba(255,255,255,${0.56 + hash * 0.34})`;
+                        if ((checker && hash > 0.16 + (1 - fade) * 0.74) || (!checker && (nearBottom ? hash > 0.64 : hash > 0.84 + (1 - fade) * 0.1))) {
+                          fieldCtx.fillStyle = `rgba(255,255,255,${(0.2 + hash * 0.68) * fade})`;
                           fieldCtx.fillRect(x, y, pixel, pixel);
                         }
                       }
