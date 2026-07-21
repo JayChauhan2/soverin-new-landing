@@ -450,10 +450,67 @@
             }
             .sf-square--text__cta:hover { color: #d8ffec; }
             .sf-row--flip { flex-direction: row-reverse; }
+            .sf-pattern-menu {
+              position: fixed;
+              right: 18px;
+              bottom: 18px;
+              z-index: 50;
+              width: 196px;
+              padding: 13px;
+              background: rgba(0, 0, 0, 0.9);
+              border: 1px solid rgba(255, 255, 255, 0.7);
+              box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+              font-family: 'Space Grotesk', sans-serif;
+            }
+            .sf-pattern-menu__title {
+              margin: 0 0 9px;
+              color: #fff;
+              font-size: 0.62rem;
+              font-weight: 700;
+              letter-spacing: 0.12em;
+              text-transform: uppercase;
+            }
+            .sf-pattern-menu__grid {
+              display: grid;
+              grid-template-columns: repeat(5, 1fr);
+              gap: 5px;
+            }
+            .sf-pattern-menu button {
+              height: 27px;
+              border: 1px solid rgba(255, 255, 255, 0.3);
+              background: #006400;
+              color: #fff;
+              cursor: pointer;
+              font: 700 0.62rem/1 'Space Grotesk', sans-serif;
+            }
+            .sf-pattern-menu button:hover,
+            .sf-pattern-menu button.is-active {
+              background: #fff;
+              color: #006400;
+              border-color: #fff;
+            }
+            @media (max-width: 640px) {
+              .sf-pattern-menu { right: 10px; bottom: 10px; transform: scale(0.86); transform-origin: bottom right; }
+            }
           </style>
 
           <!-- Side label "HOW": overlays the left margin, zero layout impact -->
           <div class="sf-side-title" id="sf-side-title">HOW</div>
+          <div class="sf-pattern-menu" aria-label="Text card pattern selector">
+            <p class="sf-pattern-menu__title">Pattern Lab</p>
+            <div class="sf-pattern-menu__grid">
+              <button type="button" class="is-active" data-card-pattern="1">01</button>
+              <button type="button" data-card-pattern="2">02</button>
+              <button type="button" data-card-pattern="3">03</button>
+              <button type="button" data-card-pattern="4">04</button>
+              <button type="button" data-card-pattern="5">05</button>
+              <button type="button" data-card-pattern="6">06</button>
+              <button type="button" data-card-pattern="7">07</button>
+              <button type="button" data-card-pattern="8">08</button>
+              <button type="button" data-card-pattern="9">09</button>
+              <button type="button" data-card-pattern="10">10</button>
+            </div>
+          </div>
 
           <!-- Rows: 75% centered, stacked flush -->
           <div class="sf-rows" id="technology">
@@ -867,6 +924,9 @@
                 }
               }
 
+              let activeCardPattern = 1;
+              const textCardPixelPainters = [];
+
               function addTextCardPixelFields() {
                 document.querySelectorAll('.sf-square--text').forEach((card, cardIndex) => {
                   const layer = document.createElement('canvas');
@@ -884,8 +944,8 @@
                     fieldCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
                     fieldCtx.clearRect(0, 0, rect.width, rect.height);
 
-                    const cell = 11;
-                    const pixel = 10;
+                    const cell = 14;
+                    const pixel = 13;
                     const startY = Math.floor(rect.height * 0.7 / cell) * cell;
                     for (let y = startY, row = 0; y < rect.height; y += cell, row++) {
                       for (let x = 0, col = 0; x < rect.width; x += cell, col++) {
@@ -893,8 +953,20 @@
                         const checker = (col + row) % 2 === 0;
                         const nearBottom = y > rect.height * 0.86;
                         const fade = Math.pow((y - startY) / (rect.height - startY), 1.45);
-                        // Checker-like, but with deliberate gaps and uneven clusters.
-                        if ((checker && hash > 0.16 + (1 - fade) * 0.74) || (!checker && (nearBottom ? hash > 0.64 : hash > 0.84 + (1 - fade) * 0.1))) {
+                        let isFilled;
+                        switch (activeCardPattern) {
+                          case 2: isFilled = (col + row * 2) % 3 !== 0 && hash > 0.2 + (1 - fade) * 0.68; break;
+                          case 3: isFilled = (col - row) % 3 !== 0 && hash > 0.16 + (1 - fade) * 0.68; break;
+                          case 4: isFilled = (row % 2 === 0 ? col % 3 !== 1 : col % 3 !== 0) && hash > 0.12 + (1 - fade) * 0.72; break;
+                          case 5: isFilled = checker ? hash > 0.08 + (1 - fade) * 0.7 : nearBottom && hash > 0.6; break;
+                          case 6: isFilled = (col % 4 !== 1 || row % 3 === 0) && hash > 0.18 + (1 - fade) * 0.66; break;
+                          case 7: isFilled = (col + Math.floor(row / 2)) % 2 === 0 ? hash > 0.1 + (1 - fade) * 0.66 : nearBottom && hash > 0.52; break;
+                          case 8: isFilled = (col % 5 < 3 && row % 3 !== 1) && hash > 0.1 + (1 - fade) * 0.7; break;
+                          case 9: isFilled = checker && hash > 0.04 + (1 - fade) * 0.7; break;
+                          case 10: isFilled = (col * 3 + row * 5 + cardIndex) % 7 < 4 && hash > 0.08 + (1 - fade) * 0.7; break;
+                          default: isFilled = (checker && hash > 0.1 + (1 - fade) * 0.68) || (!checker && nearBottom && hash > 0.56);
+                        }
+                        if (isFilled) {
                           fieldCtx.fillStyle = `rgba(255,255,255,${(0.2 + hash * 0.68) * fade})`;
                           fieldCtx.fillRect(x, y, pixel, pixel);
                         }
@@ -904,10 +976,18 @@
 
                   new ResizeObserver(paint).observe(card);
                   paint();
+                  textCardPixelPainters.push(paint);
                 });
               }
 
               addTextCardPixelFields();
+              document.querySelectorAll('[data-card-pattern]').forEach((button) => {
+                button.addEventListener('click', () => {
+                  activeCardPattern = Number(button.dataset.cardPattern);
+                  document.querySelectorAll('[data-card-pattern]').forEach((item) => item.classList.toggle('is-active', item === button));
+                  textCardPixelPainters.forEach((paint) => paint());
+                });
+              });
 
               // Section 2: supplied green pixel skyline. White sky is keyed out
               // so the card's own pale-green background shows through.
