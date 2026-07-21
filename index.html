@@ -913,8 +913,8 @@
 
                 function draw(w, h) {
                   dctx.clearRect(0, 0, w, h);
-                  const spacing = mode === 'light-green' ? 26 : 16;
-                  const maxR    = mode === 'light-green' ? 1.2 : 1.55;
+                  const spacing = mode === 'light-green' ? 18 : 16;
+                  const maxR    = mode === 'light-green' ? 2.05 : 1.55;
 
                   for (let y = spacing / 2; y < h; y += spacing) {
                     for (let x = spacing / 2; x < w; x += spacing) {
@@ -928,12 +928,12 @@
                         weight = Math.max(0, (ny - 0.16) * 1.08 + edge * 0.24);
                         color = `rgba(35, 142, 70, ${0.05 + weight * 0.19})`;
                       } else if (mode === 'light-green') {
-                        // Section 3 intentionally differs: a sparse, irregular field
-                        // starts at the top and dissolves before reaching the bottom.
+                        // Section 3 gets a clear, wide dotted field at the top.
+                        // It has the brain card's presence, but fades downward instead.
                         const center = 1 - Math.abs(nx - 0.5) * 2;
-                        const variation = Math.sin(nx * 22 + ny * 7) * 0.1;
-                        weight = Math.max(0, (0.78 - ny) * 0.82 + center * 0.16 + variation);
-                        color = `rgba(35, 142, 70, ${0.035 + weight * 0.14})`;
+                        const variation = Math.sin(nx * 18 + ny * 11) * 0.09;
+                        weight = Math.max(0, (0.72 - ny) * 1.12 + center * 0.2 + variation);
+                        color = `rgba(0, 100, 0, ${0.09 + weight * 0.25})`;
                       } else {
                         weight = Math.max(0, 0.82 - nx * 0.3 - (1 - ny) * 0.24);
                         color = `rgba(0, 70, 24, ${0.035 + weight * 0.11})`;
