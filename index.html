@@ -270,10 +270,10 @@
             .sf-side-title {
               position: fixed;
               top: 50%;
-              transform: translateY(-50%);
+              transform: translateY(-50%) rotate(-90deg);
               left: 3%;
               display: flex;
-              flex-direction: column-reverse;
+              flex-direction: row;
               font-family: 'Space Grotesk', sans-serif;
               font-size: 0.95rem;
               font-weight: 700;
@@ -288,11 +288,12 @@
               white-space: nowrap;
             }
             .sf-side-title__char {
-              display: block;
-              width: 1.15em;
-              height: 1.08em;
-              line-height: 1.08em;
+              display: inline-block;
+              width: auto;
+              height: 1em;
+              line-height: 1em;
               text-align: center;
+              margin-right: 0.18em;
               transition: color 160ms ease;
             }
             .sf-side-title.is-visible {
