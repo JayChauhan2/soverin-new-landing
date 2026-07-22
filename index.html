@@ -758,7 +758,7 @@
 
                   // Render the shared image treatment in black.
                   const totalToShow = Math.floor(brainPixels.length * animProgress);
-                  bCtx.fillStyle = '#050505';
+                  bCtx.fillStyle = '#006400';
                   for (let i = 0; i < totalToShow; i++) {
                     const p = brainPixels[i];
                     const px = startX + p.x * brainScale;
@@ -773,7 +773,7 @@
                       const brainY = centerY + f.brainTarget.ry;
                       
                       bCtx.beginPath();
-                      bCtx.strokeStyle = 'rgba(5, 5, 5, 0.25)';
+                      bCtx.strokeStyle = 'rgba(0, 100, 0, 0.25)';
                       bCtx.lineWidth = 1;
                       bCtx.setLineDash([3, 3]);
 
@@ -807,7 +807,7 @@
                           pulseY = sY + (brainY - sY) * t2;
                         }
 
-                        bCtx.fillStyle = '#050505';
+                        bCtx.fillStyle = '#006400';
                         bCtx.beginPath();
                         bCtx.arc(pulseX, pulseY, 2.5, 0, Math.PI * 2);
                         bCtx.fill();
@@ -830,13 +830,13 @@
                         const boxY = f.y - boxH / 2;
 
                         bCtx.fillStyle = 'rgba(2, 2, 4, 0.9)';
-                        bCtx.strokeStyle = 'rgba(5, 5, 5, 0.4)';
+                        bCtx.strokeStyle = 'rgba(0, 100, 0, 0.4)';
                         bCtx.lineWidth = 1;
                         bCtx.fillRect(boxX, boxY, boxW, boxH);
                         bCtx.strokeRect(boxX, boxY, boxW, boxH);
 
                         // Corner tech details
-                        bCtx.fillStyle = '#050505';
+                        bCtx.fillStyle = '#006400';
                         bCtx.fillRect(boxX - 1, boxY - 1, 4, 1.5);
                         bCtx.fillRect(boxX - 1, boxY - 1, 1.5, 4);
                         bCtx.fillRect(boxX + boxW - 3, boxY - 1, 4, 1.5);
@@ -894,7 +894,7 @@
                 ctx.fillRect(left, y - 12, width, 24);
                 ctx.strokeStyle = 'rgba(0,100,0,0.42)';
                 ctx.strokeRect(left, y - 12, width, 24);
-                ctx.fillStyle = '#050505';
+                ctx.fillStyle = '#006400';
                 ctx.fillText(label, left + 11, y);
                 ctx.restore();
               }
@@ -908,7 +908,7 @@
                     if (imageData.data[i + 3] < 40) continue;
                     // Match the brain exactly: silhouette comes from density and the
                     // grid gaps, never from gradients or depth-based color shifts.
-                    cells.push({ x, y, color: '#050505' });
+                    cells.push({ x, y, color: '#006400' });
                   }
                 }
                 return cells.sort(() => Math.random() - 0.5);
@@ -919,7 +919,7 @@
                 for (let i = 0; i < count; i++) {
                   const cell = cells[i];
                   ctx.fillStyle = cell.color;
-                  // Match the brain: dense black cells with only hairline gaps.
+                  // Match the brain: dense green cells with only hairline gaps.
                   ctx.fillRect(cell.x, cell.y, featureGridSize - 0.2, featureGridSize - 0.2);
                 }
               }
@@ -927,6 +927,7 @@
               let activeCardPattern = 1;
               const textCardPixelPainters = [];
               const checkerProfiles = [0.43, 0.48, 0.53, 0.57, 0.46, 0.51, 0.55, 0.6, 0.49, 0.58];
+              let textCardPixelTime = 0;
 
               function addTextCardPixelFields() {
                 document.querySelectorAll('.sf-square--text').forEach((card, cardIndex) => {
@@ -936,12 +937,14 @@
                   card.appendChild(layer);
                   const fieldCtx = layer.getContext('2d');
 
-                  const paint = () => {
+                  const paint = (time = textCardPixelTime) => {
                     const rect = card.getBoundingClientRect();
                     if (!rect.width || !rect.height) return;
                     const dpr = window.devicePixelRatio || 1;
-                    layer.width = Math.round(rect.width * dpr);
-                    layer.height = Math.round(rect.height * dpr);
+                    const nextWidth = Math.round(rect.width * dpr);
+                    const nextHeight = Math.round(rect.height * dpr);
+                    if (layer.width !== nextWidth) layer.width = nextWidth;
+                    if (layer.height !== nextHeight) layer.height = nextHeight;
                     fieldCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
                     fieldCtx.clearRect(0, 0, rect.width, rect.height);
 
@@ -968,7 +971,8 @@
                         const checker = (col + row + phase) % 2 === 0;
                         const isFilled = checker && fade > 0 && hash > (1 - fade) * 0.33;
                         if (isFilled) {
-                          fieldCtx.fillStyle = `rgba(255,255,255,${0.18 + fade * 0.38})`;
+                          const pulse = 0.62 + 0.38 * ((Math.sin(time * 0.00042 + col * 0.73 + row * 0.51 + cardIndex) + 1) / 2);
+                          fieldCtx.fillStyle = `rgba(255,255,255,${(0.18 + fade * 0.38) * pulse})`;
                           fieldCtx.fillRect(x, y, pixel, pixel);
                         }
                       }
@@ -982,11 +986,21 @@
               }
 
               addTextCardPixelFields();
+              let lastTextCardFrame = 0;
+              function animateTextCardPixels(time) {
+                if (time - lastTextCardFrame > 65) {
+                  textCardPixelTime = time;
+                  textCardPixelPainters.forEach((paint) => paint(time));
+                  lastTextCardFrame = time;
+                }
+                requestAnimationFrame(animateTextCardPixels);
+              }
+              requestAnimationFrame(animateTextCardPixels);
               document.querySelectorAll('[data-card-pattern]').forEach((button) => {
                 button.addEventListener('click', () => {
                   activeCardPattern = Number(button.dataset.cardPattern);
                   document.querySelectorAll('[data-card-pattern]').forEach((item) => item.classList.toggle('is-active', item === button));
-                  textCardPixelPainters.forEach((paint) => paint());
+                  textCardPixelPainters.forEach((paint) => paint(textCardPixelTime));
                 });
               });
 
