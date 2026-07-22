@@ -284,7 +284,8 @@
               pointer-events: none;
               opacity: 0;
               visibility: hidden;
-              transition: opacity 220ms ease, visibility 220ms ease, color 360ms ease, filter 220ms ease, transform 220ms ease;
+              transform-origin: left center;
+              transition: color 160ms ease;
               white-space: nowrap;
             }
             .sf-side-title__char {
@@ -528,13 +529,39 @@
                 const technologyLetters = Array.from('TECHNOLOGY');
                 sideTitle.innerHTML = technologyLetters.map((_, index) => `<span class="sf-side-title__char" data-index="${index}"></span>`).join('');
                 const characterSlots = Array.from(sideTitle.querySelectorAll('.sf-side-title__char'));
+                let indicatorArea = '';
+                let visionRevealTimer;
+                const revealVision = () => {
+                  window.clearInterval(visionRevealTimer);
+                  characterSlots.forEach((slot) => {
+                    slot.textContent = '';
+                    slot.style.color = '#000000';
+                  });
+                  sideTitle.classList.add('is-visible');
+                  let index = 0;
+                  visionRevealTimer = window.setInterval(() => {
+                    if (index >= visionLetters.length) {
+                      window.clearInterval(visionRevealTimer);
+                      return;
+                    }
+                    characterSlots[index].textContent = visionLetters[index];
+                    index++;
+                  }, 72);
+                };
                 const update = () => {
                   const midpoint = window.innerHeight / 2;
                   const inView = (el) => {
                     const rect = el.getBoundingClientRect();
                     return rect.top <= midpoint && rect.bottom >= midpoint;
                   };
-                  if (inView(section) || inView(vision)) {
+                  const nextArea = inView(section) ? 'technology' : inView(vision) ? 'vision' : '';
+                  if (nextArea === 'vision' && indicatorArea === '') {
+                    indicatorArea = nextArea;
+                    revealVision();
+                    return;
+                  }
+                  if (nextArea) {
+                    window.clearInterval(visionRevealTimer);
                     // The Technology boundary sweeps up the viewport. Each fixed
                     // character flips at the exact moment that boundary reaches it.
                     const technologyTop = section.getBoundingClientRect().top;
@@ -548,6 +575,7 @@
                   } else {
                     sideTitle.classList.remove('is-visible');
                   }
+                  indicatorArea = nextArea;
                 };
                 window.addEventListener('scroll', update, { passive: true });
                 window.addEventListener('resize', update, { passive: true });
