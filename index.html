@@ -756,9 +756,9 @@
                   const startX = centerX - bWidth / 2;
                   const startY = centerY - bHeight / 2;
 
-                  // Render brain pixels (dark green #006400 matching white section theme)
+                  // Render the shared image treatment in black.
                   const totalToShow = Math.floor(brainPixels.length * animProgress);
-                  bCtx.fillStyle = '#006400';
+                  bCtx.fillStyle = '#050505';
                   for (let i = 0; i < totalToShow; i++) {
                     const p = brainPixels[i];
                     const px = startX + p.x * brainScale;
@@ -773,7 +773,7 @@
                       const brainY = centerY + f.brainTarget.ry;
                       
                       bCtx.beginPath();
-                      bCtx.strokeStyle = 'rgba(0, 100, 0, 0.25)';
+                      bCtx.strokeStyle = 'rgba(5, 5, 5, 0.25)';
                       bCtx.lineWidth = 1;
                       bCtx.setLineDash([3, 3]);
 
@@ -807,7 +807,7 @@
                           pulseY = sY + (brainY - sY) * t2;
                         }
 
-                        bCtx.fillStyle = '#006400';
+                        bCtx.fillStyle = '#050505';
                         bCtx.beginPath();
                         bCtx.arc(pulseX, pulseY, 2.5, 0, Math.PI * 2);
                         bCtx.fill();
@@ -830,13 +830,13 @@
                         const boxY = f.y - boxH / 2;
 
                         bCtx.fillStyle = 'rgba(2, 2, 4, 0.9)';
-                        bCtx.strokeStyle = 'rgba(0, 100, 0, 0.4)';
+                        bCtx.strokeStyle = 'rgba(5, 5, 5, 0.4)';
                         bCtx.lineWidth = 1;
                         bCtx.fillRect(boxX, boxY, boxW, boxH);
                         bCtx.strokeRect(boxX, boxY, boxW, boxH);
 
                         // Corner tech details
-                        bCtx.fillStyle = '#006400';
+                        bCtx.fillStyle = '#050505';
                         bCtx.fillRect(boxX - 1, boxY - 1, 4, 1.5);
                         bCtx.fillRect(boxX - 1, boxY - 1, 1.5, 4);
                         bCtx.fillRect(boxX + boxW - 3, boxY - 1, 4, 1.5);
@@ -894,7 +894,7 @@
                 ctx.fillRect(left, y - 12, width, 24);
                 ctx.strokeStyle = 'rgba(0,100,0,0.42)';
                 ctx.strokeRect(left, y - 12, width, 24);
-                ctx.fillStyle = '#006400';
+                ctx.fillStyle = '#050505';
                 ctx.fillText(label, left + 11, y);
                 ctx.restore();
               }
@@ -908,7 +908,7 @@
                     if (imageData.data[i + 3] < 40) continue;
                     // Match the brain exactly: silhouette comes from density and the
                     // grid gaps, never from gradients or depth-based color shifts.
-                    cells.push({ x, y, color: '#006400' });
+                    cells.push({ x, y, color: '#050505' });
                   }
                 }
                 return cells.sort(() => Math.random() - 0.5);
@@ -919,7 +919,7 @@
                 for (let i = 0; i < count; i++) {
                   const cell = cells[i];
                   ctx.fillStyle = cell.color;
-                  // Match the brain: dense #006400 cells with only hairline gaps.
+                  // Match the brain: dense black cells with only hairline gaps.
                   ctx.fillRect(cell.x, cell.y, featureGridSize - 0.2, featureGridSize - 0.2);
                 }
               }
@@ -1026,7 +1026,6 @@
                 ctx.clearRect(0, 0, w, h);
                 if (!worldReady) return;
                 drawBrainStyleGrid(ctx, worldCells, p);
-                drawSkylinePlane(ctx, performance.now());
               });
 
               function drawSkylinePlane(ctx, time) {
