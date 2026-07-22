@@ -290,11 +290,6 @@
               opacity: 1;
               visibility: visible;
             }
-            .sf-side-title.is-changing {
-              opacity: 0.12;
-              filter: blur(2px);
-              transform: translateY(-50%) rotate(180deg) scale(0.94);
-            }
             /* Rows — centered at 75% width, take the full available space */
             .sf-rows {
               width: 75%;
@@ -520,13 +515,34 @@
                 const model = document.getElementById('model');
                 if (!vision || !model) return;
                 let currentLabel = '';
-                let labelSwapTimer;
+                let labelMorphTimer;
+                const morphLabel = (nextLabel, color) => {
+                  window.clearInterval(labelMorphTimer);
+                  sideTitle.style.color = color;
+                  const currentCharacters = Array.from(sideTitle.textContent);
+                  const nextCharacters = Array.from(nextLabel);
+                  const count = Math.max(currentCharacters.length, nextCharacters.length);
+                  const characters = currentCharacters.concat(Array(Math.max(0, count - currentCharacters.length)).fill(' '));
+                  let index = 0;
+                  const advance = () => {
+                    if (index >= count) {
+                      sideTitle.textContent = nextLabel;
+                      window.clearInterval(labelMorphTimer);
+                      return;
+                    }
+                    characters[index] = nextCharacters[index] || ' ';
+                    sideTitle.textContent = characters.join('').trimEnd();
+                    index++;
+                  };
+                  advance();
+                  labelMorphTimer = window.setInterval(advance, 52);
+                };
                 const setIndicator = (label, color) => {
                   if (label === currentLabel) return;
                   currentLabel = label;
-                  window.clearTimeout(labelSwapTimer);
                   if (!label) {
-                    sideTitle.classList.remove('is-changing', 'is-visible');
+                    window.clearInterval(labelMorphTimer);
+                    sideTitle.classList.remove('is-visible');
                     return;
                   }
                   if (!sideTitle.classList.contains('is-visible')) {
@@ -535,12 +551,7 @@
                     sideTitle.classList.add('is-visible');
                     return;
                   }
-                  sideTitle.classList.add('is-changing');
-                  labelSwapTimer = window.setTimeout(() => {
-                    sideTitle.textContent = label;
-                    sideTitle.style.color = color;
-                    sideTitle.classList.remove('is-changing');
-                  }, 170);
+                  morphLabel(label, color);
                 };
                 const update = () => {
                   const midpoint = window.innerHeight / 2;
