@@ -261,6 +261,8 @@
               background: #000000 !important;
               position: relative;
             }
+            /* The roadmap/timeline is intentionally removed from the page flow. */
+            .s-roadmap { display: none !important; }
             .s-features * {
               box-sizing: border-box;
             }
@@ -450,67 +452,10 @@
             }
             .sf-square--text__cta:hover { color: #d8ffec; }
             .sf-row--flip { flex-direction: row-reverse; }
-            .sf-pattern-menu {
-              position: fixed;
-              right: 18px;
-              bottom: 18px;
-              z-index: 50;
-              width: 196px;
-              padding: 13px;
-              background: rgba(0, 0, 0, 0.9);
-              border: 1px solid rgba(255, 255, 255, 0.7);
-              box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
-              font-family: 'Space Grotesk', sans-serif;
-            }
-            .sf-pattern-menu__title {
-              margin: 0 0 9px;
-              color: #fff;
-              font-size: 0.62rem;
-              font-weight: 700;
-              letter-spacing: 0.12em;
-              text-transform: uppercase;
-            }
-            .sf-pattern-menu__grid {
-              display: grid;
-              grid-template-columns: repeat(5, 1fr);
-              gap: 5px;
-            }
-            .sf-pattern-menu button {
-              height: 27px;
-              border: 1px solid rgba(255, 255, 255, 0.3);
-              background: #006400;
-              color: #fff;
-              cursor: pointer;
-              font: 700 0.62rem/1 'Space Grotesk', sans-serif;
-            }
-            .sf-pattern-menu button:hover,
-            .sf-pattern-menu button.is-active {
-              background: #fff;
-              color: #006400;
-              border-color: #fff;
-            }
-            @media (max-width: 640px) {
-              .sf-pattern-menu { right: 10px; bottom: 10px; transform: scale(0.86); transform-origin: bottom right; }
-            }
           </style>
 
           <!-- Side label "HOW": overlays the left margin, zero layout impact -->
           <div class="sf-side-title" id="sf-side-title">HOW</div>
-          <div class="sf-pattern-menu" aria-label="Text card pattern selector">
-            <p class="sf-pattern-menu__title">Pattern Lab</p>
-            <div class="sf-pattern-menu__grid">
-              <button type="button" class="is-active" data-card-pattern="1">01</button>
-              <button type="button" data-card-pattern="2">02</button>
-              <button type="button" data-card-pattern="3">03</button>
-              <button type="button" data-card-pattern="4">04</button>
-              <button type="button" data-card-pattern="5">05</button>
-              <button type="button" data-card-pattern="6">06</button>
-              <button type="button" data-card-pattern="7">07</button>
-              <button type="button" data-card-pattern="8">08</button>
-              <button type="button" data-card-pattern="9">09</button>
-              <button type="button" data-card-pattern="10">10</button>
-            </div>
-          </div>
 
           <!-- Rows: 75% centered, stacked flush -->
           <div class="sf-rows" id="technology">
@@ -562,11 +507,40 @@
               const section = document.getElementById('features');
               const sideTitle = document.getElementById('sf-side-title');
 
-              // Show/hide side title based on section visibility
-              const sectionObserver = new IntersectionObserver(([e]) => {
-                sideTitle.classList.toggle('is-visible', e.isIntersecting);
-              }, { threshold: 0.05 });
-              sectionObserver.observe(section);
+              // Fixed left-side section indicator: no title on the hero, Vision
+              // on the light intro, Technology on these feature cards, then blank.
+              function setupSectionIndicator() {
+                const vision = document.getElementById('vision');
+                const model = document.getElementById('model');
+                if (!vision || !model) return;
+                const update = () => {
+                  const midpoint = window.innerHeight / 2;
+                  const inView = (el) => {
+                    const rect = el.getBoundingClientRect();
+                    return rect.top <= midpoint && rect.bottom >= midpoint;
+                  };
+                  if (inView(section)) {
+                    sideTitle.textContent = 'Technology';
+                    sideTitle.style.color = '#ffffff';
+                    sideTitle.classList.add('is-visible');
+                  } else if (inView(vision)) {
+                    sideTitle.textContent = 'Vision';
+                    sideTitle.style.color = '#000000';
+                    sideTitle.classList.add('is-visible');
+                  } else {
+                    sideTitle.textContent = '';
+                    sideTitle.classList.remove('is-visible');
+                  }
+                };
+                window.addEventListener('scroll', update, { passive: true });
+                window.addEventListener('resize', update, { passive: true });
+                update();
+              }
+              if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', setupSectionIndicator, { once: true });
+              } else {
+                setupSectionIndicator();
+              }
 
               // ==========================================
               // Background Fine Dot Dither Canvas Animation
@@ -1719,7 +1693,7 @@
             <div class="s_footer_links_bn_wrap">
               <div class="s_footer_links_list">
                 <a href="#vision" class="link_footer">Vision</a>
-                <a href="#roadmap" class="link_footer">Roadmap</a>
+                <a href="#model" class="link_footer">3D Model</a>
                 <a href="#model" class="link_footer">3D Hotel</a>
                 <a href="#whitepaper" class="link_footer">Whitepaper</a>
                 <a href="#team" class="link_footer">Team</a>
