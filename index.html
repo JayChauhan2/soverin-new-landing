@@ -972,8 +972,10 @@
                         const isFilled = checker && fade > 0 && hash > (1 - fade) * 0.33;
                         if (isFilled) {
                           const pulse = 0.62 + 0.38 * ((Math.sin(time * 0.00042 + col * 0.73 + row * 0.51 + cardIndex) + 1) / 2);
+                          const driftX = Math.sin(time * 0.00055 + row * 0.8 + cardIndex) * 1.8;
+                          const driftY = Math.cos(time * 0.00048 + col * 0.62 + cardIndex * 1.7) * 4.2;
                           fieldCtx.fillStyle = `rgba(255,255,255,${(0.18 + fade * 0.38) * pulse})`;
-                          fieldCtx.fillRect(x, y, pixel, pixel);
+                          fieldCtx.fillRect(x + driftX, y + driftY, pixel, pixel);
                         }
                       }
                     }
