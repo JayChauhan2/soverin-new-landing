@@ -270,13 +270,14 @@
             .sf-side-title {
               position: fixed;
               top: 50%;
-              transform: translateY(-50%) rotate(180deg);
+              transform: translateY(-50%);
               left: 3%;
-              writing-mode: vertical-rl;
+              display: flex;
+              flex-direction: column-reverse;
               font-family: 'Space Grotesk', sans-serif;
               font-size: 0.95rem;
               font-weight: 700;
-              letter-spacing: 0.25em;
+              letter-spacing: 0;
               text-transform: uppercase;
               color: #ffffff;
               z-index: 50;
@@ -285,6 +286,14 @@
               visibility: hidden;
               transition: opacity 220ms ease, visibility 220ms ease, color 360ms ease, filter 220ms ease, transform 220ms ease;
               white-space: nowrap;
+            }
+            .sf-side-title__char {
+              display: block;
+              width: 1.15em;
+              height: 1.08em;
+              line-height: 1.08em;
+              text-align: center;
+              transition: color 160ms ease;
             }
             .sf-side-title.is-visible {
               opacity: 1;
@@ -514,57 +523,29 @@
                 const vision = document.getElementById('vision');
                 const model = document.getElementById('model');
                 if (!vision || !model) return;
-                let currentLabel = '';
-                let labelMorphTimer;
-                const morphLabel = (nextLabel, color) => {
-                  window.clearInterval(labelMorphTimer);
-                  sideTitle.style.color = color;
-                  const currentCharacters = Array.from(sideTitle.textContent);
-                  const nextCharacters = Array.from(nextLabel);
-                  const count = Math.max(currentCharacters.length, nextCharacters.length);
-                  const characters = currentCharacters.concat(Array(Math.max(0, count - currentCharacters.length)).fill(' '));
-                  let index = 0;
-                  const advance = () => {
-                    if (index >= count) {
-                      sideTitle.textContent = nextLabel;
-                      window.clearInterval(labelMorphTimer);
-                      return;
-                    }
-                    characters[index] = nextCharacters[index] || ' ';
-                    sideTitle.textContent = characters.join('').trimEnd();
-                    index++;
-                  };
-                  advance();
-                  labelMorphTimer = window.setInterval(advance, 52);
-                };
-                const setIndicator = (label, color) => {
-                  if (label === currentLabel) return;
-                  currentLabel = label;
-                  if (!label) {
-                    window.clearInterval(labelMorphTimer);
-                    sideTitle.classList.remove('is-visible');
-                    return;
-                  }
-                  if (!sideTitle.classList.contains('is-visible')) {
-                    sideTitle.textContent = label;
-                    sideTitle.style.color = color;
-                    sideTitle.classList.add('is-visible');
-                    return;
-                  }
-                  morphLabel(label, color);
-                };
+                const visionLetters = Array.from('VISION');
+                const technologyLetters = Array.from('TECHNOLOGY');
+                sideTitle.innerHTML = technologyLetters.map((_, index) => `<span class="sf-side-title__char" data-index="${index}"></span>`).join('');
+                const characterSlots = Array.from(sideTitle.querySelectorAll('.sf-side-title__char'));
                 const update = () => {
                   const midpoint = window.innerHeight / 2;
                   const inView = (el) => {
                     const rect = el.getBoundingClientRect();
                     return rect.top <= midpoint && rect.bottom >= midpoint;
                   };
-                  if (inView(section)) {
-                    setIndicator('Technology', '#ffffff');
-                  } else if (inView(vision)) {
-                    setIndicator('Vision', '#000000');
+                  if (inView(section) || inView(vision)) {
+                    // The Technology boundary sweeps up the viewport. Each fixed
+                    // character flips at the exact moment that boundary reaches it.
+                    const technologyTop = section.getBoundingClientRect().top;
+                    characterSlots.forEach((slot, index) => {
+                      const slotRect = slot.getBoundingClientRect();
+                      const isOverTechnology = technologyTop <= slotRect.top + slotRect.height / 2;
+                      slot.textContent = isOverTechnology ? technologyLetters[index] : (visionLetters[index] || '');
+                      slot.style.color = isOverTechnology ? '#ffffff' : '#000000';
+                    });
+                    sideTitle.classList.add('is-visible');
                   } else {
-                    setIndicator('', '');
+                    sideTitle.classList.remove('is-visible');
                   }
                 };
                 window.addEventListener('scroll', update, { passive: true });
