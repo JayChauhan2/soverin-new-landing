@@ -260,6 +260,9 @@
             .s-features {
               background: #000000 !important;
               position: relative;
+              --title-color-1: #01270c;
+              --title-color-2: #063126;
+              --title-color-3: #261a38;
             }
             /* The roadmap/timeline is intentionally removed from the page flow. */
             .s-roadmap { display: none !important; }
@@ -451,9 +454,44 @@
               color: #000;
               margin: 0 0 18px;
             }
-            #sf-row-0 .sf-square--text__title { color: #01270c; }
-            #sf-row-1 .sf-square--text__title { color: #063126; }
-            #sf-row-2 .sf-square--text__title { color: #261a38; }
+            #sf-row-0 .sf-square--text__title { color: var(--title-color-1); }
+            #sf-row-1 .sf-square--text__title { color: var(--title-color-2); }
+            #sf-row-2 .sf-square--text__title { color: var(--title-color-3); }
+            .sf-color-lab {
+              position: fixed;
+              right: 18px;
+              bottom: 18px;
+              z-index: 60;
+              width: 230px;
+              padding: 12px;
+              background: rgba(0, 0, 0, 0.92);
+              border: 1px solid rgba(255, 255, 255, 0.7);
+              font-family: 'Space Grotesk', sans-serif;
+            }
+            .sf-color-lab__title {
+              margin: 0 0 9px;
+              color: #fff;
+              font-size: 0.61rem;
+              font-weight: 700;
+              letter-spacing: 0.12em;
+              text-transform: uppercase;
+            }
+            .sf-color-lab__options {
+              display: grid;
+              grid-template-columns: repeat(2, 1fr);
+              gap: 6px;
+            }
+            .sf-color-lab button {
+              min-height: 37px;
+              padding: 5px 7px;
+              border: 1px solid rgba(255, 255, 255, 0.25);
+              color: #fff;
+              text-align: left;
+              cursor: pointer;
+              font: 700 0.58rem/1 'Space Grotesk', sans-serif;
+            }
+            .sf-color-lab button:hover,
+            .sf-color-lab button.is-active { border-color: #fff; box-shadow: inset 0 0 0 1px #fff; }
             .sf-square--text__body {
               font-family: 'Space Grotesk', sans-serif;
               font-size: 1rem;
@@ -482,6 +520,19 @@
 
           <!-- Side label "HOW": overlays the left margin, zero layout impact -->
           <div class="sf-side-title" id="sf-side-title">HOW</div>
+          <div class="sf-color-lab" aria-label="Title color options">
+            <p class="sf-color-lab__title">Title Color Lab</p>
+            <div class="sf-color-lab__options">
+              <button type="button" class="is-active" data-title-palette="forest" style="background:linear-gradient(90deg,#01270c 0 33%,#063126 33% 66%,#261a38 66%);">Forest</button>
+              <button type="button" data-title-palette="mono" style="background:linear-gradient(90deg,#080808 0 33%,#242424 33% 66%,#4a4a4a 66%);">Monochrome</button>
+              <button type="button" data-title-palette="electric" style="background:linear-gradient(90deg,#00b84a 0 33%,#7dff52 33% 66%,#b8ffdf 66%);color:#002b0b;">Electric</button>
+              <button type="button" data-title-palette="blue" style="background:linear-gradient(90deg,#1644d8 0 33%,#287bff 33% 66%,#78dfff 66%);">Cyber Blue</button>
+              <button type="button" data-title-palette="warm" style="background:linear-gradient(90deg,#d34b16 0 33%,#ff9e1b 33% 66%,#ef3156 66%);">Warm Signal</button>
+              <button type="button" data-title-palette="pastel" style="background:linear-gradient(90deg,#8d70ff 0 33%,#76c7ff 33% 66%,#ff90c9 66%);color:#201639;">Pastel Tech</button>
+              <button type="button" data-title-palette="white" style="background:#fff;color:#111;">All White</button>
+              <button type="button" data-title-palette="black" style="background:#000;">All Black</button>
+            </div>
+          </div>
 
           <!-- Rows: 75% centered, stacked flush -->
           <div class="sf-rows" id="technology">
@@ -1283,6 +1334,26 @@
               if (rows[0]) paintImgDither(rows[0].querySelector('.sf-square--img'), 'brain');
               if (rows[1]) paintImgDither(rows[1].querySelector('.sf-square--img'), 'green');
               if (rows[2]) paintImgDither(rows[2].querySelector('.sf-square--img'), 'light-green');
+
+              const titlePalettes = {
+                forest: ['#01270c', '#063126', '#261a38'],
+                mono: ['#080808', '#242424', '#4a4a4a'],
+                electric: ['#00b84a', '#7dff52', '#b8ffdf'],
+                blue: ['#1644d8', '#287bff', '#78dfff'],
+                warm: ['#d34b16', '#ff9e1b', '#ef3156'],
+                pastel: ['#8d70ff', '#76c7ff', '#ff90c9'],
+                white: ['#ffffff', '#ffffff', '#ffffff'],
+                black: ['#000000', '#000000', '#000000']
+              };
+              document.querySelectorAll('[data-title-palette]').forEach((button) => {
+                button.addEventListener('click', () => {
+                  const palette = titlePalettes[button.dataset.titlePalette];
+                  section.style.setProperty('--title-color-1', palette[0]);
+                  section.style.setProperty('--title-color-2', palette[1]);
+                  section.style.setProperty('--title-color-3', palette[2]);
+                  document.querySelectorAll('[data-title-palette]').forEach((item) => item.classList.toggle('is-active', item === button));
+                });
+              });
 
 
             })();
