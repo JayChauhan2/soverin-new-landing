@@ -337,27 +337,13 @@
             .team-cloud {
               position:absolute;
               width:var(--cloud-w);
-              height:calc(var(--cloud-w) * .28);
-              border-radius:999px;
-              background:radial-gradient(110% 190% at 50% 95%, rgba(255,255,255,.98) 0 42%, rgba(241,248,255,.96) 67%, rgba(202,225,246,.86) 100%);
-              border:1px solid rgba(255,255,255,.72);
-              box-shadow:0 23px 38px rgba(22,87,141,.22), 0 7px 13px rgba(22,87,141,.15), inset 0 2px 3px rgba(255,255,255,.9), inset 0 -12px 21px rgba(90,154,207,.14);
-              filter:drop-shadow(0 2px 1px rgba(255,255,255,.42));
+              height:calc(var(--cloud-w) * .44);
               opacity:0;
               transform:translate3d(0, 80px, 0) scale(.86);
               transition:opacity 900ms cubic-bezier(.16,1,.3,1), transform 1100ms cubic-bezier(.16,1,.3,1);
             }
-            .team-cloud::before, .team-cloud::after, .team-cloud__puff {
-              content:'';
-              position:absolute;
-              display:block;
-              border-radius:50%;
-              background:radial-gradient(96% 130% at 48% 92%, rgba(255,255,255,.99) 0 44%, rgba(240,248,255,.96) 69%, rgba(199,223,245,.84) 100%);
-              box-shadow:inset 0 2px 3px rgba(255,255,255,.88), inset 0 -10px 16px rgba(90,154,207,.11);
-            }
-            .team-cloud::before { width:46%; height:190%; left:13%; bottom:20%; }
-            .team-cloud::after { width:34%; height:145%; right:11%; bottom:15%; }
-            .team-cloud__puff { width:31%; height:130%; left:43%; bottom:42%; }
+            .team-cloud svg { display:block; width:100%; height:100%; overflow:visible; filter:drop-shadow(0 22px 19px rgba(21,81,130,.2)); }
+            .team-cloud path { stroke:rgba(255,255,255,.76); stroke-width:2; }
             .team-cloud.is-visible { opacity:1; transform:translate3d(0,0,0) scale(1); }
             .team-cloud--one { --cloud-w:clamp(245px, 27vw, 440px); left:-16%; top:4%; }
             .team-cloud--two { --cloud-w:clamp(230px, 27vw, 430px); right:-17%; top:3%; transition-delay:70ms; }
@@ -1530,11 +1516,11 @@
 
         <section id="team" class="s-team" data-glitch="arc" aria-label="Team">
           <div class="team-clouds" aria-hidden="true">
-            <div class="team-cloud team-cloud--one"><span class="team-cloud__puff"></span></div>
-            <div class="team-cloud team-cloud--two"><span class="team-cloud__puff"></span></div>
-            <div class="team-cloud team-cloud--three"><span class="team-cloud__puff"></span></div>
-            <div class="team-cloud team-cloud--four"><span class="team-cloud__puff"></span></div>
-            <div class="team-cloud team-cloud--five"><span class="team-cloud__puff"></span></div>
+            <div class="team-cloud team-cloud--one"><svg viewBox="0 0 500 230"><defs><radialGradient id="team-cloud-fill-1" cx="50%" cy="92%" r="98%"><stop offset="0" stop-color="#fff"/><stop offset=".57" stop-color="#f6fbff"/><stop offset="1" stop-color="#bedcf5"/></radialGradient></defs><path fill="url(#team-cloud-fill-1)" d="M61 190C29 190 10 171 10 143C10 115 30 94 58 92C66 58 96 37 132 37C157 37 180 47 196 63C214 29 250 10 292 10C341 10 382 36 396 76C438 76 472 105 472 143C472 173 447 196 415 196C390 196 368 181 359 164C338 191 306 208 269 208C238 208 209 196 189 176C171 198 145 211 115 211C90 211 69 203 61 190Z"/></svg></div>
+            <div class="team-cloud team-cloud--two"><svg viewBox="0 0 500 230"><defs><radialGradient id="team-cloud-fill-2" cx="50%" cy="92%" r="98%"><stop offset="0" stop-color="#fff"/><stop offset=".57" stop-color="#f6fbff"/><stop offset="1" stop-color="#bedcf5"/></radialGradient></defs><path fill="url(#team-cloud-fill-2)" d="M61 190C29 190 10 171 10 143C10 115 30 94 58 92C66 58 96 37 132 37C157 37 180 47 196 63C214 29 250 10 292 10C341 10 382 36 396 76C438 76 472 105 472 143C472 173 447 196 415 196C390 196 368 181 359 164C338 191 306 208 269 208C238 208 209 196 189 176C171 198 145 211 115 211C90 211 69 203 61 190Z"/></svg></div>
+            <div class="team-cloud team-cloud--three"><svg viewBox="0 0 500 230"><defs><radialGradient id="team-cloud-fill-3" cx="50%" cy="92%" r="98%"><stop offset="0" stop-color="#fff"/><stop offset=".57" stop-color="#f6fbff"/><stop offset="1" stop-color="#bedcf5"/></radialGradient></defs><path fill="url(#team-cloud-fill-3)" d="M61 190C29 190 10 171 10 143C10 115 30 94 58 92C66 58 96 37 132 37C157 37 180 47 196 63C214 29 250 10 292 10C341 10 382 36 396 76C438 76 472 105 472 143C472 173 447 196 415 196C390 196 368 181 359 164C338 191 306 208 269 208C238 208 209 196 189 176C171 198 145 211 115 211C90 211 69 203 61 190Z"/></svg></div>
+            <div class="team-cloud team-cloud--four"><svg viewBox="0 0 500 230"><defs><radialGradient id="team-cloud-fill-4" cx="50%" cy="92%" r="98%"><stop offset="0" stop-color="#fff"/><stop offset=".57" stop-color="#f6fbff"/><stop offset="1" stop-color="#bedcf5"/></radialGradient></defs><path fill="url(#team-cloud-fill-4)" d="M61 190C29 190 10 171 10 143C10 115 30 94 58 92C66 58 96 37 132 37C157 37 180 47 196 63C214 29 250 10 292 10C341 10 382 36 396 76C438 76 472 105 472 143C472 173 447 196 415 196C390 196 368 181 359 164C338 191 306 208 269 208C238 208 209 196 189 176C171 198 145 211 115 211C90 211 69 203 61 190Z"/></svg></div>
+            <div class="team-cloud team-cloud--five"><svg viewBox="0 0 500 230"><defs><radialGradient id="team-cloud-fill-5" cx="50%" cy="92%" r="98%"><stop offset="0" stop-color="#fff"/><stop offset=".57" stop-color="#f6fbff"/><stop offset="1" stop-color="#bedcf5"/></radialGradient></defs><path fill="url(#team-cloud-fill-5)" d="M61 190C29 190 10 171 10 143C10 115 30 94 58 92C66 58 96 37 132 37C157 37 180 47 196 63C214 29 250 10 292 10C341 10 382 36 396 76C438 76 472 105 472 143C472 173 447 196 415 196C390 196 368 181 359 164C338 191 306 208 269 208C238 208 209 196 189 176C171 198 145 211 115 211C90 211 69 203 61 190Z"/></svg></div>
           </div>
           <div class="team-school-wall">
             <div class="team-school-mark team-school-mark--georgia-tech" aria-label="Georgia Tech"><img class="team-school-mark__logo" src="assets/school-logos/georgia-tech.png" alt="" /><i class="team-glitch-burst" aria-hidden="true"></i><span class="team-school-rate">8%</span></div>
