@@ -297,7 +297,7 @@
             }
             #team {
               min-height: 100vh;
-              background: linear-gradient(180deg, #000 0%, #061621 12%, #2f8fd8 28%, #76b8ea 50%, #a9d7f6 63%, #438fca 75%, #0d2639 90%, #000 100%);
+              background: linear-gradient(180deg, #000 0%, #000 6%, #010508 13%, #061827 21%, #124565 30%, #2b7fbd 40%, #68afe3 50%, #abd7f3 59%, #84bee6 67%, #478ec2 75%, #235273 83%, #102c40 90%, #06121c 96%, #000 100%);
             }
             #team.s-team {
               display: flex;
@@ -328,13 +328,13 @@
             .team-cloud {
               position:absolute;
               width:var(--cloud-w);
-              height:calc(var(--cloud-w) * .44);
+              height:calc(var(--cloud-w) * .58);
               opacity:0;
               transform:translate3d(0, 80px, 0) scale(.86);
               transition:opacity 900ms cubic-bezier(.16,1,.3,1), transform 1100ms cubic-bezier(.16,1,.3,1);
             }
-            .team-cloud svg { display:block; width:100%; height:100%; overflow:visible; filter:drop-shadow(0 22px 19px rgba(21,81,130,.2)); }
-            .team-cloud path { stroke:rgba(255,255,255,.76); stroke-width:2; }
+            .team-cloud svg { display:block; width:100%; height:100%; overflow:visible; filter:drop-shadow(0 25px 22px rgba(21,81,130,.2)); }
+            .team-cloud path { stroke:rgba(255,255,255,.84); stroke-width:2; stroke-linejoin:round; stroke-linecap:round; filter:drop-shadow(0 2px 2px rgba(255,255,255,.45)); }
             .team-cloud.is-visible { opacity:1; transform:translate3d(0,0,0) scale(1); }
             .team-cloud--one { --cloud-w:clamp(245px, 27vw, 440px); left:-16%; top:4%; }
             .team-cloud--two { --cloud-w:clamp(230px, 27vw, 430px); right:-17%; top:3%; transition-delay:70ms; }
@@ -517,8 +517,8 @@
               margin: 0 auto;
               display: flex;
               flex-direction: column;
-              border-left: 1px solid #ffffff;
-              border-right: 1px solid #ffffff;
+              border-left: none;
+              border-right: none;
               border-radius: 0;
               padding: 32px;
               gap: 0;
@@ -526,6 +526,17 @@
               z-index: 2;
               background: rgba(2, 2, 4, 0.4);
             }
+            .sf-rows::before, .sf-rows::after {
+              content: '';
+              position: absolute;
+              top: 0;
+              bottom: 0;
+              width: 1px;
+              background: linear-gradient(to bottom, #fff 0%, #fff 72%, rgba(255,255,255,.72) 82%, rgba(255,255,255,.18) 93%, transparent 100%);
+              pointer-events: none;
+            }
+            .sf-rows::before { left: 0; }
+            .sf-rows::after { right: 0; }
             /* Each row = two perfectly equal squares side by side */
             .sf-row {
               display: flex;
@@ -857,7 +868,10 @@
                         }
                       }
                       const size = 1.25 + val * 2.15 + push * 0.28;
-                      const alpha = 0.12 + val * 0.2 + push * 0.045;
+                      // The technology field dissolves before Team begins;
+                      // no hard dither cutoff at the section boundary.
+                      const exitFade = Math.max(0, Math.min(1, (height - y) / Math.max(220, height * .16)));
+                      const alpha = (0.12 + val * 0.2 + push * 0.045) * exitFade;
                       ctx.fillStyle = `rgba(151, 255, 180, ${alpha})`;
                       ctx.fillRect(px - size / 2, py - size / 2, size, size);
                     }
