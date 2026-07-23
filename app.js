@@ -772,6 +772,8 @@ document.addEventListener("DOMContentLoaded", () => {
   if (waitlistCanvas) {
     const waitlistPanel = waitlistCanvas.closest(".s_cta_newsletter_content_wrap");
     const waitlistCtx = waitlistCanvas.getContext("2d", { willReadFrequently: true });
+    const waitlistSampleCanvas = document.createElement("canvas");
+    const waitlistSampleCtx = waitlistSampleCanvas.getContext("2d", { willReadFrequently: true });
     const waitlistImage = new Image();
     let waitlistWidth = 0;
     let waitlistHeight = 0;
@@ -785,7 +787,10 @@ document.addEventListener("DOMContentLoaded", () => {
       waitlistHeight = Math.max(1, Math.round(rect.height / 2));
       waitlistCanvas.width = waitlistWidth;
       waitlistCanvas.height = waitlistHeight;
+      waitlistSampleCanvas.width = waitlistWidth;
+      waitlistSampleCanvas.height = waitlistHeight;
       waitlistCtx.imageSmoothingEnabled = false;
+      waitlistSampleCtx.imageSmoothingEnabled = false;
     };
 
     const drawWaitlistDither = (timestamp) => {
@@ -808,31 +813,34 @@ document.addEventListener("DOMContentLoaded", () => {
         drawY = (waitlistHeight - drawHeight) / 2;
       }
 
-      waitlistCtx.clearRect(0, 0, waitlistWidth, waitlistHeight);
-      waitlistCtx.drawImage(waitlistImage, drawX, drawY, drawWidth, drawHeight);
-
-      const pixels = waitlistCtx.getImageData(0, 0, waitlistWidth, waitlistHeight);
+      // Sample the artwork offscreen. The visible canvas stays transparent except
+      // for dither pixels belonging to the artwork's light-blue/aqua regions.
+      waitlistSampleCtx.clearRect(0, 0, waitlistWidth, waitlistHeight);
+      waitlistSampleCtx.drawImage(waitlistImage, drawX, drawY, drawWidth, drawHeight);
+      const pixels = waitlistSampleCtx.getImageData(0, 0, waitlistWidth, waitlistHeight);
       const data = pixels.data;
       const bayer = [0.06, 0.56, 0.19, 0.69, 0.81, 0.31, 0.94, 0.44, 0.25, 0.75, 0.13, 0.63, 1, 0.5, 0.88, 0.38];
-      for (let y = 0; y < waitlistHeight; y++) {
-        for (let x = 0; x < waitlistWidth; x++) {
+      waitlistCtx.clearRect(0, 0, waitlistWidth, waitlistHeight);
+      for (let y = 0; y < waitlistHeight; y += 2) {
+        for (let x = 0; x < waitlistWidth; x += 2) {
           const index = (y * waitlistWidth + x) * 4;
-          const brightness = (data[index] * .299 + data[index + 1] * .587 + data[index + 2] * .114) / 255;
-          const shimmer = (Math.sin(x * .09 + y * .07 + waitlistFrame * .12) + 1) * .5;
+          const r = data[index];
+          const g = data[index + 1];
+          const b = data[index + 2];
+          const brightness = (r * .299 + g * .587 + b * .114) / 255;
+          const isLightBlue = b > r * 1.08 && g > r * .98 && brightness > .56;
+          const isAqua = g > r * 1.08 && b > r * 1.08 && brightness > .48;
+          const shimmer = (Math.sin(x * .065 + y * .09 + waitlistFrame * .055) + 1) * .5;
           const threshold = bayer[(x & 3) + ((y & 3) << 2)];
-          // Sparse, animated bright pixels retain the soft artwork beneath them.
-          if (brightness > .42 && brightness < .9 && shimmer > threshold + .36) {
-            data[index] = Math.min(255, data[index] + 28);
-            data[index + 1] = Math.min(255, data[index + 1] + 30);
-            data[index + 2] = Math.min(255, data[index + 2] + 20);
+          // Keep the motion tied to the actual blue forms—not spread evenly
+          // across the panel as a generic overlay.
+          if ((isLightBlue || isAqua) && shimmer > threshold + .24) {
+            const opacity = isAqua ? .62 : .42;
+            waitlistCtx.fillStyle = `rgba(183, 229, 255, ${opacity})`;
+            waitlistCtx.fillRect(x, y, 1, 1);
           }
-          // Preserve contrast for the white Waitlist copy.
-          data[index] = Math.round(data[index] * .62 + 6 * .38);
-          data[index + 1] = Math.round(data[index + 1] * .62 + 23 * .38);
-          data[index + 2] = Math.round(data[index + 2] * .62 + 51 * .38);
         }
       }
-      waitlistCtx.putImageData(pixels, 0, 0);
     };
 
     waitlistImage.src = "assets/waitlist-background.png";
