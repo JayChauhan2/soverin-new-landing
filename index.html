@@ -2531,7 +2531,7 @@
               <div class="form_sub w-form">
                 <form id="subscribe-form" class="newsletter-pill">
                   <label class="u-sr-only" for="form-email">Join our Waitlist</label>
-                  <input id="form-email" name="Email" type="email" placeholder="Enter your email" required inputmode="email" autocomplete="email" class="newsletter-pill__input"/>
+                  <input id="form-email" name="Email" type="email" placeholder="Enter your email" required pattern="^[^\s@]+@[^\s@]+\.[^\s@]+$" title="Enter an email address with a domain, such as name@example.com" inputmode="email" autocomplete="email" class="newsletter-pill__input"/>
                   <button type="submit" class="newsletter-pill__submit" disabled>Subscribe</button>
                 </form>
                 
