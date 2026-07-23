@@ -285,6 +285,7 @@
               background: #000;
               color: #fff;
             }
+            .newsletter-pill__submit:disabled { cursor: not-allowed; }
             .newsletter-pill__submit:hover { background: #1f1f1f; }
             .newsletter-pill__submit.is-ready:hover { background: #1f1f1f; }
             .form_sub_success_text {
@@ -2531,7 +2532,7 @@
                 <form id="subscribe-form" class="newsletter-pill">
                   <label class="u-sr-only" for="form-email">Join our Waitlist</label>
                   <input id="form-email" name="Email" type="email" placeholder="Enter your email" required inputmode="email" autocomplete="email" class="newsletter-pill__input"/>
-                  <button type="submit" class="newsletter-pill__submit">Subscribe</button>
+                  <button type="submit" class="newsletter-pill__submit" disabled>Subscribe</button>
                 </form>
                 
                 <!-- Success / Error indicators -->

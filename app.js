@@ -577,6 +577,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (!emailInput || !submitBtn) return;
       const hasValidEmail = emailInput.value.trim().length > 0 && emailInput.validity.valid;
       submitBtn.classList.toggle("is-ready", hasValidEmail);
+      submitBtn.disabled = !hasValidEmail;
     };
 
     emailInput?.addEventListener("input", updateSubscribeButton);
@@ -586,7 +587,7 @@ document.addEventListener("DOMContentLoaded", () => {
     subForm.addEventListener("submit", (e) => {
       e.preventDefault();
       const emailVal = emailInput.value.trim();
-      if (!emailVal) return;
+      if (!emailVal || !emailInput.validity.valid) return;
 
       if (submitBtn) submitBtn.disabled = true;
 
