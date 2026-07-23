@@ -1571,7 +1571,7 @@
               }
               const worldImage = new Image();
               let worldReady = false;
-              worldImage.src = 'assets/living-world-skyline.png';
+              worldImage.src = '/assets/living-world-skyline.png';
               worldImage.onload = () => {
                 // The planet is deliberately below the artboard: only its upper
                 // curve appears, making the skyline read as a small city on Earth.
@@ -1863,8 +1863,8 @@
               }
               scrollImage.onload = buildDiplomacyArtwork;
               quillImage.onload = buildDiplomacyArtwork;
-              scrollImage.src = 'assets/diplomatic-scroll-source.png';
-              quillImage.src = 'assets/diplomatic-quill.png';
+              scrollImage.src = '/assets/diplomatic-scroll-source.png';
+              quillImage.src = '/assets/diplomatic-quill.png';
 
               setupFeatureReveal('sf-chronicle-canvas', 'sf-row-2', (ctx, w, h, p) => {
                 ctx.clearRect(0, 0, w, h);

@@ -256,7 +256,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // ==========================================
   // 5. Three.js Canyon Viewer
   // ==========================================
-  const SCENE_URL = "assets/models/cyn.glb";
+  const SCENE_URL = "/assets/models/cyn.glb";
 
   class ModelApp {
     constructor() {
@@ -959,7 +959,7 @@ document.addEventListener("DOMContentLoaded", () => {
       waitlistCtx.putImageData(output, 0, 0);
     };
 
-    waitlistImage.src = "assets/waitlist-background.png";
+    waitlistImage.src = "/assets/waitlist-background.png";
     resizeWaitlistCanvas();
     window.addEventListener("resize", resizeWaitlistCanvas, { passive: true });
     requestAnimationFrame(drawWaitlistDither);
