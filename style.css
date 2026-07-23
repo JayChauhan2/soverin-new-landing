@@ -310,6 +310,33 @@ a {
   pointer-events: none;
 }
 
+/* The canyon view is intentionally clean: remove the inherited hotel HUD. */
+#model .s_model_info_wrap,
+#model .s_model_lines_wrap {
+  display: none;
+}
+
+.model-corner-plus {
+  position: absolute;
+  z-index: 3;
+  width: 18px;
+  height: 18px;
+  pointer-events: none;
+  opacity: 0.78;
+}
+
+.model-corner-plus svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  fill: #9cc9e0;
+}
+
+.model-corner-plus--tl { top: 28px; left: 28px; }
+.model-corner-plus--tr { top: 28px; right: 28px; }
+.model-corner-plus--bl { bottom: 28px; left: 28px; }
+.model-corner-plus--br { right: 28px; bottom: 28px; }
+
 #sketch {
   width: 100%;
   height: 100%;

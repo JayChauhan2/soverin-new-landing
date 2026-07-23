@@ -284,8 +284,8 @@ document.addEventListener("DOMContentLoaded", () => {
       this.model = null;
       this.pivot = null;
       this.cameraTarget = new THREE.Vector3();
-      this.keys = new Set();
-      this.controlsActive = true;
+      this.cameraViewDirection = new THREE.Vector3(0.72, 0.56, 1).normalize();
+      this.isFramed = false;
 
       this.animate = this.animate.bind(this);
       this.onResize = this.onResize.bind(this);
@@ -294,20 +294,14 @@ document.addEventListener("DOMContentLoaded", () => {
       this.ro = new ResizeObserver(this.onResize);
       this.ro.observe(this.container);
 
-      this.installDragRotate();
-      this.installKeyboardMove();
       this.onResize();
       this.animate();
     }
 
     animate() {
       requestAnimationFrame(this.animate);
-      this.moveCamera();
       if (this.pivot) {
-        // Slow constant rotation when not dragged
-        if (!this.isDragging) {
-          this.pivot.rotation.y += 0.003;
-        }
+        this.pivot.rotation.y += 0.003;
       }
       this.renderer.render(this.scene, this.camera);
     }
@@ -326,7 +320,12 @@ document.addEventListener("DOMContentLoaded", () => {
       const baseW = 1200;
       const scale = baseW / w;
       const factor = Math.min(Math.max(scale, 1), 2.2);
-      this.camera.position.z = this.baseCamZ * factor;
+      if (this.isFramed) {
+        this.camera.position.copy(this.cameraTarget).addScaledVector(this.cameraViewDirection, this.baseCamZ * factor);
+        this.camera.lookAt(this.cameraTarget);
+      } else {
+        this.camera.position.z = this.baseCamZ * factor;
+      }
     }
 
     fitCameraToObject(object3D, offset = 1.1) {
@@ -348,8 +347,8 @@ document.addEventListener("DOMContentLoaded", () => {
       const box = new THREE.Box3().setFromObject(object3D);
       const center = box.getCenter(new THREE.Vector3());
       this.cameraTarget.copy(center);
-      this.camera.position.y = center.y;
-      this.camera.lookAt(center);
+      this.isFramed = true;
+      this.onResize();
     }
 
     installDragRotate() {
