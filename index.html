@@ -649,11 +649,9 @@
             #sf-row-2 .sf-square--img {
               background: linear-gradient(135deg, #d7efda 0%, #edf8ef 54%, #d4eed9 100%) !important;
             }
-            /* The globe artwork starts square; give it extra vertical presence in
-               this wide card rather than letting the hands read horizontally pulled. */
+            /* Keep the Diplomatic Language Engine artwork square and unstretched. */
             #sf-row-2 #sf-chronicle-canvas {
-              transform: translateY(12px) scaleY(1.2);
-              transform-origin: center center;
+              transform: none;
             }
             #sf-world-canvas {
               width: 100% !important;
@@ -869,7 +867,7 @@
             <!-- Row 3: Image left, Text right -->
             <div class="sf-row" id="sf-row-2">
               <div class="sf-square sf-square--img" style="position: relative; overflow: hidden;">
-                <canvas id="sf-chronicle-canvas" width="500" height="460" style="position:absolute;inset:0;width:100%;height:100%;z-index:5;"></canvas>
+                <canvas id="sf-chronicle-canvas" width="500" height="500" style="position:absolute;inset:0;width:100%;height:100%;z-index:5;"></canvas>
               </div>
               <div class="sf-square sf-square--text">
                 <h3 class="sf-square--text__title">Diplomatic Language Engine</h3>
@@ -1729,7 +1727,7 @@
 
               const emperorSource = document.createElement('canvas');
               emperorSource.width = 500;
-              emperorSource.height = 460;
+              emperorSource.height = 500;
               const emperorCtx = emperorSource.getContext('2d');
               emperorCtx.imageSmoothingEnabled = true;
               let emperorCells = [];
@@ -1747,26 +1745,26 @@
                 emperorCtx.lineWidth = 5;
                 emperorCtx.strokeStyle = '#1b2b1e';
                 const drawWindow = (x) => {
-                  emperorCtx.strokeRect(x, 128, 64, 142);
-                  emperorCtx.fillRect(x + 29, 128, 6, 142);
-                  emperorCtx.fillRect(x, 186, 64, 6);
-                  emperorCtx.fillRect(x - 8, 270, 80, 8);
+                  emperorCtx.strokeRect(x, 96, 64, 204);
+                  emperorCtx.fillRect(x + 29, 96, 6, 204);
+                  emperorCtx.fillRect(x, 180, 64, 6);
+                  emperorCtx.fillRect(x - 8, 300, 80, 8);
                 };
                 drawWindow(42);
                 drawWindow(394);
-                emperorCtx.fillRect(34, 292, 432, 5);
-                emperorCtx.fillRect(42, 302, 16, 84);
-                emperorCtx.fillRect(442, 302, 16, 84);
+                emperorCtx.fillRect(34, 322, 432, 5);
+                emperorCtx.fillRect(42, 332, 16, 108);
+                emperorCtx.fillRect(442, 332, 16, 108);
 
                 // A simple flat line grounds the throne without turning it into
                 // an exterior structure or a second architectural object.
-                emperorCtx.fillRect(72, 406, 356, 6);
+                emperorCtx.fillRect(56, 410, 388, 6);
 
-                const portraitHeight = 250;
+                const portraitHeight = 185;
                 const scale = portraitHeight / emperorImage.naturalHeight;
                 const imageWidth = emperorImage.naturalWidth * scale;
                 const imageHeight = emperorImage.naturalHeight * scale;
-                emperorCtx.drawImage(emperorImage, (emperorSource.width - imageWidth) / 2, 154, imageWidth, imageHeight);
+                emperorCtx.drawImage(emperorImage, (emperorSource.width - imageWidth) / 2, 212, imageWidth, imageHeight);
                 const imageData = emperorCtx.getImageData(0, 0, emperorSource.width, emperorSource.height);
                 emperorCells = makeBrainStyleGrid(imageData, emperorSource.width, emperorSource.height);
                 emperorReady = true;
