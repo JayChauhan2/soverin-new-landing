@@ -879,6 +879,23 @@ document.addEventListener("DOMContentLoaded", () => {
             outData[index + 1] = ditherColor[1];
             outData[index + 2] = ditherColor[2];
             outData[index + 3] = 255;
+          } else if (isAqua) {
+            // Keep the water mass filled with blue rather than leaving black holes.
+            outData[index] = 16;
+            outData[index + 1] = 108;
+            outData[index + 2] = 162;
+            outData[index + 3] = 255;
+          } else if (isMint) {
+            // The land pieces retain a quieter green base between bright dither cells.
+            outData[index] = 28;
+            outData[index + 1] = 116;
+            outData[index + 2] = 88;
+            outData[index + 3] = 255;
+          } else if (isIceBlue) {
+            outData[index] = 22;
+            outData[index + 1] = 100;
+            outData[index + 2] = 150;
+            outData[index + 3] = 255;
           } else {
             outData[index] = 0;
             outData[index + 1] = 0;
