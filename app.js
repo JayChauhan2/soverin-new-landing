@@ -847,9 +847,9 @@ document.addEventListener("DOMContentLoaded", () => {
             const localX = Math.sin(phase) * 2.8 + Math.sin(waitlistFrame * .045 + y * .31) * 1.1;
             const localY = Math.cos(phase * 1.18) * 1.7;
             const pulse = .62 + (Math.sin(waitlistFrame * .13 + x * .23 - y * .16) + 1) * .19;
-            const opacity = (isAqua ? .46 : .32) * pulse;
+            const opacity = (isAqua ? .58 : .42) * pulse;
             waitlistCtx.fillStyle = `rgba(183, 229, 255, ${opacity})`;
-            waitlistCtx.fillRect(x + localX, y + localY, 1, 1);
+            waitlistCtx.fillRect(x + localX, y + localY, 2, 2);
           }
         }
       }
