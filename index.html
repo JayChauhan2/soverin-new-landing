@@ -1279,52 +1279,6 @@
               if (rows[0]) paintImgDither(rows[0].querySelector('.sf-square--img'), 'brain');
               if (rows[1]) paintImgDither(rows[1].querySelector('.sf-square--img'), 'green');
               if (rows[2]) paintImgDither(rows[2].querySelector('.sf-square--img'), 'light-green');
-              // Local displacement filters warp only the circle beneath the cursor.
-              // They are applied to both visual and text cards, not as an overlay.
-              const warpSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-              warpSvg.setAttribute('width', '0');
-              warpSvg.setAttribute('height', '0');
-              warpSvg.style.position = 'absolute';
-              warpSvg.style.pointerEvents = 'none';
-              document.body.appendChild(warpSvg);
-
-              document.querySelectorAll('.sf-square').forEach((card, cardIndex) => {
-                const filterId = `sf-local-warp-${cardIndex}`;
-                const filter = document.createElementNS('http://www.w3.org/2000/svg', 'filter');
-                filter.setAttribute('id', filterId);
-                filter.setAttribute('filterUnits', 'userSpaceOnUse');
-                filter.innerHTML = `
-                  <feTurbulence type="turbulence" baseFrequency="0.012 0.024" numOctaves="2" seed="${cardIndex + 4}" result="noise"/>
-                  <feDisplacementMap in="SourceGraphic" in2="noise" scale="16" xChannelSelector="R" yChannelSelector="G" result="displaced"/>
-                  <feImage result="mask"/>
-                  <feComposite in="displaced" in2="mask" operator="in" result="localWarp"/>
-                  <feComposite in="SourceGraphic" in2="mask" operator="out" result="unwarped"/>
-                  <feMerge><feMergeNode in="unwarped"/><feMergeNode in="localWarp"/></feMerge>
-                `;
-                warpSvg.appendChild(filter);
-                const mask = filter.querySelector('feImage');
-
-                card.addEventListener('pointermove', (event) => {
-                  const rect = card.getBoundingClientRect();
-                  const x = event.clientX - rect.left;
-                  const y = event.clientY - rect.top;
-                  const radius = 68;
-                  filter.setAttribute('x', '0');
-                  filter.setAttribute('y', '0');
-                  filter.setAttribute('width', rect.width);
-                  filter.setAttribute('height', rect.height);
-                  mask.setAttribute('x', '0');
-                  mask.setAttribute('y', '0');
-                  mask.setAttribute('width', rect.width);
-                  mask.setAttribute('height', rect.height);
-                  const maskMarkup = `<svg xmlns="http://www.w3.org/2000/svg" width="${rect.width}" height="${rect.height}"><defs><radialGradient id="g"><stop offset="48%" stop-color="white"/><stop offset="76%" stop-color="white" stop-opacity="0"/></radialGradient></defs><circle cx="${x}" cy="${y}" r="${radius}" fill="url(#g)"/></svg>`;
-                  const maskUrl = `data:image/svg+xml,${encodeURIComponent(maskMarkup)}`;
-                  mask.setAttribute('href', maskUrl);
-                  mask.setAttributeNS('http://www.w3.org/1999/xlink', 'href', maskUrl);
-                  card.style.filter = `url(#${filterId})`;
-                });
-                card.addEventListener('pointerleave', () => { card.style.filter = ''; });
-              });
 
 
             })();
