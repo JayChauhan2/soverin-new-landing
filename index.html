@@ -1436,6 +1436,24 @@
 
               // Section 2: a small fixed-resolution skyline sitting on the
               // barely-visible curve of a living Earth.
+              const worldStatus = document.querySelector('.sf-world-status');
+              const worldCanvasElement = document.getElementById('sf-world-canvas');
+              if (worldStatus && worldCanvasElement) {
+                // Match the brain labels exactly: both are designed on a 500px
+                // artboard and scale by the visible card width.
+                const sizeWorldStatus = () => {
+                  const rect = worldCanvasElement.getBoundingClientRect();
+                  if (!rect.width) return;
+                  const scale = rect.width / 500;
+                  worldStatus.style.fontSize = `${12 * scale}px`;
+                  worldStatus.style.minHeight = `${26 * scale}px`;
+                  worldStatus.style.paddingInline = `${11 * scale}px`;
+                  worldStatus.style.top = `${86 * scale}px`;
+                  worldStatus.style.borderWidth = `${Math.max(1, scale)}px`;
+                };
+                new ResizeObserver(sizeWorldStatus).observe(worldCanvasElement);
+                sizeWorldStatus();
+              }
               const worldSource = document.createElement('canvas');
               worldSource.width = 500;
               worldSource.height = 500;
