@@ -1755,17 +1755,15 @@
                 if (!scrollImage.complete || !quillImage.complete || !scrollImage.naturalWidth || !quillImage.naturalWidth) return;
                 diplomacyCtx.clearRect(0, 0, 500, 500);
 
-                // The open scroll is the subject; the quill overlaps one corner
-                // like an in-progress diplomatic document rather than a room scene.
+                // Remove the scan's white paper field first, then add the supplied
+                // transparent quill intact so its feather highlights stay visible.
                 diplomacyCtx.drawImage(scrollImage, 35, 98, 430, 398);
-                diplomacyCtx.save();
-                diplomacyCtx.translate(358, 286);
-                diplomacyCtx.rotate(0.42);
-                // Deliberately oversized and more illustrative than the prior
-                // stock-like pen so it reads as a proper writing quill.
-                diplomacyCtx.drawImage(quillImage, -92, -192, 184, 350);
-                diplomacyCtx.restore();
                 removeWhitePaper(diplomacyCtx);
+                diplomacyCtx.save();
+                // The supplied pen is already angled; keep that natural diagonal
+                // and give it enough scale to read clearly beside the document.
+                diplomacyCtx.drawImage(quillImage, 105, 218, 356, 195);
+                diplomacyCtx.restore();
 
                 const imageData = diplomacyCtx.getImageData(0, 0, 500, 500);
                 diplomacyCells = makeBrainStyleGrid(imageData, 500, 500);
@@ -1774,7 +1772,7 @@
               scrollImage.onload = buildDiplomacyArtwork;
               quillImage.onload = buildDiplomacyArtwork;
               scrollImage.src = 'assets/diplomatic-scroll-source.png';
-              quillImage.src = 'assets/diplomatic-quill-source.svg';
+              quillImage.src = 'assets/diplomatic-quill.png';
 
               setupFeatureReveal('sf-chronicle-canvas', 'sf-row-2', (ctx, w, h, p) => {
                 ctx.clearRect(0, 0, w, h);
