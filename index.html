@@ -309,7 +309,16 @@
               position: relative;
             }
             #team.s-team::before {
-              display: none;
+              content: '';
+              display: block;
+              position: absolute;
+              top: 0;
+              left: 12.5%;
+              width: 75%;
+              height: 1px;
+              background: #fff;
+              z-index: 3;
+              pointer-events: none;
             }
             .team-dither-canvas {
               position: absolute;
