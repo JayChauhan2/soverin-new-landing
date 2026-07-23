@@ -1345,6 +1345,29 @@
                 return cells.sort(() => Math.random() - 0.5);
               }
 
+              function makeDenseInkGrid(imageData, width, height) {
+                const cells = [];
+                const cellSize = 2.5;
+                for (let y = 0; y < height; y += cellSize) {
+                  for (let x = 0; x < width; x += cellSize) {
+                    let visible = false;
+                    // Test the entire tiny cell instead of one top-left pixel;
+                    // fine pen strokes then remain continuous after dithering.
+                    for (let py = Math.floor(y); py < Math.min(height, Math.ceil(y + cellSize)); py++) {
+                      for (let px = Math.floor(x); px < Math.min(width, Math.ceil(x + cellSize)); px++) {
+                        if (imageData.data[(py * width + px) * 4 + 3] > 28) {
+                          visible = true;
+                          break;
+                        }
+                      }
+                      if (visible) break;
+                    }
+                    if (visible) cells.push({ x, y, size: 2.7, color: '#006400' });
+                  }
+                }
+                return cells.sort(() => Math.random() - 0.5);
+              }
+
               function drawBrainStyleGrid(ctx, cells, progress) {
                 const count = Math.floor(cells.length * progress);
                 for (let i = 0; i < count; i++) {
@@ -1730,7 +1753,13 @@
               diplomacySource.height = 500;
               const diplomacyCtx = diplomacySource.getContext('2d');
               diplomacyCtx.imageSmoothingEnabled = true;
-              let diplomacyCells = [];
+              const quillSource = document.createElement('canvas');
+              quillSource.width = 500;
+              quillSource.height = 500;
+              const quillCtx = quillSource.getContext('2d');
+              quillCtx.imageSmoothingEnabled = true;
+              let scrollCells = [];
+              let quillCells = [];
               let diplomacyReady = false;
               const scrollImage = new Image();
               const quillImage = new Image();
@@ -1759,14 +1788,20 @@
                 // transparent quill intact so its feather highlights stay visible.
                 diplomacyCtx.drawImage(scrollImage, 35, 98, 430, 398);
                 removeWhitePaper(diplomacyCtx);
-                diplomacyCtx.save();
+                scrollCells = makeBrainStyleGrid(
+                  diplomacyCtx.getImageData(0, 0, 500, 500), 500, 500
+                );
+
+                // Render the supplied transparent quill independently. Its dense
+                // pixel sampling preserves the thin feather strands rather than
+                // punching holes through them with the scroll's coarser grid.
+                quillCtx.clearRect(0, 0, 500, 500);
                 // The supplied feather sits above the document, with its nib
                 // meeting the scroll's upper edge as if it is about to write.
-                diplomacyCtx.drawImage(quillImage, 200, 10, 106, 174);
-                diplomacyCtx.restore();
-
-                const imageData = diplomacyCtx.getImageData(0, 0, 500, 500);
-                diplomacyCells = makeBrainStyleGrid(imageData, 500, 500);
+                quillCtx.drawImage(quillImage, 220, 22, 106, 174);
+                quillCells = makeDenseInkGrid(
+                  quillCtx.getImageData(0, 0, 500, 500), 500, 500
+                );
                 diplomacyReady = true;
               }
               scrollImage.onload = buildDiplomacyArtwork;
@@ -1777,7 +1812,8 @@
               setupFeatureReveal('sf-chronicle-canvas', 'sf-row-2', (ctx, w, h, p) => {
                 ctx.clearRect(0, 0, w, h);
                 if (!diplomacyReady) return;
-                drawBrainStyleGrid(ctx, diplomacyCells, p);
+                drawBrainStyleGrid(ctx, scrollCells, p);
+                drawBrainStyleGrid(ctx, quillCells, p);
               });
               // ==========================================
               // One restrained dither treatment is shared by every image square.
