@@ -830,12 +830,19 @@ document.addEventListener("DOMContentLoaded", () => {
           const brightness = (r * .299 + g * .587 + b * .114) / 255;
           const isLightBlue = b > r * 1.08 && g > r * .98 && brightness > .56;
           const isAqua = g > r * 1.08 && b > r * 1.08 && brightness > .48;
+          const xRatio = x / waitlistWidth;
+          const yRatio = y / waitlistHeight;
+          // These masks follow the two distinct blue formations in this artwork,
+          // so the dither stays compositional instead of becoming a full overlay.
+          const inBlueFormation =
+            (xRatio > .39 && xRatio < .66 && yRatio > .38 && yRatio < .92) ||
+            (xRatio > .71 && xRatio < .91 && yRatio > .08 && yRatio < .37);
           const shimmer = (Math.sin(x * .065 + y * .09 + waitlistFrame * .055) + 1) * .5;
           const threshold = bayer[(x & 3) + ((y & 3) << 2)];
           // Keep the motion tied to the actual blue forms—not spread evenly
           // across the panel as a generic overlay.
-          if ((isLightBlue || isAqua) && shimmer > threshold + .24) {
-            const opacity = isAqua ? .62 : .42;
+          if (inBlueFormation && (isLightBlue || isAqua) && shimmer > threshold + .48) {
+            const opacity = isAqua ? .4 : .28;
             waitlistCtx.fillStyle = `rgba(183, 229, 255, ${opacity})`;
             waitlistCtx.fillRect(x, y, 1, 1);
           }
