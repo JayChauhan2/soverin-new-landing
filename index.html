@@ -265,7 +265,7 @@
               width: 100%;
               min-height: 64px;
               overflow: hidden;
-              border-radius: 999px;
+              border-radius: 0;
               background: #fff;
             }
             .newsletter-pill__input {
@@ -277,15 +277,16 @@
               background: #fff;
               color: #111;
               font: 500 1rem/1 'Space Grotesk', sans-serif;
+              border-radius: 0;
             }
             .newsletter-pill__input::placeholder { color: rgba(0,0,0,.54); }
             .newsletter-pill__submit {
               flex: 0 0 152px;
               border: 0;
-              border-radius: 999px;
+              border-radius: 0;
               background: #000;
               color: #384554;
-              font: 400 .72rem/1 'Press Start 2P', monospace;
+              font: 500 1rem/1 'Space Grotesk', sans-serif;
               cursor: pointer;
               transition: background .2s ease, color .2s ease;
             }
@@ -293,7 +294,7 @@
             @media (max-width: 600px) {
               .newsletter-pill { min-height: 54px; }
               .newsletter-pill__input { padding: 0 18px; font-size: .85rem; }
-              .newsletter-pill__submit { flex-basis: 112px; font-size: .55rem; }
+              .newsletter-pill__submit { flex-basis: 112px; font-size: .85rem; }
             }
             #team {
               min-height: 100vh;
@@ -313,6 +314,7 @@
             /* Keep the site's ending as one uninterrupted continuation of Showcase. */
             #reserve.s-cta-newsletter,
             .s-footer { background: #061733 !important; }
+            #reserve.s-cta-newsletter { border-radius: 0 !important; }
             #team.s-team {
               display: flex;
               align-items: flex-start;
