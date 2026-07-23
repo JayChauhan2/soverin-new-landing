@@ -298,10 +298,6 @@
             #team {
               min-height: 100vh;
               background-color: #05080d;
-              background-image: linear-gradient(rgba(3, 7, 11, .38), rgba(3, 7, 11, .68)), url('assets/team-golden-gate.png');
-              background-position: center;
-              background-size: cover;
-              background-repeat: no-repeat;
             }
             #team.s-team {
               display: flex;
@@ -324,10 +320,20 @@
               z-index: 3;
               pointer-events: none;
             }
+            #team.s-team::after {
+              content: '';
+              position: absolute;
+              inset: -24px;
+              z-index: 0;
+              pointer-events: none;
+              background: linear-gradient(rgba(3, 7, 11, .26), rgba(3, 7, 11, .6)), url('assets/team-golden-gate.png') center / cover no-repeat;
+              filter: blur(15px);
+              transform: scale(1.035);
+            }
             .team-dither-canvas {
               position: absolute;
               inset: 0;
-              z-index: 0;
+              z-index: 1;
               width: 100%;
               height: 100%;
               pointer-events: none;
@@ -340,7 +346,7 @@
               gap: clamp(20px, 3vw, 48px);
               align-items: center;
               position: relative;
-              z-index: 1;
+              z-index: 2;
             }
             .team-school-mark {
               min-height: 210px;
@@ -1531,32 +1537,50 @@
               resizeDither();
               window.addEventListener('resize', resizeDither, { passive: true });
 
+              // Sample the bridge artwork itself, so the sharp dither layer
+              // follows real bridge/cloud/water detail instead of a uniform grid.
+              const sourceImage = new Image();
+              const sourceCanvas = document.createElement('canvas');
+              const sourceCtx = sourceCanvas.getContext('2d', { willReadFrequently: true });
+              let sourcePixels;
+              let sourceW = 0;
+              let sourceH = 0;
+              sourceImage.src = 'assets/team-golden-gate.png';
+              sourceImage.onload = () => {
+                sourceW = 180;
+                sourceH = Math.round(sourceW * (sourceImage.naturalHeight / sourceImage.naturalWidth));
+                sourceCanvas.width = sourceW;
+                sourceCanvas.height = sourceH;
+                sourceCtx.drawImage(sourceImage, 0, 0, sourceW, sourceH);
+                sourcePixels = sourceCtx.getImageData(0, 0, sourceW, sourceH).data;
+              };
+
               let ditherFrame = 0;
               const renderTeamDither = () => {
                 ditherFrame++;
                 const rect = teamSection.getBoundingClientRect();
                 const width = rect.width;
-                const height = Math.min(560, rect.height);
+                const height = rect.height;
                 ditherCtx.clearRect(0, 0, width, rect.height);
-                // Match Technology's exact square field at the boundary, then
-                // gently dissolve it into Team's white dither below.
-                const spacing = 15;
-                for (let y = spacing / 2; y < height; y += spacing) {
-                  for (let x = spacing / 2; x < width; x += spacing) {
-                    const wave = Math.sin(x * .017 - y * .011 + ditherFrame * .026) * .16;
-                    const band = Math.sin((x + y) * .008 - ditherFrame * .014) * .08;
-                    const val = Math.max(.25, Math.min(1, .54 + wave + band));
-                    const dissolve = y < 250 ? 1 : Math.max(0, 1 - (y - 250) / 310);
-                    const alpha = (.12 + val * .2) * dissolve;
-                    const size = 1.25 + val * 2.15;
-                    // Begin exactly on Technology's green, blend through a pale
-                    // mint band, and settle to white only once inside Team.
-                    const blend = Math.min(1, Math.max(0, (y - 52) / 248));
-                    const red = Math.round(151 + 104 * blend);
-                    const green = 255;
-                    const blue = Math.round(180 + 75 * blend);
-                    ditherCtx.fillStyle = `rgba(${red},${green},${blue},${alpha})`;
-                    ditherCtx.fillRect(x - size / 2, y - size / 2, size, size);
+                if (sourcePixels && width && height) {
+                  const cellW = width / sourceW;
+                  const cellH = height / sourceH;
+                  for (let sy = 0; sy < sourceH; sy += 2) {
+                    for (let sx = 0; sx < sourceW; sx += 2) {
+                      const p = (sy * sourceW + sx) * 4;
+                      const r = sourcePixels[p];
+                      const g = sourcePixels[p + 1];
+                      const b = sourcePixels[p + 2];
+                      const luminance = (r * .2126 + g * .7152 + b * .0722) / 255;
+                      const flicker = Math.sin(ditherFrame * .022 + sx * 1.91 + sy * 1.37);
+                      // Sparse cells and uneven cluster strength create the same
+                      // image-bound dither texture as the opening artwork.
+                      if (luminance < .16 || flicker < -.12) continue;
+                      const alpha = (.075 + luminance * .22) * (.7 + Math.max(0, flicker) * .3);
+                      const size = Math.max(1.1, Math.min(cellW, cellH) * (.55 + luminance * .7));
+                      ditherCtx.fillStyle = `rgba(${r},${g},${b},${alpha})`;
+                      ditherCtx.fillRect(sx * cellW, sy * cellH, size, size);
+                    }
                   }
                 }
                 requestAnimationFrame(renderTeamDither);
