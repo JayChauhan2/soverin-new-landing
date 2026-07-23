@@ -291,7 +291,7 @@ document.addEventListener("DOMContentLoaded", () => {
       this.model = null;
       this.pivot = null;
       this.keys = new Set();
-      this.controlsActive = false;
+      this.controlsActive = true;
 
       this.animate = this.animate.bind(this);
       this.onResize = this.onResize.bind(this);
@@ -361,20 +361,22 @@ document.addEventListener("DOMContentLoaded", () => {
       this.isDragging = false;
       let lastX = 0;
       let lastY = 0;
+      const controlSurface = this.container;
 
       this.canvas.style.cursor = "grab";
+      controlSurface.style.cursor = "grab";
 
-      this.canvas.addEventListener("pointerdown", (e) => {
+      controlSurface.addEventListener("pointerdown", (e) => {
         if (!this.pivot) return;
         this.canvas.focus({ preventScroll: true });
-        this.controlsActive = true;
         this.isDragging = true;
         lastX = e.clientX;
         lastY = e.clientY;
         this.canvas.style.cursor = "grabbing";
+        controlSurface.style.cursor = "grabbing";
       });
 
-      this.canvas.addEventListener("pointermove", (e) => {
+      controlSurface.addEventListener("pointermove", (e) => {
         if (!this.pivot || !this.isDragging) return;
         const dx = e.clientX - lastX;
         const dy = e.clientY - lastY;
@@ -389,11 +391,12 @@ document.addEventListener("DOMContentLoaded", () => {
       const stopDrag = () => {
         this.isDragging = false;
         this.canvas.style.cursor = "grab";
+        controlSurface.style.cursor = "grab";
       };
 
-      this.canvas.addEventListener("pointerup", stopDrag);
-      this.canvas.addEventListener("pointercancel", stopDrag);
-      this.canvas.addEventListener("pointerleave", stopDrag);
+      controlSurface.addEventListener("pointerup", stopDrag);
+      controlSurface.addEventListener("pointercancel", stopDrag);
+      controlSurface.addEventListener("pointerleave", stopDrag);
     }
 
     installKeyboardMove() {
