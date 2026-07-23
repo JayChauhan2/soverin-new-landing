@@ -1,7 +1,7 @@
 # Project Context & Handoff Notes
 
 ## What This Project Is
-A Vite-based landing page for **Soverin** (`/Users/jaychauhan/gru-spacex-landing`). The hero section has a **pixel-art animated background** rendered entirely from JavaScript on a `<canvas>` — no network image fetch at runtime.
+A Vite-based landing page for **Soverin**. The hero section has a **pixel-art animated background** rendered entirely from JavaScript on a `<canvas>` — no network image fetch at runtime.
 
 ---
 
@@ -108,10 +108,10 @@ Before the tree test, the following animations were active and should be restore
 
 | File | Purpose |
 |------|---------|
-| `/Users/jaychauhan/gru-spacex-landing/app.js` | Main render loop, pixel drawing, tree segmentation |
-| `/Users/jaychauhan/gru-spacex-landing/assets/nature_bg.jpg` | Original source image (1376×768) — used ONLY by compress script |
-| `/Users/jaychauhan/gru-spacex-landing/assets/nature_bg_data.js` | Generated pixel data (640×360, 32-color palette) imported by app.js |
-| `/Users/jaychauhan/gru-spacex-landing/index.html` | No image tag — canvas only |
+| `app.js` | Main render loop, pixel drawing, tree segmentation |
+| `assets/nature_bg.jpg` | Original source image (1376×768) — used ONLY by compress script |
+| `assets/nature_bg_data.js` | Generated pixel data (640×360, 32-color palette) imported by app.js |
+| `index.html` | No image tag — canvas only |
 | `~/.gemini/antigravity-cli/brain/5e7ed417-.../scratch/compress_bg_pure.py` | Script that generates nature_bg_data.js from nature_bg.jpg |
 
 ---
