@@ -346,7 +346,6 @@
               z-index: 2;
               pointer-events: none;
               image-rendering: pixelated;
-              mix-blend-mode: screen;
             }
             .team-school-mark--illinois { --team-mark-glow: rgba(255, 91, 0, .54); }
             .team-school-mark--iitb { --team-mark-glow: rgba(0, 103, 184, .56); }
@@ -355,7 +354,7 @@
               filter: brightness(0) invert(1) drop-shadow(0 0 12px rgba(255,255,255,.42));
             }
             .team-school-mark--georgia-tech { --team-mark-glow: rgba(255, 196, 37, .56); }
-            .team-school-mark--ucsd { --team-mark-glow: rgba(0, 198, 218, .56); }
+            .team-school-mark--ucsd { --team-mark-glow: rgba(20, 44, 82, .78); }
             .team-school-mark--ucsd::after {
               content: '';
               position: absolute;
@@ -1428,9 +1427,8 @@
                 observer.unobserve(teamSection);
               }, { threshold: 0.2 }).observe(teamSection);
 
-              // Reuse the landing art's pixel language on the real school marks:
-              // tiny sampled cells pulse within each logo silhouette, never as a
-              // separate box or field around it.
+              // Rebuild every real logo as a living pixel-dither mark, using its
+              // own source colours rather than putting a visual layer on top.
               teamSection.querySelectorAll('.team-school-mark').forEach((mark, markIndex) => {
                 const logo = mark.querySelector('.team-school-mark__logo');
                 if (!logo) return;
@@ -1479,15 +1477,21 @@
                     for (let y = 0; y < gridH; y++) {
                       for (let x = 0; x < gridW; x++) {
                         const p = (y * gridW + x) * 4;
-                        if (pixels[p + 3] < 96) continue;
-                        const pulse = Math.sin(time * .0022 + x * 1.71 + y * 1.13 + markIndex * 2.4);
-                        if (pulse < .73) continue;
+                        if (pixels[p + 3] < 42) continue;
                         const isKharagpur = mark.classList.contains('team-school-mark--iitkgp');
                         const r = isKharagpur ? 255 : pixels[p];
                         const g = isKharagpur ? 255 : pixels[p + 1];
                         const b = isKharagpur ? 255 : pixels[p + 2];
-                        overlayCtx.fillStyle = `rgba(${r}, ${g}, ${b}, ${0.18 + (pulse - .73) * .62})`;
-                        overlayCtx.fillRect(x * cellW, y * cellH, Math.ceil(cellW * .9), Math.ceil(cellH * .9));
+                        const pattern = Math.sin(x * 2.27 + y * 1.63 + markIndex * .8);
+                        const pulse = Math.sin(time * .0021 + x * 1.17 - y * 1.41 + markIndex * 2.4);
+                        const alpha = Math.max(.42, Math.min(1, .78 + pattern * .14 + pulse * .12)) * (pixels[p + 3] / 255);
+                        overlayCtx.fillStyle = `rgba(${r}, ${g}, ${b}, ${alpha})`;
+                        overlayCtx.fillRect(x * cellW, y * cellH, Math.ceil(cellW * .82), Math.ceil(cellH * .82));
+                        // Occasional cells briefly light up as a low-key digital scan.
+                        if (pulse > .88 && pattern > .18) {
+                          overlayCtx.fillStyle = `rgba(255,255,255,${(pulse - .88) * .7})`;
+                          overlayCtx.fillRect(x * cellW, y * cellH, Math.ceil(cellW * .52), Math.ceil(cellH * .52));
+                        }
                       }
                     }
                   }
@@ -1497,6 +1501,7 @@
                 const initialise = () => {
                   prepare();
                   resize();
+                  logo.style.opacity = '0';
                   new ResizeObserver(resize).observe(logo);
                   requestAnimationFrame(render);
                 };
