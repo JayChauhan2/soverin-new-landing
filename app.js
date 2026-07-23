@@ -259,6 +259,11 @@ document.addEventListener("DOMContentLoaded", () => {
   const MODEL_URL = isMobile 
     ? "https://webflow-resources.b-cdn.net/GRU_Hotel_0001_26_mob.glb"
     : "https://webflow-resources.b-cdn.net/GRU_Hotel_0001_26.glb";
+  const HOTEL_ENVIRONMENT = [
+    { url: "assets/models/basemountain.glb", scale: 1.05, x: 0, y: -0.02, z: 0, rotation: 0 },
+    { url: "assets/models/lake.glb", scale: 1.35, x: 0.78, y: -0.06, z: 0.46, rotation: -0.35 },
+    { url: "assets/models/cyn.glb", scale: 2.15, x: -1.22, y: -0.1, z: -1.15, rotation: 0.52 }
+  ];
 
   class ModelApp {
     constructor() {
@@ -393,6 +398,39 @@ document.addEventListener("DOMContentLoaded", () => {
   let modelAppInstance = null;
   let started = false;
 
+  function addHotelEnvironment(loader, pivot, hotelSize) {
+    const footprint = Math.max(hotelSize.x, hotelSize.z);
+    HOTEL_ENVIRONMENT.forEach((asset) => {
+      loader.load(
+        asset.url,
+        (gltf) => {
+          const terrain = gltf.scene;
+          terrain.scale.setScalar(footprint * asset.scale);
+          terrain.rotation.y = asset.rotation;
+          terrain.updateWorldMatrix(true, true);
+
+          // Normalize each Blender scene around its own footprint, then place it
+          // relative to the hotel. This keeps all three assets stable even if the
+          // hotel model or viewport changes size.
+          const terrainBounds = new THREE.Box3().setFromObject(terrain);
+          const terrainCenter = terrainBounds.getCenter(new THREE.Vector3());
+          terrain.position.x += footprint * asset.x - terrainCenter.x;
+          terrain.position.z += footprint * asset.z - terrainCenter.z;
+          terrain.position.y += footprint * asset.y - terrainBounds.min.y;
+
+          terrain.traverse((child) => {
+            if (!child.isMesh) return;
+            child.castShadow = true;
+            child.receiveShadow = true;
+          });
+          pivot.add(terrain);
+        },
+        undefined,
+        (error) => console.error(`Error loading hotel environment asset: ${asset.url}`, error)
+      );
+    });
+  }
+
   function startModelLoad() {
     if (started) return;
     started = true;
@@ -430,6 +468,9 @@ document.addEventListener("DOMContentLoaded", () => {
         const box2 = new THREE.Box3().setFromObject(model);
         model.position.y -= box2.min.y;
 
+        model.updateWorldMatrix(true, true);
+        const hotelSize = new THREE.Box3().setFromObject(model).getSize(new THREE.Vector3());
+
         modelAppInstance.model = model;
         modelAppInstance.pivot = pivot;
 
@@ -441,6 +482,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         modelAppInstance.fitCameraToObject(pivot, 0.95);
         modelAppInstance.frameAndLookAt(pivot);
+        addHotelEnvironment(gltfLoader, pivot, hotelSize);
 
         // Hide loader & show canvas
         gsap.to(loaderEl, { opacity: 0, duration: 0.35, onComplete: () => loaderEl.style.display = "none" });
