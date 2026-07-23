@@ -633,8 +633,7 @@ html {
   .menu_nav.open .link_nav:nth-child(5) { animation-delay: 220ms; }
 
   .link_nav.is-current {
-    opacity: 1;
-    font-weight: 700;
+    display: none;
   }
 
   .nav_bar.nav-dark .menu_nav .link_nav {
