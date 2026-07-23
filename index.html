@@ -1779,16 +1779,12 @@
 
                 // A flat threshold beneath the throne, then shallow steps and a
                 // central floor runner that extend toward the viewer.
-                emperorCtx.fillRect(58, 410, 384, 6);
-                emperorCtx.fillRect(82, 420, 336, 8);
-                emperorCtx.fillRect(108, 430, 284, 8);
-                emperorCtx.beginPath();
-                emperorCtx.moveTo(218, 438);
-                emperorCtx.lineTo(282, 438);
-                emperorCtx.lineTo(322, 500);
-                emperorCtx.lineTo(178, 500);
-                emperorCtx.closePath();
-                emperorCtx.fill();
+                emperorCtx.fillRect(48, 404, 404, 8);
+                emperorCtx.fillRect(68, 416, 364, 9);
+                emperorCtx.fillRect(92, 429, 316, 9);
+                emperorCtx.fillRect(116, 442, 268, 9);
+                // The room continues into a filled foreground floor after the steps.
+                emperorCtx.fillRect(0, 451, 500, 49);
 
                 const portraitHeight = 185;
                 const scale = portraitHeight / emperorImage.naturalHeight;
