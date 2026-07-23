@@ -819,7 +819,6 @@ document.addEventListener("DOMContentLoaded", () => {
       waitlistSampleCtx.drawImage(waitlistImage, drawX, drawY, drawWidth, drawHeight);
       const pixels = waitlistSampleCtx.getImageData(0, 0, waitlistWidth, waitlistHeight);
       const data = pixels.data;
-      const formationDrift = Math.sin(waitlistFrame * .025) * .35;
       waitlistCtx.clearRect(0, 0, waitlistWidth, waitlistHeight);
       for (let y = 0; y < waitlistHeight; y += 2) {
         for (let x = 0; x < waitlistWidth; x += 2) {
@@ -842,9 +841,15 @@ document.addEventListener("DOMContentLoaded", () => {
           const fixedSeed = (Math.sin(x * 12.9898 + y * 78.233) * 43758.5453) % 1;
           const isDitherCell = Math.abs(fixedSeed) > .935;
           if (inBlueFormation && (isLightBlue || isAqua) && isDitherCell) {
-            const opacity = (isAqua ? .38 : .26) + Math.sin(waitlistFrame * .018 + x * .11 + y * .07) * .035;
+            const phase = waitlistFrame * .09 + x * .17 + y * .13;
+            // Each cell has its own small orbit. The pixel field stays in its
+            // source formation while visibly rippling and blinking in place.
+            const localX = Math.sin(phase) * 2.8 + Math.sin(waitlistFrame * .045 + y * .31) * 1.1;
+            const localY = Math.cos(phase * 1.18) * 1.7;
+            const pulse = .62 + (Math.sin(waitlistFrame * .13 + x * .23 - y * .16) + 1) * .19;
+            const opacity = (isAqua ? .46 : .32) * pulse;
             waitlistCtx.fillStyle = `rgba(183, 229, 255, ${opacity})`;
-            waitlistCtx.fillRect(x + formationDrift, y, 1, 1);
+            waitlistCtx.fillRect(x + localX, y + localY, 1, 1);
           }
         }
       }
