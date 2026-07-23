@@ -51,9 +51,6 @@
                 <a href="#model" class="link_nav w-inline-block">
                   <div class="link_nav_text">3D Hotel</div>
                 </a>
-                <a href="#whitepaper" class="link_nav w-inline-block">
-                  <div class="link_nav_text">Whitepaper</div>
-                </a>
                 <a href="#featured" class="link_nav w-inline-block">
                   <div class="link_nav_text">Featured In</div>
                 </a>
@@ -263,6 +260,8 @@
             }
             /* The roadmap/timeline is intentionally removed from the page flow. */
             .s-roadmap { display: none !important; }
+            /* Superseded by the dedicated student-team and newsletter sections. */
+            #whitepaper, #team-roster { display: none !important; }
             #team {
               min-height: 100vh;
               background: #000;
@@ -1941,15 +1940,15 @@
         </div>
       </section>
 
-      <!-- Section 8: Reservation CTA Form -->
+      <!-- Newsletter CTA -->
       <section id="reserve" class="s-cta-newsletter">
         <div class="s_cta_newsletter_container u-container">
           <div class="s_cta_newsletter_content_wrap">
             <div class="s_cta_newsletter_title_wrap">
               <h2 class="s_cta_newsletter_title u-text-style-h2">
-                Apply for <span class="span-font-m">Reservation</span>
+                Join our <span class="span-font-m">Newsletter</span>
               </h2>
-              <p class="s_cta_newsletter_descrip">Submit your email address to receive priority application materials for commercial passenger launches and engineering updates.</p>
+              <p class="s_cta_newsletter_descrip">Receive updates on milestones, engineering progress, and the steps toward humanity’s first permanent presence on the Moon.</p>
             </div>
             
             <div class="s_cta_newsletter_form">
@@ -1964,7 +1963,7 @@
                         <button type="submit" class="clickable_btn u-cover-absolute" style="background: transparent; border: none; width: 100%; height: 100%; cursor: pointer;"></button>
                         <div class="button_main_element">
                           <div class="button_main_arrow_text_wrap" style="padding: 18px 30px;">
-                            <div class="button_main_text">Submit</div>
+                            <div class="button_main_text">Subscribe</div>
                           </div>
                           <div class="button_main_line"></div>
                         </div>
@@ -1977,7 +1976,7 @@
                 <!-- Success / Error indicators -->
                 <div class="form_sub_success w-form-done" id="form-success" style="display: none; margin-top: 15px; background: rgba(0,255,102,0.05); border: 1px solid #00ff66; padding: 15px;">
                   <div class="form_sub_success_content">
-                    <p class="form_sub_success_text" style="color: #00ff66;">Submission successful! We will contact you soon.</p>
+                    <p class="form_sub_success_text" style="color: #00ff66;">You've been subscribed!</p>
                   </div>
                 </div>
               </div>
@@ -2001,9 +2000,7 @@
             <div class="s_footer_links_bn_wrap">
               <div class="s_footer_links_list">
                 <a href="#vision" class="link_footer">Vision</a>
-                <a href="#model" class="link_footer">3D Model</a>
                 <a href="#model" class="link_footer">3D Hotel</a>
-                <a href="#whitepaper" class="link_footer">Whitepaper</a>
                 <a href="#team" class="link_footer">Team</a>
               </div>
             </div>
@@ -2016,12 +2013,10 @@
                 <a href="https://www.gru.space/privacy-policy" target="_blank" class="s_footer_legal_link">Privacy Policy</a>
               </div>
             </div>
-            <div class="s_footer_social_wrap">
-              <a href="https://x.com/gru_space" target="_blank" class="s_footer_social_link">X</a>
-              <a href="https://www.linkedin.com/company/galactic-resource-utilization-space-inc/about/" target="_blank" class="s_footer_social_link">Linkedin</a>
-              <a href="https://www.instagram.com/gru.space/" target="_blank" class="s_footer_social_link">Instagram</a>
-            </div>
           </div>
+          <a href="#home" aria-label="Back to top" style="display:flex; width:100%; justify-content:center; margin-top:72px; padding-top:34px; border-top:1px solid rgba(255,255,255,.22);">
+            <img src="assets/soverin_text_logo.png" alt="Soverin" style="display:block; width:min(760px, 82vw); height:auto; object-fit:contain; filter:brightness(0) invert(1);"/>
+          </a>
         </div>
       </div>
     </footer>
