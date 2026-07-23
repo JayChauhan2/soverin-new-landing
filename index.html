@@ -297,28 +297,19 @@
             }
             #team {
               min-height: 100vh;
-              background: linear-gradient(180deg, #2f8fd8 0%, #76b8ea 52%, #b8dcf5 100%);
+              background: linear-gradient(180deg, #000 0%, #061621 12%, #2f8fd8 28%, #76b8ea 50%, #a9d7f6 63%, #438fca 75%, #0d2639 90%, #000 100%);
             }
             #team.s-team {
               display: flex;
               align-items: flex-start;
               justify-content: center;
-              min-height: 0;
-              padding: 82px 7vw 52px;
+              min-height: 135vh;
+              padding: 38vh 7vw 27vh;
               overflow: hidden;
               position: relative;
             }
             #team.s-team::before {
-              content: '';
-              display: block;
-              position: absolute;
-              top: 0;
-              left: 0;
-              width: 100%;
-              height: 1px;
-              background: #fff;
-              z-index: 3;
-              pointer-events: none;
+              display: none;
             }
             #team.s-team::after {
               display: none;
@@ -375,16 +366,7 @@
               isolation: isolate;
             }
             .team-school-mark::before {
-              content: '';
-              position: absolute;
-              inset: 10% 4%;
-              opacity: 0.55;
-              background-image: radial-gradient(circle, var(--team-mark-glow) 1.2px, transparent 1.45px);
-              background-size: 7px 7px;
-              mask-image: radial-gradient(ellipse at 50% 50%, #000 0 23%, transparent 70%);
-              -webkit-mask-image: radial-gradient(ellipse at 50% 50%, #000 0 23%, transparent 70%);
-              pointer-events: none;
-              z-index: 0;
+              display: none;
             }
             #team.is-revealed .team-school-mark { opacity: 1; transform: translateY(0); }
             #team.is-revealed .team-school-mark:nth-child(2) { transition-delay: 90ms; }
@@ -1517,10 +1499,10 @@
         <section id="team" class="s-team" data-glitch="arc" aria-label="Team">
           <div class="team-clouds" aria-hidden="true">
             <div class="team-cloud team-cloud--one"><svg viewBox="0 0 500 230"><defs><radialGradient id="team-cloud-fill-1" cx="50%" cy="92%" r="98%"><stop offset="0" stop-color="#fff"/><stop offset=".57" stop-color="#f6fbff"/><stop offset="1" stop-color="#bedcf5"/></radialGradient></defs><path fill="url(#team-cloud-fill-1)" d="M61 190C29 190 10 171 10 143C10 115 30 94 58 92C66 58 96 37 132 37C157 37 180 47 196 63C214 29 250 10 292 10C341 10 382 36 396 76C438 76 472 105 472 143C472 173 447 196 415 196C390 196 368 181 359 164C338 191 306 208 269 208C238 208 209 196 189 176C171 198 145 211 115 211C90 211 69 203 61 190Z"/></svg></div>
-            <div class="team-cloud team-cloud--two"><svg viewBox="0 0 500 230"><defs><radialGradient id="team-cloud-fill-2" cx="50%" cy="92%" r="98%"><stop offset="0" stop-color="#fff"/><stop offset=".57" stop-color="#f6fbff"/><stop offset="1" stop-color="#bedcf5"/></radialGradient></defs><path fill="url(#team-cloud-fill-2)" d="M61 190C29 190 10 171 10 143C10 115 30 94 58 92C66 58 96 37 132 37C157 37 180 47 196 63C214 29 250 10 292 10C341 10 382 36 396 76C438 76 472 105 472 143C472 173 447 196 415 196C390 196 368 181 359 164C338 191 306 208 269 208C238 208 209 196 189 176C171 198 145 211 115 211C90 211 69 203 61 190Z"/></svg></div>
-            <div class="team-cloud team-cloud--three"><svg viewBox="0 0 500 230"><defs><radialGradient id="team-cloud-fill-3" cx="50%" cy="92%" r="98%"><stop offset="0" stop-color="#fff"/><stop offset=".57" stop-color="#f6fbff"/><stop offset="1" stop-color="#bedcf5"/></radialGradient></defs><path fill="url(#team-cloud-fill-3)" d="M61 190C29 190 10 171 10 143C10 115 30 94 58 92C66 58 96 37 132 37C157 37 180 47 196 63C214 29 250 10 292 10C341 10 382 36 396 76C438 76 472 105 472 143C472 173 447 196 415 196C390 196 368 181 359 164C338 191 306 208 269 208C238 208 209 196 189 176C171 198 145 211 115 211C90 211 69 203 61 190Z"/></svg></div>
-            <div class="team-cloud team-cloud--four"><svg viewBox="0 0 500 230"><defs><radialGradient id="team-cloud-fill-4" cx="50%" cy="92%" r="98%"><stop offset="0" stop-color="#fff"/><stop offset=".57" stop-color="#f6fbff"/><stop offset="1" stop-color="#bedcf5"/></radialGradient></defs><path fill="url(#team-cloud-fill-4)" d="M61 190C29 190 10 171 10 143C10 115 30 94 58 92C66 58 96 37 132 37C157 37 180 47 196 63C214 29 250 10 292 10C341 10 382 36 396 76C438 76 472 105 472 143C472 173 447 196 415 196C390 196 368 181 359 164C338 191 306 208 269 208C238 208 209 196 189 176C171 198 145 211 115 211C90 211 69 203 61 190Z"/></svg></div>
-            <div class="team-cloud team-cloud--five"><svg viewBox="0 0 500 230"><defs><radialGradient id="team-cloud-fill-5" cx="50%" cy="92%" r="98%"><stop offset="0" stop-color="#fff"/><stop offset=".57" stop-color="#f6fbff"/><stop offset="1" stop-color="#bedcf5"/></radialGradient></defs><path fill="url(#team-cloud-fill-5)" d="M61 190C29 190 10 171 10 143C10 115 30 94 58 92C66 58 96 37 132 37C157 37 180 47 196 63C214 29 250 10 292 10C341 10 382 36 396 76C438 76 472 105 472 143C472 173 447 196 415 196C390 196 368 181 359 164C338 191 306 208 269 208C238 208 209 196 189 176C171 198 145 211 115 211C90 211 69 203 61 190Z"/></svg></div>
+            <div class="team-cloud team-cloud--two"><svg viewBox="0 0 500 230"><defs><radialGradient id="team-cloud-fill-2" cx="50%" cy="92%" r="98%"><stop offset="0" stop-color="#fff"/><stop offset=".57" stop-color="#f6fbff"/><stop offset="1" stop-color="#bedcf5"/></radialGradient></defs><path fill="url(#team-cloud-fill-2)" d="M38 181C17 181 5 165 5 143C5 119 23 100 50 97C56 72 78 54 106 54C126 54 146 63 160 79C171 42 204 21 244 21C282 21 315 40 329 70C345 59 365 53 386 53C428 53 463 84 463 124C463 130 462 136 460 141C480 149 491 166 491 184C491 205 474 220 451 220C432 220 415 208 409 193C390 211 364 222 337 222C308 222 282 210 264 190C245 207 220 217 194 217C172 217 152 210 137 196C122 213 101 223 78 223C56 223 42 207 38 181Z"/></svg></div>
+            <div class="team-cloud team-cloud--three"><svg viewBox="0 0 500 230"><defs><radialGradient id="team-cloud-fill-3" cx="50%" cy="92%" r="98%"><stop offset="0" stop-color="#fff"/><stop offset=".57" stop-color="#f6fbff"/><stop offset="1" stop-color="#bedcf5"/></radialGradient></defs><path fill="url(#team-cloud-fill-3)" d="M56 176C27 176 12 158 12 134C12 111 31 93 58 92C68 65 92 49 121 49C143 49 163 58 178 74C192 51 218 37 248 37C282 37 311 55 324 83C338 75 355 71 373 71C410 71 441 100 441 135C441 169 414 195 380 195C361 195 343 186 332 171C316 191 291 204 264 204C244 204 224 196 209 184C193 202 170 211 146 211C125 211 106 204 93 191C82 201 68 205 55 205C35 205 21 191 21 172C21 153 35 178 56 176Z"/></svg></div>
+            <div class="team-cloud team-cloud--four"><svg viewBox="0 0 500 230"><defs><radialGradient id="team-cloud-fill-4" cx="50%" cy="92%" r="98%"><stop offset="0" stop-color="#fff"/><stop offset=".57" stop-color="#f6fbff"/><stop offset="1" stop-color="#bedcf5"/></radialGradient></defs><path fill="url(#team-cloud-fill-4)" d="M40 174C17 174 2 157 2 134C2 112 20 95 45 93C57 65 84 47 116 47C139 47 161 57 176 75C196 36 236 13 281 13C328 13 369 42 383 83C391 80 401 78 411 78C450 78 481 109 481 147C481 184 451 213 414 213C389 213 366 200 354 180C338 204 310 220 278 220C246 220 218 207 200 187C180 206 153 216 124 216C91 216 62 201 48 179C45 177 42 175 40 174Z"/></svg></div>
+            <div class="team-cloud team-cloud--five"><svg viewBox="0 0 500 230"><defs><radialGradient id="team-cloud-fill-5" cx="50%" cy="92%" r="98%"><stop offset="0" stop-color="#fff"/><stop offset=".57" stop-color="#f6fbff"/><stop offset="1" stop-color="#bedcf5"/></radialGradient></defs><path fill="url(#team-cloud-fill-5)" d="M54 192C24 192 7 172 7 145C7 119 27 99 57 98C70 65 101 44 137 44C167 44 193 58 210 80C225 55 252 39 284 39C322 39 354 61 366 93C377 87 391 84 405 84C443 84 474 114 474 151C474 186 446 214 411 214C385 214 363 199 352 177C330 201 300 214 268 214C239 214 213 203 195 185C177 205 150 215 121 215C91 215 67 203 54 192Z"/></svg></div>
           </div>
           <div class="team-school-wall">
             <div class="team-school-mark team-school-mark--georgia-tech" aria-label="Georgia Tech"><img class="team-school-mark__logo" src="assets/school-logos/georgia-tech.png" alt="" /><i class="team-glitch-burst" aria-hidden="true"></i><span class="team-school-rate">8%</span></div>
@@ -1543,7 +1525,7 @@
               // Clouds arrive as the visitor travels through the sky rather than
               // all at once, giving the section the soft, aspirational reveal.
               const clouds = [...teamSection.querySelectorAll('.team-cloud')];
-              const cloudStops = [.06, .2, .37, .55, .72];
+              const cloudStops = [.12, .29, .46, .63, .8];
               const revealClouds = () => {
                 const rect = teamSection.getBoundingClientRect();
                 const progress = Math.max(0, Math.min(1, (window.innerHeight - rect.top) / window.innerHeight));
