@@ -572,12 +572,22 @@ document.addEventListener("DOMContentLoaded", () => {
   const successBox = document.getElementById("form-success");
 
   if (subForm && successBox) {
+    const submitBtn = subForm.querySelector("button[type='submit']");
+    const updateSubscribeButton = () => {
+      if (!emailInput || !submitBtn) return;
+      const hasValidEmail = emailInput.value.trim().length > 0 && emailInput.validity.valid;
+      submitBtn.classList.toggle("is-ready", hasValidEmail);
+    };
+
+    emailInput?.addEventListener("input", updateSubscribeButton);
+    emailInput?.addEventListener("change", updateSubscribeButton);
+    updateSubscribeButton();
+
     subForm.addEventListener("submit", (e) => {
       e.preventDefault();
       const emailVal = emailInput.value.trim();
       if (!emailVal) return;
 
-      const submitBtn = subForm.querySelector("button[type='submit']");
       if (submitBtn) submitBtn.disabled = true;
 
       // Mock subscription delays
