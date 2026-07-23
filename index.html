@@ -1735,7 +1735,7 @@
               let emperorCells = [];
               const emperorImage = new Image();
               let emperorReady = false;
-              emperorImage.src = 'assets/diplomatic-emperor-reference.png';
+              emperorImage.src = 'assets/diplomatic-emperor.png';
               emperorImage.onload = () => {
                 // Preserve the formal seated portrait in full, centered in the
                 // card, then distill it into the same dense green pixel language.
@@ -1744,14 +1744,6 @@
                 const imageHeight = emperorImage.naturalHeight * scale;
                 emperorCtx.drawImage(emperorImage, (emperorSource.width - imageWidth) / 2, 0, imageWidth, imageHeight);
                 const imageData = emperorCtx.getImageData(0, 0, emperorSource.width, emperorSource.height);
-                for (let i = 0; i < imageData.data.length; i += 4) {
-                  const r = imageData.data[i];
-                  const g = imageData.data[i + 1];
-                  const b = imageData.data[i + 2];
-                  // Remove only the near-black backdrop; retain the throne, robes,
-                  // staff, and bright ceremonial details as a single silhouette.
-                  if (r < 34 && g < 34 && b < 34 && Math.max(r, g, b) - Math.min(r, g, b) < 15) imageData.data[i + 3] = 0;
-                }
                 emperorCells = makeBrainStyleGrid(imageData, emperorSource.width, emperorSource.height);
                 emperorReady = true;
               };
