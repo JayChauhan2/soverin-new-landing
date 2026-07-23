@@ -1760,9 +1760,9 @@
                 diplomacyCtx.drawImage(scrollImage, 35, 98, 430, 398);
                 removeWhitePaper(diplomacyCtx);
                 diplomacyCtx.save();
-                // Keep the supplied pen above the document; its lower-left nib
-                // lands on the page while the feather stays clear of the text.
-                diplomacyCtx.drawImage(quillImage, 185, 0, 235, 129);
+                // The supplied feather sits above the document, with its nib
+                // meeting the scroll's upper edge as if it is about to write.
+                diplomacyCtx.drawImage(quillImage, 200, 10, 106, 174);
                 diplomacyCtx.restore();
 
                 const imageData = diplomacyCtx.getImageData(0, 0, 500, 500);
