@@ -338,14 +338,14 @@
               filter: contrast(1.12) saturate(1.18) drop-shadow(0 0 12px var(--team-mark-glow));
               transform: translateZ(0);
             }
-            .team-school-mark--illinois { --team-mark-glow: rgba(255, 91, 0, .54); }
-            .team-school-mark--iitb { --team-mark-glow: rgba(0, 103, 184, .56); }
-            .team-school-mark--iitkgp { --team-mark-glow: rgba(42, 150, 93, .56); }
+            .team-school-mark--illinois { --team-mark-glow: rgba(255, 91, 0, .54); --team-glitch-rgb: 255, 91, 0; }
+            .team-school-mark--iitb { --team-mark-glow: rgba(0, 103, 184, .56); --team-glitch-rgb: 0, 103, 184; }
+            .team-school-mark--iitkgp { --team-mark-glow: rgba(42, 150, 93, .56); --team-glitch-rgb: 255, 255, 255; }
             .team-school-mark--iitkgp .team-school-mark__logo {
               filter: brightness(0) invert(1) drop-shadow(0 0 12px rgba(255,255,255,.42));
             }
-            .team-school-mark--georgia-tech { --team-mark-glow: rgba(255, 196, 37, .56); }
-            .team-school-mark--ucsd { --team-mark-glow: rgba(20, 44, 82, .78); }
+            .team-school-mark--georgia-tech { --team-mark-glow: rgba(255, 196, 37, .56); --team-glitch-rgb: 255, 196, 37; }
+            .team-school-mark--ucsd { --team-mark-glow: rgba(20, 44, 82, .78); --team-glitch-rgb: 198, 146, 20; }
             .team-school-mark--ucsd::after {
               content: '';
               position: absolute;
@@ -360,28 +360,60 @@
               width: min(144px, 96%);
               height: 144px;
             }
+            .team-school-rate {
+              position: relative;
+              z-index: 2;
+              margin-top: 9px;
+              color: #fff;
+              font: 700 .62rem/1 'Press Start 2P', monospace;
+              letter-spacing: -.04em;
+            }
             .team-glitch-burst {
               position: absolute;
               z-index: 3;
-              inset: 18% 4%;
+              inset: 31% 13%;
               pointer-events: none;
               opacity: 0;
               mix-blend-mode: screen;
               background:
-                linear-gradient(90deg, transparent 0 17%, rgba(210,245,255,.85) 17% 19%, transparent 19% 49%, rgba(120,195,255,.76) 49% 52%, transparent 52% 78%, rgba(255,255,255,.92) 78% 80%, transparent 80%),
-                repeating-linear-gradient(0deg, transparent 0 11px, rgba(207,244,255,.78) 11px 13px, transparent 13px 23px);
-              filter: drop-shadow(0 0 4px rgba(135,220,255,.9));
+                linear-gradient(90deg, transparent 0 16%, rgba(var(--team-glitch-rgb),.9) 16% 19%, transparent 19% 53%, rgba(var(--team-glitch-rgb),.74) 53% 56%, transparent 56% 82%, rgba(var(--team-glitch-rgb),.9) 82% 85%, transparent 85%),
+                repeating-linear-gradient(0deg, transparent 0 7px, rgba(var(--team-glitch-rgb),.8) 7px 9px, transparent 9px 18px);
+              filter: drop-shadow(0 0 4px rgba(var(--team-glitch-rgb),.9));
             }
-            .team-school-mark.is-glitching .team-glitch-burst {
-              animation: team-electric-glitch 340ms steps(3, end);
+            #team[data-glitch='signal'] .team-school-mark.is-glitching .team-glitch-burst { animation: glitch-signal 320ms steps(3,end); }
+            #team[data-glitch='arc'] .team-school-mark.is-glitching .team-glitch-burst { animation: glitch-arc 420ms steps(4,end); }
+            #team[data-glitch='scan'] .team-school-mark.is-glitching .team-glitch-burst { animation: glitch-scan 460ms linear; }
+            #team[data-glitch='tear'] .team-school-mark.is-glitching .team-glitch-burst { animation: glitch-tear 300ms steps(2,end); }
+            #team[data-glitch='noise'] .team-school-mark.is-glitching .team-glitch-burst { animation: glitch-noise 360ms steps(5,end); }
+            #team[data-glitch='echo'] .team-school-mark.is-glitching .team-glitch-burst { animation: glitch-echo 390ms steps(3,end); }
+            #team[data-glitch='pulse'] .team-school-mark.is-glitching .team-glitch-burst { animation: glitch-pulse 440ms ease-out; }
+            #team[data-glitch='raster'] .team-school-mark.is-glitching .team-glitch-burst { animation: glitch-raster 370ms steps(4,end); }
+            #team[data-glitch='spark'] .team-school-mark.is-glitching .team-glitch-burst { animation: glitch-spark 280ms steps(3,end); }
+            #team[data-glitch='frame'] .team-school-mark.is-glitching .team-glitch-burst { animation: glitch-frame 400ms steps(3,end); }
+            @keyframes glitch-signal { 0%,100%{opacity:0} 18%,54%{opacity:.9;background-position:-9px 0,0 -6px} 34%,72%{opacity:.18;background-position:8px 0,0 8px} }
+            @keyframes glitch-arc { 0%,100%{opacity:0;clip-path:inset(0)} 25%{opacity:.76;clip-path:inset(29% 0 47% 0)} 51%{opacity:.94;clip-path:inset(61% 0 15% 0)} 72%{opacity:.22;clip-path:inset(8% 0 76% 0)} }
+            @keyframes glitch-scan { 0%,100%{opacity:0;background-position:0 -46px,0 0} 20%{opacity:.84;background-position:0 35px,0 0} 66%{opacity:.5;background-position:0 105px,0 0} }
+            @keyframes glitch-tear { 0%,100%{opacity:0;clip-path:inset(0)} 28%{opacity:.86;clip-path:polygon(0 21%,100% 4%,100% 37%,0 54%)} 63%{opacity:.55;clip-path:polygon(0 66%,100% 46%,100% 80%,0 94%)} }
+            @keyframes glitch-noise { 0%,100%{opacity:0} 18%{opacity:.25;background-position:13px 0,0 12px} 29%{opacity:.9;background-position:-17px 0,0 -8px} 51%{opacity:.13} 69%{opacity:.72;background-position:7px 0,0 3px} }
+            @keyframes glitch-echo { 0%,100%{opacity:0;transform:translateX(0)} 26%{opacity:.62;transform:translateX(-6px)} 48%{opacity:.87;transform:translateX(6px)} 74%{opacity:.18;transform:translateX(-2px)} }
+            @keyframes glitch-pulse { 0%,100%{opacity:0;filter:drop-shadow(0 0 0 rgba(var(--team-glitch-rgb),0))} 38%{opacity:.92;filter:drop-shadow(0 0 10px rgba(var(--team-glitch-rgb),1))} 68%{opacity:.22} }
+            @keyframes glitch-raster { 0%,100%{opacity:0} 20%{opacity:.76;background-size:auto,100% 10px} 48%{opacity:.35;background-size:auto,100% 4px} 74%{opacity:.82;background-size:auto,100% 15px} }
+            @keyframes glitch-spark { 0%,100%{opacity:0} 22%,31%,57%{opacity:.96;clip-path:inset(42% 0 42% 0)} 44%,70%{opacity:.22;clip-path:inset(14% 0 72% 0)} }
+            @keyframes glitch-frame { 0%,100%{opacity:0;transform:scaleX(1)} 23%{opacity:.8;transform:scaleX(.86)} 47%{opacity:.24;transform:scaleX(1.08)} 71%{opacity:.72;transform:scaleX(.94)} }
+            .team-glitch-lab {
+              grid-column: 1 / -1;
+              display: flex;
+              flex-wrap: wrap;
+              justify-content: center;
+              gap: 7px;
+              margin: 28px auto 0;
+              max-width: 780px;
+              position: relative;
+              z-index: 2;
             }
-            @keyframes team-electric-glitch {
-              0%, 100% { opacity: 0; background-position: 0 0, 0 0; }
-              16% { opacity: .92; background-position: -13px 0, 0 -5px; }
-              34% { opacity: .18; background-position: 9px 0, 0 8px; }
-              52% { opacity: .72; background-position: -5px 0, 0 -13px; }
-              69% { opacity: .12; background-position: 16px 0, 0 4px; }
-              83% { opacity: .54; background-position: -8px 0, 0 -8px; }
+            .team-glitch-lab__label { width: 100%; color: rgba(255,255,255,.5); font: 700 .48rem/1.3 'Press Start 2P', monospace; text-align:center; margin-bottom:4px; }
+            .team-glitch-lab__button { border:1px solid rgba(255,255,255,.25); background:rgba(0,0,0,.4); color:#fff; font:700 .43rem/1 'Press Start 2P',monospace; padding:9px 8px; cursor:pointer; }
+            .team-glitch-lab__button.is-active { border-color:#fff; background:#fff; color:#000; }
             }
             .team-school-copy {
               grid-column: 1 / -1;
@@ -1422,14 +1454,18 @@
           </script>
         </section>
 
-        <section id="team" class="s-team" aria-label="Team">
+        <section id="team" class="s-team" data-glitch="signal" aria-label="Team">
           <div class="team-school-wall">
-            <div class="team-school-mark team-school-mark--georgia-tech" aria-label="Georgia Tech"><img class="team-school-mark__logo" src="assets/school-logos/georgia-tech.png" alt="" /><i class="team-glitch-burst" aria-hidden="true"></i></div>
-            <div class="team-school-mark team-school-mark--iitb" aria-label="IIT Bombay"><img class="team-school-mark__logo" src="assets/school-logos/iitb.svg" alt="" /><i class="team-glitch-burst" aria-hidden="true"></i></div>
-            <div class="team-school-mark team-school-mark--illinois" aria-label="University of Illinois"><img class="team-school-mark__logo" src="assets/school-logos/illinois.svg" alt="" /><i class="team-glitch-burst" aria-hidden="true"></i></div>
-            <div class="team-school-mark team-school-mark--iitkgp" aria-label="IIT Kharagpur"><img class="team-school-mark__logo" src="assets/school-logos/iitkgp.svg" alt="" /><i class="team-glitch-burst" aria-hidden="true"></i></div>
-            <div class="team-school-mark team-school-mark--ucsd" aria-label="UC San Diego"><img class="team-school-mark__logo" src="assets/school-logos/ucsd-seal.png" alt="" /><i class="team-glitch-burst" aria-hidden="true"></i></div>
+            <div class="team-school-mark team-school-mark--georgia-tech" aria-label="Georgia Tech"><img class="team-school-mark__logo" src="assets/school-logos/georgia-tech.png" alt="" /><i class="team-glitch-burst" aria-hidden="true"></i><span class="team-school-rate">8%</span></div>
+            <div class="team-school-mark team-school-mark--iitb" aria-label="IIT Bombay"><img class="team-school-mark__logo" src="assets/school-logos/iitb.svg" alt="" /><i class="team-glitch-burst" aria-hidden="true"></i><span class="team-school-rate">0.6%</span></div>
+            <div class="team-school-mark team-school-mark--illinois" aria-label="University of Illinois"><img class="team-school-mark__logo" src="assets/school-logos/illinois.svg" alt="" /><i class="team-glitch-burst" aria-hidden="true"></i><span class="team-school-rate">4%</span></div>
+            <div class="team-school-mark team-school-mark--iitkgp" aria-label="IIT Kharagpur"><img class="team-school-mark__logo" src="assets/school-logos/iitkgp.svg" alt="" /><i class="team-glitch-burst" aria-hidden="true"></i><span class="team-school-rate">0.3%</span></div>
+            <div class="team-school-mark team-school-mark--ucsd" aria-label="UC San Diego"><img class="team-school-mark__logo" src="assets/school-logos/ucsd-seal.png" alt="" /><i class="team-glitch-burst" aria-hidden="true"></i><span class="team-school-rate">10%</span></div>
             <p class="team-school-copy">We are a team of eight students from some of the best schools around the world.</p>
+            <div class="team-glitch-lab" aria-label="Glitch effect options">
+              <span class="team-glitch-lab__label">CHOOSE A GLITCH STUDY</span>
+              <button class="team-glitch-lab__button is-active" data-glitch-choice="signal">01 SIGNAL</button><button class="team-glitch-lab__button" data-glitch-choice="arc">02 ARC</button><button class="team-glitch-lab__button" data-glitch-choice="scan">03 SCAN</button><button class="team-glitch-lab__button" data-glitch-choice="tear">04 TEAR</button><button class="team-glitch-lab__button" data-glitch-choice="noise">05 NOISE</button><button class="team-glitch-lab__button" data-glitch-choice="echo">06 ECHO</button><button class="team-glitch-lab__button" data-glitch-choice="pulse">07 PULSE</button><button class="team-glitch-lab__button" data-glitch-choice="raster">08 RASTER</button><button class="team-glitch-lab__button" data-glitch-choice="spark">09 SPARK</button><button class="team-glitch-lab__button" data-glitch-choice="frame">10 FRAME</button>
+            </div>
           </div>
           <script>
             (() => {
@@ -1471,7 +1507,13 @@
                     const wave = (Math.sin(x * .018 - y * .014 + ditherFrame * .026) + 1) * .5;
                     const flicker = Math.sin(x * .071 + y * .11 + ditherFrame * .05);
                     const alpha = (.09 + wave * .2 + Math.max(0, flicker) * .16) * falloff;
-                    ditherCtx.fillStyle = `rgba(255,255,255,${alpha})`;
+                    // Enter Team through the same green dither as Technology,
+                    // then blend naturally into white as the field descends.
+                    const blend = Math.min(1, Math.max(0, (y - 24) / 210));
+                    const red = Math.round(0 + 255 * blend);
+                    const green = Math.round(94 + 161 * blend);
+                    const blue = Math.round(28 + 227 * blend);
+                    ditherCtx.fillStyle = `rgba(${red},${green},${blue},${alpha})`;
                     ditherCtx.fillRect(x - 1.5, y - 1.5, 3, 3);
                   }
                 }
@@ -1493,6 +1535,21 @@
                   }, wait);
                 };
                 queueGlitch();
+              });
+
+              teamSection.querySelectorAll('[data-glitch-choice]').forEach((button) => {
+                button.addEventListener('click', () => {
+                  teamSection.dataset.glitch = button.dataset.glitchChoice;
+                  teamSection.querySelectorAll('[data-glitch-choice]').forEach((choice) => choice.classList.toggle('is-active', choice === button));
+                  teamSection.querySelectorAll('.team-school-mark').forEach((mark, index) => {
+                    window.setTimeout(() => {
+                      mark.classList.remove('is-glitching');
+                      void mark.offsetWidth;
+                      mark.classList.add('is-glitching');
+                      window.setTimeout(() => mark.classList.remove('is-glitching'), 480);
+                    }, index * 105);
+                  });
+                });
               });
 
             })();
