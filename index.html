@@ -1725,81 +1725,56 @@
                 ctx.restore();
               }
 
-              const emperorSource = document.createElement('canvas');
-              emperorSource.width = 500;
-              emperorSource.height = 500;
-              const emperorCtx = emperorSource.getContext('2d');
-              emperorCtx.imageSmoothingEnabled = true;
-              let emperorCells = [];
-              const emperorImage = new Image();
-              let emperorReady = false;
-              emperorImage.src = 'assets/diplomatic-emperor.png';
-              emperorImage.onload = () => {
-                // A compact emperor sits on a low dais, leaving visual room for
-                // the diplomatic setting rather than filling the whole card.
-                emperorCtx.clearRect(0, 0, emperorSource.width, emperorSource.height);
-                emperorCtx.fillStyle = '#1b2b1e';
+              const diplomacySource = document.createElement('canvas');
+              diplomacySource.width = 500;
+              diplomacySource.height = 500;
+              const diplomacyCtx = diplomacySource.getContext('2d');
+              diplomacyCtx.imageSmoothingEnabled = true;
+              let diplomacyCells = [];
+              let diplomacyReady = false;
+              const scrollImage = new Image();
+              const quillImage = new Image();
 
-                // A complete interior: columns, arched windows, gathered drapery,
-                // and a shallow dais give the throne a believable room to inhabit.
-                emperorCtx.lineWidth = 5;
-                emperorCtx.strokeStyle = '#1b2b1e';
-                const drawColumn = (x) => {
-                  emperorCtx.fillRect(x + 12, 88, 18, 304);
-                  emperorCtx.fillRect(x, 80, 42, 10);
-                  emperorCtx.fillRect(x + 6, 68, 30, 12);
-                  emperorCtx.fillRect(x - 4, 392, 50, 9);
-                  emperorCtx.fillRect(x + 4, 401, 34, 8);
-                };
-                const drawArchedWindow = (x) => {
-                  const centerX = x + 33;
-                  emperorCtx.beginPath();
-                  emperorCtx.moveTo(x, 300);
-                  emperorCtx.lineTo(x, 180);
-                  emperorCtx.arc(centerX, 180, 33, Math.PI, 0);
-                  emperorCtx.lineTo(x + 66, 300);
-                  emperorCtx.stroke();
-                  emperorCtx.fillRect(centerX - 3, 150, 6, 150);
-                  emperorCtx.fillRect(x, 220, 66, 5);
-                  emperorCtx.fillRect(x - 7, 300, 80, 8);
-                };
-                drawColumn(18);
-                drawColumn(440);
-                drawArchedWindow(82);
-                drawArchedWindow(352);
+              // Turn the white image fields transparent so the illustration can
+              // inherit the same green pixel language as the other technology art.
+              function removeWhitePaper(canvasCtx) {
+                const imageData = canvasCtx.getImageData(0, 0, 500, 500);
+                for (let i = 0; i < imageData.data.length; i += 4) {
+                  const r = imageData.data[i];
+                  const g = imageData.data[i + 1];
+                  const b = imageData.data[i + 2];
+                  if (r > 238 && g > 238 && b > 238) imageData.data[i + 3] = 0;
+                }
+                canvasCtx.putImageData(imageData, 0, 0);
+              }
 
-                // A canopy and two gathered curtains sit behind the throne.
-                emperorCtx.fillRect(154, 94, 192, 10);
-                emperorCtx.fillRect(164, 104, 18, 176);
-                emperorCtx.fillRect(318, 104, 18, 176);
-                [184, 198, 212].forEach((x, i) => emperorCtx.fillRect(x, 112 + i * 9, 7, 128 - i * 14));
-                [309, 295, 281].forEach((x, i) => emperorCtx.fillRect(x, 112 + i * 9, 7, 128 - i * 14));
-                emperorCtx.fillRect(156, 270, 30, 7);
-                emperorCtx.fillRect(314, 270, 30, 7);
+              function buildDiplomacyArtwork() {
+                if (!scrollImage.complete || !quillImage.complete || !scrollImage.naturalWidth || !quillImage.naturalWidth) return;
+                diplomacyCtx.clearRect(0, 0, 500, 500);
 
-                // A flat threshold beneath the throne, then shallow steps and a
-                // central floor runner that extend toward the viewer.
-                emperorCtx.fillRect(50, 404, 400, 10);
-                emperorCtx.fillRect(70, 416, 360, 10);
-                emperorCtx.fillRect(90, 428, 320, 10);
-                emperorCtx.fillRect(110, 440, 280, 10);
-                // The room continues into a filled foreground floor after the steps.
-                emperorCtx.fillRect(0, 451, 500, 49);
+                // The open scroll is the subject; the quill overlaps one corner
+                // like an in-progress diplomatic document rather than a room scene.
+                diplomacyCtx.drawImage(scrollImage, 35, 98, 430, 398);
+                diplomacyCtx.save();
+                diplomacyCtx.translate(355, 326);
+                diplomacyCtx.rotate(0.52);
+                diplomacyCtx.drawImage(quillImage, -44, -184, 88, 174);
+                diplomacyCtx.restore();
+                removeWhitePaper(diplomacyCtx);
 
-                const portraitHeight = 185;
-                const scale = portraitHeight / emperorImage.naturalHeight;
-                const imageWidth = emperorImage.naturalWidth * scale;
-                const imageHeight = emperorImage.naturalHeight * scale;
-                emperorCtx.drawImage(emperorImage, (emperorSource.width - imageWidth) / 2, 212, imageWidth, imageHeight);
-                const imageData = emperorCtx.getImageData(0, 0, emperorSource.width, emperorSource.height);
-                emperorCells = makeBrainStyleGrid(imageData, emperorSource.width, emperorSource.height);
-                emperorReady = true;
-              };
+                const imageData = diplomacyCtx.getImageData(0, 0, 500, 500);
+                diplomacyCells = makeBrainStyleGrid(imageData, 500, 500);
+                diplomacyReady = true;
+              }
+              scrollImage.onload = buildDiplomacyArtwork;
+              quillImage.onload = buildDiplomacyArtwork;
+              scrollImage.src = 'assets/diplomatic-scroll-source.png';
+              quillImage.src = 'assets/diplomatic-quill-source.png';
 
               setupFeatureReveal('sf-chronicle-canvas', 'sf-row-2', (ctx, w, h, p) => {
                 ctx.clearRect(0, 0, w, h);
-                if (!emperorReady) return;
-                drawBrainStyleGrid(ctx, emperorCells, p);
+                if (!diplomacyReady) return;
+                drawBrainStyleGrid(ctx, diplomacyCells, p);
               });
               // ==========================================
               // One restrained dither treatment is shared by every image square.
