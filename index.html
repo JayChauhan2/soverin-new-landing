@@ -51,9 +51,6 @@
                 <a href="#model" class="link_nav w-inline-block">
                   <div class="link_nav_text">3D Hotel</div>
                 </a>
-                <a href="#featured" class="link_nav w-inline-block">
-                  <div class="link_nav_text">Featured In</div>
-                </a>
               </div>
               <div class="menu_nav_email_link">
                 <a href="mailto:contact@soverinlabs.com" class="link_email_wrap w-inline-block">
@@ -261,7 +258,43 @@
             /* The roadmap/timeline is intentionally removed from the page flow. */
             .s-roadmap { display: none !important; }
             /* Superseded by the dedicated student-team and newsletter sections. */
-            #whitepaper, #team-roster { display: none !important; }
+            #whitepaper, #team-roster, #featured { display: none !important; }
+            .newsletter-pill {
+              display: flex;
+              align-items: stretch;
+              width: 100%;
+              min-height: 104px;
+              overflow: hidden;
+              border-radius: 999px;
+              background: #fff;
+            }
+            .newsletter-pill__input {
+              flex: 1 1 auto;
+              min-width: 0;
+              padding: 0 48px;
+              border: 0;
+              outline: 0;
+              background: #fff;
+              color: #111;
+              font: 400 1.75rem/1 'Space Grotesk', sans-serif;
+            }
+            .newsletter-pill__input::placeholder { color: rgba(0,0,0,.54); }
+            .newsletter-pill__submit {
+              flex: 0 0 240px;
+              border: 0;
+              border-radius: 999px;
+              background: #000;
+              color: #fff;
+              font: 500 1.6rem/1 'Space Grotesk', sans-serif;
+              cursor: pointer;
+              transition: background .2s ease, color .2s ease;
+            }
+            .newsletter-pill__submit:hover { background: #1f1f1f; }
+            @media (max-width: 600px) {
+              .newsletter-pill { min-height: 76px; }
+              .newsletter-pill__input { padding: 0 26px; font-size: 1.05rem; }
+              .newsletter-pill__submit { flex-basis: 132px; font-size: 1rem; }
+            }
             #team {
               min-height: 100vh;
               background: #000;
@@ -1953,24 +1986,10 @@
             
             <div class="s_cta_newsletter_form">
               <div class="form_sub w-form">
-                <form id="subscribe-form" class="form_sub_wrap">
-                  <div class="form_sub_element">
-                    <div class="form_fieldset_list" style="display: flex; gap: 15px; width: 100%;">
-                      <input id="form-email" name="Email" type="email" placeholder="Enter your email" required class="form_sub_field" style="flex-grow: 1; padding: 20px; font-family: 'Space Grotesk', sans-serif; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.08); color: white; border-radius: 0; outline: none; transition: 0.3s;"/>
-                      
-                      <!-- Submit Button -->
-                      <div data-button=" " data-trigger="hover focus" class="button_main_wrap" style="width: auto;">
-                        <button type="submit" class="clickable_btn u-cover-absolute" style="background: transparent; border: none; width: 100%; height: 100%; cursor: pointer;"></button>
-                        <div class="button_main_element">
-                          <div class="button_main_arrow_text_wrap" style="padding: 18px 30px;">
-                            <div class="button_main_text">Subscribe</div>
-                          </div>
-                          <div class="button_main_line"></div>
-                        </div>
-                      </div>
-                      
-                    </div>
-                  </div>
+                <form id="subscribe-form" class="newsletter-pill">
+                  <label class="u-sr-only" for="form-email">Join our Newsletter</label>
+                  <input id="form-email" name="Email" type="email" placeholder="Enter your email" required inputmode="email" autocomplete="email" class="newsletter-pill__input"/>
+                  <button type="submit" class="newsletter-pill__submit">Subscribe</button>
                 </form>
                 
                 <!-- Success / Error indicators -->
