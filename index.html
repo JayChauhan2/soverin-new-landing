@@ -1740,25 +1740,55 @@
                 emperorCtx.clearRect(0, 0, emperorSource.width, emperorSource.height);
                 emperorCtx.fillStyle = '#1b2b1e';
 
-                // Indoor throne-room framing: paired tall windows, a restrained
-                // wall rail, and one flat threshold beneath the throne.
+                // A complete interior: columns, arched windows, gathered drapery,
+                // and a shallow dais give the throne a believable room to inhabit.
                 emperorCtx.lineWidth = 5;
                 emperorCtx.strokeStyle = '#1b2b1e';
-                const drawWindow = (x) => {
-                  emperorCtx.strokeRect(x, 96, 64, 204);
-                  emperorCtx.fillRect(x + 29, 96, 6, 204);
-                  emperorCtx.fillRect(x, 180, 64, 6);
-                  emperorCtx.fillRect(x - 8, 300, 80, 8);
+                const drawColumn = (x) => {
+                  emperorCtx.fillRect(x + 12, 88, 18, 304);
+                  emperorCtx.fillRect(x, 80, 42, 10);
+                  emperorCtx.fillRect(x + 6, 68, 30, 12);
+                  emperorCtx.fillRect(x - 4, 392, 50, 9);
+                  emperorCtx.fillRect(x + 4, 401, 34, 8);
                 };
-                drawWindow(42);
-                drawWindow(394);
-                emperorCtx.fillRect(34, 322, 432, 5);
-                emperorCtx.fillRect(42, 332, 16, 108);
-                emperorCtx.fillRect(442, 332, 16, 108);
+                const drawArchedWindow = (x) => {
+                  const centerX = x + 33;
+                  emperorCtx.beginPath();
+                  emperorCtx.moveTo(x, 300);
+                  emperorCtx.lineTo(x, 180);
+                  emperorCtx.arc(centerX, 180, 33, Math.PI, 0);
+                  emperorCtx.lineTo(x + 66, 300);
+                  emperorCtx.stroke();
+                  emperorCtx.fillRect(centerX - 3, 150, 6, 150);
+                  emperorCtx.fillRect(x, 220, 66, 5);
+                  emperorCtx.fillRect(x - 7, 300, 80, 8);
+                };
+                drawColumn(18);
+                drawColumn(440);
+                drawArchedWindow(82);
+                drawArchedWindow(352);
 
-                // A simple flat line grounds the throne without turning it into
-                // an exterior structure or a second architectural object.
-                emperorCtx.fillRect(56, 410, 388, 6);
+                // A canopy and two gathered curtains sit behind the throne.
+                emperorCtx.fillRect(154, 94, 192, 10);
+                emperorCtx.fillRect(164, 104, 18, 176);
+                emperorCtx.fillRect(318, 104, 18, 176);
+                [184, 198, 212].forEach((x, i) => emperorCtx.fillRect(x, 112 + i * 9, 7, 128 - i * 14));
+                [309, 295, 281].forEach((x, i) => emperorCtx.fillRect(x, 112 + i * 9, 7, 128 - i * 14));
+                emperorCtx.fillRect(156, 270, 30, 7);
+                emperorCtx.fillRect(314, 270, 30, 7);
+
+                // A flat threshold beneath the throne, then shallow steps and a
+                // central floor runner that extend toward the viewer.
+                emperorCtx.fillRect(58, 410, 384, 6);
+                emperorCtx.fillRect(82, 420, 336, 8);
+                emperorCtx.fillRect(108, 430, 284, 8);
+                emperorCtx.beginPath();
+                emperorCtx.moveTo(218, 438);
+                emperorCtx.lineTo(282, 438);
+                emperorCtx.lineTo(322, 500);
+                emperorCtx.lineTo(178, 500);
+                emperorCtx.closePath();
+                emperorCtx.fill();
 
                 const portraitHeight = 185;
                 const scale = portraitHeight / emperorImage.naturalHeight;
