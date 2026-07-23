@@ -290,6 +290,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       this.model = null;
       this.pivot = null;
+      this.cameraTarget = new THREE.Vector3();
       this.keys = new Set();
       this.controlsActive = true;
 
@@ -353,6 +354,7 @@ document.addEventListener("DOMContentLoaded", () => {
       object3D.updateWorldMatrix(true, true);
       const box = new THREE.Box3().setFromObject(object3D);
       const center = box.getCenter(new THREE.Vector3());
+      this.cameraTarget.copy(center);
       this.camera.position.y = center.y;
       this.camera.lookAt(center);
     }
@@ -397,6 +399,11 @@ document.addEventListener("DOMContentLoaded", () => {
       controlSurface.addEventListener("pointerup", stopDrag);
       controlSurface.addEventListener("pointercancel", stopDrag);
       controlSurface.addEventListener("pointerleave", stopDrag);
+
+      controlSurface.addEventListener("wheel", (event) => {
+        event.preventDefault();
+        this.zoomCamera(event.deltaY);
+      }, { passive: false });
     }
 
     installKeyboardMove() {
@@ -429,6 +436,19 @@ document.addEventListener("DOMContentLoaded", () => {
       if (this.keys.has('s')) this.camera.position.addScaledVector(forward, -speed);
       if (this.keys.has('a')) this.camera.position.addScaledVector(right, -speed);
       if (this.keys.has('d')) this.camera.position.addScaledVector(right, speed);
+    }
+
+    zoomCamera(wheelDelta) {
+      const forward = new THREE.Vector3();
+      this.camera.getWorldDirection(forward);
+      const zoomStep = this.baseCamZ * 0.0018 * wheelDelta;
+      const nextPosition = this.camera.position.clone().addScaledVector(forward, -zoomStep);
+      const nextDistance = nextPosition.distanceTo(this.cameraTarget);
+      const minDistance = this.baseCamZ * 0.32;
+      const maxDistance = this.baseCamZ * 4.2;
+      if (nextDistance >= minDistance && nextDistance <= maxDistance) {
+        this.camera.position.copy(nextPosition);
+      }
     }
   }
 
