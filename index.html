@@ -345,6 +345,7 @@
               filter: brightness(0) invert(1) drop-shadow(0 0 12px rgba(255,255,255,.42));
             }
             .team-school-mark--georgia-tech { --team-mark-glow: rgba(255, 196, 37, .56); --team-glitch-rgb: 255, 196, 37; }
+            .team-school-mark--georgia-tech .team-school-mark__logo { width: min(154px, 100%); height: 140px; }
             .team-school-mark--ucsd { --team-mark-glow: rgba(20, 44, 82, .78); --team-glitch-rgb: 198, 146, 20; }
             .team-school-mark--ucsd::after {
               content: '';
@@ -363,7 +364,7 @@
             .team-school-rate {
               position: relative;
               z-index: 2;
-              margin-top: 9px;
+              margin-top: 23px;
               color: #fff;
               font: 700 .62rem/1 'Press Start 2P', monospace;
               letter-spacing: -.04em;
@@ -400,20 +401,6 @@
             @keyframes glitch-raster { 0%,100%{opacity:0} 20%{opacity:.76;background-size:auto,100% 10px} 48%{opacity:.35;background-size:auto,100% 4px} 74%{opacity:.82;background-size:auto,100% 15px} }
             @keyframes glitch-spark { 0%,100%{opacity:0} 22%,31%,57%{opacity:.96;clip-path:inset(42% 0 42% 0)} 44%,70%{opacity:.22;clip-path:inset(14% 0 72% 0)} }
             @keyframes glitch-frame { 0%,100%{opacity:0;transform:scaleX(1)} 23%{opacity:.8;transform:scaleX(.86)} 47%{opacity:.24;transform:scaleX(1.08)} 71%{opacity:.72;transform:scaleX(.94)} }
-            .team-glitch-lab {
-              grid-column: 1 / -1;
-              display: flex;
-              flex-wrap: wrap;
-              justify-content: center;
-              gap: 7px;
-              margin: 28px auto 0;
-              max-width: 780px;
-              position: relative;
-              z-index: 2;
-            }
-            .team-glitch-lab__label { width: 100%; color: rgba(255,255,255,.5); font: 700 .48rem/1.3 'Press Start 2P', monospace; text-align:center; margin-bottom:4px; }
-            .team-glitch-lab__button { border:1px solid rgba(255,255,255,.25); background:rgba(0,0,0,.4); color:#fff; font:700 .43rem/1 'Press Start 2P',monospace; padding:9px 8px; cursor:pointer; }
-            .team-glitch-lab__button.is-active { border-color:#fff; background:#fff; color:#000; }
             }
             .team-school-copy {
               grid-column: 1 / -1;
@@ -1454,7 +1441,7 @@
           </script>
         </section>
 
-        <section id="team" class="s-team" data-glitch="signal" aria-label="Team">
+        <section id="team" class="s-team" data-glitch="arc" aria-label="Team">
           <div class="team-school-wall">
             <div class="team-school-mark team-school-mark--georgia-tech" aria-label="Georgia Tech"><img class="team-school-mark__logo" src="assets/school-logos/georgia-tech.png" alt="" /><i class="team-glitch-burst" aria-hidden="true"></i><span class="team-school-rate">8%</span></div>
             <div class="team-school-mark team-school-mark--iitb" aria-label="IIT Bombay"><img class="team-school-mark__logo" src="assets/school-logos/iitb.svg" alt="" /><i class="team-glitch-burst" aria-hidden="true"></i><span class="team-school-rate">0.6%</span></div>
@@ -1462,10 +1449,6 @@
             <div class="team-school-mark team-school-mark--iitkgp" aria-label="IIT Kharagpur"><img class="team-school-mark__logo" src="assets/school-logos/iitkgp.svg" alt="" /><i class="team-glitch-burst" aria-hidden="true"></i><span class="team-school-rate">0.3%</span></div>
             <div class="team-school-mark team-school-mark--ucsd" aria-label="UC San Diego"><img class="team-school-mark__logo" src="assets/school-logos/ucsd-seal.png" alt="" /><i class="team-glitch-burst" aria-hidden="true"></i><span class="team-school-rate">10%</span></div>
             <p class="team-school-copy">We are a team of eight students from some of the best schools around the world.</p>
-            <div class="team-glitch-lab" aria-label="Glitch effect options">
-              <span class="team-glitch-lab__label">CHOOSE A GLITCH STUDY</span>
-              <button class="team-glitch-lab__button is-active" data-glitch-choice="signal">01 SIGNAL</button><button class="team-glitch-lab__button" data-glitch-choice="arc">02 ARC</button><button class="team-glitch-lab__button" data-glitch-choice="scan">03 SCAN</button><button class="team-glitch-lab__button" data-glitch-choice="tear">04 TEAR</button><button class="team-glitch-lab__button" data-glitch-choice="noise">05 NOISE</button><button class="team-glitch-lab__button" data-glitch-choice="echo">06 ECHO</button><button class="team-glitch-lab__button" data-glitch-choice="pulse">07 PULSE</button><button class="team-glitch-lab__button" data-glitch-choice="raster">08 RASTER</button><button class="team-glitch-lab__button" data-glitch-choice="spark">09 SPARK</button><button class="team-glitch-lab__button" data-glitch-choice="frame">10 FRAME</button>
-            </div>
           </div>
           <script>
             (() => {
@@ -1537,20 +1520,6 @@
                 queueGlitch();
               });
 
-              teamSection.querySelectorAll('[data-glitch-choice]').forEach((button) => {
-                button.addEventListener('click', () => {
-                  teamSection.dataset.glitch = button.dataset.glitchChoice;
-                  teamSection.querySelectorAll('[data-glitch-choice]').forEach((choice) => choice.classList.toggle('is-active', choice === button));
-                  teamSection.querySelectorAll('.team-school-mark').forEach((mark, index) => {
-                    window.setTimeout(() => {
-                      mark.classList.remove('is-glitching');
-                      void mark.offsetWidth;
-                      mark.classList.add('is-glitching');
-                      window.setTimeout(() => mark.classList.remove('is-glitching'), 480);
-                    }, index * 105);
-                  });
-                });
-              });
 
             })();
           </script>
