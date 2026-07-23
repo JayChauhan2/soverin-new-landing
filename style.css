@@ -637,11 +637,19 @@ html {
     animation: mobile-section-link-in 340ms cubic-bezier(.16, 1, .3, 1) both;
   }
 
-  .menu_nav.open .link_nav:not(.is-current) {
-    padding-left: 8px;
-    background: rgba(7, 25, 40, .13);
-    backdrop-filter: blur(5px);
-    -webkit-backdrop-filter: blur(5px);
+  .menu_nav.open::before {
+    content: '';
+    position: absolute;
+    z-index: -1;
+    inset: -24px -34px -26px -44px;
+    pointer-events: none;
+    opacity: .62;
+    background: radial-gradient(ellipse at 72% 45%, rgba(134, 200, 231, .18) 0%, rgba(24, 74, 99, .12) 43%, transparent 74%);
+    filter: blur(13px);
+    backdrop-filter: blur(9px) saturate(118%);
+    -webkit-backdrop-filter: blur(9px) saturate(118%);
+    -webkit-mask-image: radial-gradient(ellipse at 72% 45%, #000 8%, rgba(0,0,0,.75) 48%, transparent 76%);
+    mask-image: radial-gradient(ellipse at 72% 45%, #000 8%, rgba(0,0,0,.75) 48%, transparent 76%);
   }
 
   .menu_nav.open .link_nav:nth-child(1) { animation-delay: 20ms; }
@@ -658,8 +666,8 @@ html {
     color: #000 !important;
   }
 
-  .nav_bar.nav-dark .menu_nav.open .link_nav:not(.is-current) {
-    background: rgba(255, 255, 255, .22);
+  .nav_bar.nav-dark .menu_nav.open::before {
+    background: radial-gradient(ellipse at 72% 45%, rgba(255, 255, 255, .32) 0%, rgba(215, 235, 245, .18) 44%, transparent 74%);
   }
 
   @keyframes mobile-section-link-in {
