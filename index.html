@@ -278,35 +278,34 @@
               width: min(1180px, 100%);
               display: grid;
               grid-template-columns: repeat(5, minmax(0, 1fr));
-              gap: 14px;
+              gap: clamp(20px, 3vw, 48px);
+              align-items: center;
             }
             .team-school-mark {
-              min-height: 178px;
-              padding: 18px 12px;
+              min-height: 166px;
+              padding: 8px;
               position: relative;
               display: flex;
               flex-direction: column;
               align-items: center;
               justify-content: center;
-              gap: 18px;
               overflow: hidden;
-              border: 1px solid rgba(255,255,255,0.25);
-              background: #030303;
               opacity: 0;
               transform: translateY(34px);
               transition: opacity 650ms ease, transform 650ms cubic-bezier(.2,.8,.2,1);
+              isolation: isolate;
             }
             .team-school-mark::before {
               content: '';
               position: absolute;
-              inset: 0;
+              inset: 10% 4%;
               opacity: 0.55;
-              background-image:
-                linear-gradient(90deg, rgba(255,255,255,0.2) 1px, transparent 1px),
-                linear-gradient(rgba(255,255,255,0.2) 1px, transparent 1px);
-              background-size: 6px 6px;
-              mask-image: radial-gradient(circle at 50% 44%, #000 10%, transparent 67%);
-              -webkit-mask-image: radial-gradient(circle at 50% 44%, #000 10%, transparent 67%);
+              background-image: radial-gradient(circle, var(--team-mark-glow) 1.2px, transparent 1.45px);
+              background-size: 7px 7px;
+              mask-image: radial-gradient(ellipse at 50% 50%, #000 0 23%, transparent 70%);
+              -webkit-mask-image: radial-gradient(ellipse at 50% 50%, #000 0 23%, transparent 70%);
+              pointer-events: none;
+              z-index: 0;
             }
             #team.is-revealed .team-school-mark { opacity: 1; transform: translateY(0); }
             #team.is-revealed .team-school-mark:nth-child(2) { transition-delay: 90ms; }
@@ -316,14 +315,19 @@
             .team-school-mark__logo {
               position: relative;
               z-index: 1;
-              width: 92px;
-              height: 92px;
-              fill: none;
-              stroke: #fff;
-              stroke-width: 5;
-              shape-rendering: crispEdges;
-              filter: drop-shadow(3px 3px 0 rgba(255,255,255,0.18));
+              display: block;
+              width: min(126px, 86%);
+              height: 126px;
+              object-fit: contain;
+              image-rendering: pixelated;
+              filter: contrast(1.12) saturate(1.18) drop-shadow(0 0 12px var(--team-mark-glow));
+              transform: translateZ(0);
             }
+            .team-school-mark--illinois { --team-mark-glow: rgba(255, 91, 0, .54); }
+            .team-school-mark--iitb { --team-mark-glow: rgba(0, 103, 184, .56); }
+            .team-school-mark--iitkgp { --team-mark-glow: rgba(42, 150, 93, .56); }
+            .team-school-mark--georgia-tech { --team-mark-glow: rgba(255, 196, 37, .56); }
+            .team-school-mark--ucsd { --team-mark-glow: rgba(0, 198, 218, .56); }
             .team-school-copy {
               grid-column: 1 / -1;
               max-width: 930px;
@@ -1365,11 +1369,11 @@
 
         <section id="team" class="s-team" aria-label="Team">
           <div class="team-school-wall">
-            <div class="team-school-mark" aria-label="University of Illinois"><svg class="team-school-mark__logo" viewBox="0 0 120 120" aria-hidden="true"><path fill="#fff" stroke="none" d="M30 10h60v19H75v62h15v19H30V91h15V29H30z"/></svg></div>
-            <div class="team-school-mark" aria-label="IIT Bombay"><svg class="team-school-mark__logo" viewBox="0 0 120 120" aria-hidden="true"><circle cx="60" cy="60" r="42"/><circle cx="60" cy="60" r="19"/><path d="M60 9v18M60 93v18M9 60h18M93 60h18M24 24l13 13M83 83l13 13M96 24L83 37M37 83L24 96"/></svg></div>
-            <div class="team-school-mark" aria-label="IIT Kharagpur"><svg class="team-school-mark__logo" viewBox="0 0 120 120" aria-hidden="true"><circle cx="60" cy="60" r="43"/><path d="M26 74c13-20 25-20 34 0 9-20 21-20 34 0M38 47h44M60 31v50M43 87h34"/></svg></div>
-            <div class="team-school-mark" aria-label="Georgia Tech"><svg class="team-school-mark__logo" viewBox="0 0 120 120" aria-hidden="true"><path fill="#fff" stroke="none" d="M10 19h100v20H73v62H49V39H10z"/><path fill="#000" stroke="none" d="M58 43h40v18H77v20H98v18H58z"/></svg></div>
-            <div class="team-school-mark" aria-label="UC San Diego"><svg class="team-school-mark__logo" viewBox="0 0 120 120" aria-hidden="true"><path d="M60 13v78M37 28l23 25 23-25M27 47l33 31 33-31M43 91h34"/><circle cx="60" cy="16" r="7" fill="#fff" stroke="none"/></svg></div>
+            <div class="team-school-mark team-school-mark--illinois" aria-label="University of Illinois"><img class="team-school-mark__logo" src="assets/school-logos/illinois.svg" alt="" /></div>
+            <div class="team-school-mark team-school-mark--iitb" aria-label="IIT Bombay"><img class="team-school-mark__logo" src="assets/school-logos/iitb.svg" alt="" /></div>
+            <div class="team-school-mark team-school-mark--iitkgp" aria-label="IIT Kharagpur"><img class="team-school-mark__logo" src="assets/school-logos/iitkgp.svg" alt="" /></div>
+            <div class="team-school-mark team-school-mark--georgia-tech" aria-label="Georgia Tech"><img class="team-school-mark__logo" src="assets/school-logos/georgia-tech.svg" alt="" /></div>
+            <div class="team-school-mark team-school-mark--ucsd" aria-label="UC San Diego"><img class="team-school-mark__logo" src="assets/school-logos/ucsd-mark.png" alt="" /></div>
             <p class="team-school-copy">We are a team of eight students from some of the best schools around the world.</p>
           </div>
           <script>
