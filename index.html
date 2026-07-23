@@ -327,6 +327,17 @@
               background-repeat: no-repeat;
               background-size: cover;
             }
+            .waitlist-dither-canvas {
+              position: absolute;
+              inset: 0;
+              z-index: 0;
+              width: 100%;
+              height: 100%;
+              pointer-events: none;
+              image-rendering: pixelated;
+            }
+            #reserve .s_cta_newsletter_title_wrap,
+            #reserve .s_cta_newsletter_form { position: relative; z-index: 1; }
             #reserve .s_cta_newsletter_form { justify-content: center; }
             .waitlist-corner-square {
               position: absolute;
@@ -2225,6 +2236,7 @@
       <section id="reserve" class="s-cta-newsletter">
         <div class="s_cta_newsletter_container u-container">
           <div class="s_cta_newsletter_content_wrap">
+            <canvas class="waitlist-dither-canvas" aria-hidden="true"></canvas>
             <span class="waitlist-corner-square waitlist-corner-square--tl" aria-hidden="true"></span>
             <span class="waitlist-corner-square waitlist-corner-square--tr" aria-hidden="true"></span>
             <span class="waitlist-corner-square waitlist-corner-square--bl" aria-hidden="true"></span>

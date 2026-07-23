@@ -766,7 +766,83 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // ==========================================
-  // 9. Interactive Pixel Trail on Hover
+  // 9. Animated dither treatment for the Waitlist artwork
+  // ==========================================
+  const waitlistCanvas = document.querySelector(".waitlist-dither-canvas");
+  if (waitlistCanvas) {
+    const waitlistPanel = waitlistCanvas.closest(".s_cta_newsletter_content_wrap");
+    const waitlistCtx = waitlistCanvas.getContext("2d", { willReadFrequently: true });
+    const waitlistImage = new Image();
+    let waitlistWidth = 0;
+    let waitlistHeight = 0;
+    let waitlistFrame = 0;
+    let lastWaitlistFrame = 0;
+
+    const resizeWaitlistCanvas = () => {
+      const rect = waitlistPanel.getBoundingClientRect();
+      // Render at half-resolution then scale crisply for the site's pixel look.
+      waitlistWidth = Math.max(1, Math.round(rect.width / 2));
+      waitlistHeight = Math.max(1, Math.round(rect.height / 2));
+      waitlistCanvas.width = waitlistWidth;
+      waitlistCanvas.height = waitlistHeight;
+      waitlistCtx.imageSmoothingEnabled = false;
+    };
+
+    const drawWaitlistDither = (timestamp) => {
+      requestAnimationFrame(drawWaitlistDither);
+      if (!waitlistImage.complete || !waitlistImage.naturalWidth || timestamp - lastWaitlistFrame < 83) return;
+      lastWaitlistFrame = timestamp;
+      waitlistFrame++;
+
+      const imageAspect = waitlistImage.naturalWidth / waitlistImage.naturalHeight;
+      const canvasAspect = waitlistWidth / waitlistHeight;
+      let drawWidth = waitlistWidth;
+      let drawHeight = waitlistHeight;
+      let drawX = 0;
+      let drawY = 0;
+      if (imageAspect > canvasAspect) {
+        drawWidth = waitlistHeight * imageAspect;
+        drawX = (waitlistWidth - drawWidth) / 2;
+      } else {
+        drawHeight = waitlistWidth / imageAspect;
+        drawY = (waitlistHeight - drawHeight) / 2;
+      }
+
+      waitlistCtx.clearRect(0, 0, waitlistWidth, waitlistHeight);
+      waitlistCtx.drawImage(waitlistImage, drawX, drawY, drawWidth, drawHeight);
+
+      const pixels = waitlistCtx.getImageData(0, 0, waitlistWidth, waitlistHeight);
+      const data = pixels.data;
+      const bayer = [0.06, 0.56, 0.19, 0.69, 0.81, 0.31, 0.94, 0.44, 0.25, 0.75, 0.13, 0.63, 1, 0.5, 0.88, 0.38];
+      for (let y = 0; y < waitlistHeight; y++) {
+        for (let x = 0; x < waitlistWidth; x++) {
+          const index = (y * waitlistWidth + x) * 4;
+          const brightness = (data[index] * .299 + data[index + 1] * .587 + data[index + 2] * .114) / 255;
+          const shimmer = (Math.sin(x * .09 + y * .07 + waitlistFrame * .12) + 1) * .5;
+          const threshold = bayer[(x & 3) + ((y & 3) << 2)];
+          // Sparse, animated bright pixels retain the soft artwork beneath them.
+          if (brightness > .42 && brightness < .9 && shimmer > threshold + .36) {
+            data[index] = Math.min(255, data[index] + 28);
+            data[index + 1] = Math.min(255, data[index + 1] + 30);
+            data[index + 2] = Math.min(255, data[index + 2] + 20);
+          }
+          // Preserve contrast for the white Waitlist copy.
+          data[index] = Math.round(data[index] * .62 + 6 * .38);
+          data[index + 1] = Math.round(data[index + 1] * .62 + 23 * .38);
+          data[index + 2] = Math.round(data[index + 2] * .62 + 51 * .38);
+        }
+      }
+      waitlistCtx.putImageData(pixels, 0, 0);
+    };
+
+    waitlistImage.src = "assets/waitlist-background.png";
+    resizeWaitlistCanvas();
+    window.addEventListener("resize", resizeWaitlistCanvas, { passive: true });
+    requestAnimationFrame(drawWaitlistDither);
+  }
+
+  // ==========================================
+  // 10. Interactive Pixel Trail on Hover
   // ==========================================
   const visionSection = document.getElementById("vision");
   if (visionSection) {
