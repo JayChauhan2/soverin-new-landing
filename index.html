@@ -263,9 +263,88 @@
             }
             /* The roadmap/timeline is intentionally removed from the page flow. */
             .s-roadmap { display: none !important; }
-            .s-team {
+            #team {
               min-height: 100vh;
               background: #000;
+            }
+            #team.s-team {
+              display: flex;
+              align-items: flex-start;
+              justify-content: center;
+              padding: 112px 7vw 96px;
+              overflow: hidden;
+            }
+            .team-school-wall {
+              width: min(1180px, 100%);
+              display: grid;
+              grid-template-columns: repeat(5, minmax(0, 1fr));
+              gap: 14px;
+            }
+            .team-school-mark {
+              min-height: 178px;
+              padding: 18px 12px;
+              position: relative;
+              display: flex;
+              flex-direction: column;
+              align-items: center;
+              justify-content: center;
+              gap: 18px;
+              overflow: hidden;
+              border: 1px solid rgba(255,255,255,0.25);
+              background: #030303;
+              opacity: 0;
+              transform: translateY(34px);
+              transition: opacity 650ms ease, transform 650ms cubic-bezier(.2,.8,.2,1);
+            }
+            .team-school-mark::before {
+              content: '';
+              position: absolute;
+              inset: 0;
+              opacity: 0.55;
+              background-image:
+                linear-gradient(90deg, rgba(255,255,255,0.2) 1px, transparent 1px),
+                linear-gradient(rgba(255,255,255,0.2) 1px, transparent 1px);
+              background-size: 6px 6px;
+              mask-image: radial-gradient(circle at 50% 44%, #000 10%, transparent 67%);
+              -webkit-mask-image: radial-gradient(circle at 50% 44%, #000 10%, transparent 67%);
+            }
+            #team.is-revealed .team-school-mark { opacity: 1; transform: translateY(0); }
+            #team.is-revealed .team-school-mark:nth-child(2) { transition-delay: 90ms; }
+            #team.is-revealed .team-school-mark:nth-child(3) { transition-delay: 180ms; }
+            #team.is-revealed .team-school-mark:nth-child(4) { transition-delay: 270ms; }
+            #team.is-revealed .team-school-mark:nth-child(5) { transition-delay: 360ms; }
+            .team-school-mark__glyph {
+              position: relative;
+              z-index: 1;
+              color: #fff;
+              font: 700 1.05rem/1 'Press Start 2P', monospace;
+              letter-spacing: -0.08em;
+              text-shadow: 3px 3px 0 rgba(255,255,255,0.16);
+            }
+            .team-school-mark__name {
+              position: relative;
+              z-index: 1;
+              max-width: 150px;
+              color: rgba(255,255,255,0.7);
+              font: 600 0.48rem/1.65 'Press Start 2P', monospace;
+              text-align: center;
+              text-transform: uppercase;
+            }
+            .team-school-copy {
+              grid-column: 1 / -1;
+              max-width: 930px;
+              margin: 42px auto 0;
+              color: #fff;
+              font: 700 0.82rem/1.9 'Press Start 2P', monospace;
+              text-align: center;
+              opacity: 0;
+              transform: translateY(18px);
+              transition: opacity 650ms ease 420ms, transform 650ms cubic-bezier(.2,.8,.2,1) 420ms;
+            }
+            #team.is-revealed .team-school-copy { opacity: 1; transform: translateY(0); }
+            @media (max-width: 900px) {
+              .team-school-wall { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+              .team-school-mark:last-of-type { grid-column: 1 / -1; }
             }
             .s-features * {
               box-sizing: border-box;
@@ -1290,8 +1369,27 @@
           </script>
         </section>
 
-        <!-- Empty Team section: intentionally black with no content. -->
-        <section id="team" class="s-team" aria-label="Team"></section>
+        <section id="team" class="s-team" aria-label="Team">
+          <div class="team-school-wall">
+            <div class="team-school-mark"><span class="team-school-mark__glyph">UIUC</span><span class="team-school-mark__name">University of Illinois</span></div>
+            <div class="team-school-mark"><span class="team-school-mark__glyph">IITB</span><span class="team-school-mark__name">IIT Bombay</span></div>
+            <div class="team-school-mark"><span class="team-school-mark__glyph">IITK</span><span class="team-school-mark__name">IIT Kharagpur</span></div>
+            <div class="team-school-mark"><span class="team-school-mark__glyph">GT</span><span class="team-school-mark__name">Georgia Tech</span></div>
+            <div class="team-school-mark"><span class="team-school-mark__glyph">UCSD</span><span class="team-school-mark__name">UC San Diego</span></div>
+            <p class="team-school-copy">We are a team of eight students from some of the best schools around the world.</p>
+          </div>
+          <script>
+            (() => {
+              const teamSection = document.getElementById('team');
+              if (!teamSection) return;
+              new IntersectionObserver(([entry], observer) => {
+                if (!entry.isIntersecting) return;
+                teamSection.classList.add('is-revealed');
+                observer.unobserve(teamSection);
+              }, { threshold: 0.2 }).observe(teamSection);
+            })();
+          </script>
+        </section>
 
         <!-- Section 3: Roadmap (Signature Scrub-Canvas Timeline) -->
         <section id="roadmap" class="s-roadmap">
