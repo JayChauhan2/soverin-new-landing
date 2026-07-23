@@ -1760,9 +1760,9 @@
                 diplomacyCtx.drawImage(scrollImage, 35, 98, 430, 398);
                 removeWhitePaper(diplomacyCtx);
                 diplomacyCtx.save();
-                // The supplied pen is already angled; keep that natural diagonal
-                // and give it enough scale to read clearly beside the document.
-                diplomacyCtx.drawImage(quillImage, 105, 218, 356, 195);
+                // Keep the supplied pen above the document; its lower-left nib
+                // lands on the page while the feather stays clear of the text.
+                diplomacyCtx.drawImage(quillImage, 185, 0, 235, 129);
                 diplomacyCtx.restore();
 
                 const imageData = diplomacyCtx.getImageData(0, 0, 500, 500);
