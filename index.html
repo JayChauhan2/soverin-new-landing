@@ -51,6 +51,9 @@
                 <a href="#model" class="link_nav w-inline-block">
                   <div class="link_nav_text">Showcase</div>
                 </a>
+                <a href="#reserve" class="link_nav link_nav--waitlist w-inline-block">
+                  <div class="link_nav_text">Waitlist</div>
+                </a>
               </div>
               <div class="menu_nav_email_link">
                 <a href="mailto:contact@soverinlabs.com" class="link_email_wrap w-inline-block">
@@ -88,16 +91,9 @@
               </div>
             </div>
             
-            <!-- Mobile nav trigger toggle button -->
-            <div class="bn_menu w-nav-button" id="mob-menu-btn" role="button" tabindex="0" aria-label="Open navigation menu" aria-expanded="false">
-              <div class="bn_menu_wrap">
-                <div class="burger_menu pixel-menu-icon" aria-hidden="true">
-                  <span></span>
-                </div>
-                <div class="close_menu pixel-close-icon" aria-hidden="true" style="display: none;">
-                  <span></span>
-                </div>
-              </div>
+            <!-- Mobile section control: it mirrors the desktop section indicator. -->
+            <div class="bn_menu w-nav-button mobile-section-toggle" id="mob-menu-btn" role="button" tabindex="0" aria-label="Open section navigation" aria-expanded="false">
+              <span class="mobile-section-toggle__label" id="mobile-section-label"></span>
             </div>
           </div>
         </div>
@@ -359,15 +355,15 @@
             .waitlist-social-links .link_footer { padding: .5rem .75rem; }
             @media (max-width: 767px) {
               .waitlist-social-links {
-                position: static;
-                order: 3;
-                justify-self: end;
+                position: absolute;
+                right: 20px;
+                bottom: 16px;
                 justify-content: flex-end;
-                grid-column: 1 / -1;
-                margin-top: .25rem;
+                margin: 0;
               }
               #reserve .s_cta_newsletter_title_wrap { order: 1; }
               #reserve .s_cta_newsletter_form { order: 2; }
+              #reserve .s_cta_newsletter_content_wrap { padding-bottom: 76px; }
             }
             #team.s-team {
               display: flex;
@@ -893,13 +889,16 @@
             (function() {
               const section = document.getElementById('features');
               const sideTitle = document.getElementById('sf-side-title');
+              const mobileSectionLabel = document.getElementById('mobile-section-label');
+              const mobileSectionToggle = document.getElementById('mob-menu-btn');
 
               // Fixed left-side indicator follows the major narrative sections.
               function setupSectionIndicator() {
                 const vision = document.getElementById('vision');
                 const team = document.getElementById('team');
                 const showcase = document.getElementById('model');
-                if (!vision || !team || !showcase) return;
+                const reserve = document.getElementById('reserve');
+                if (!vision || !team || !showcase || !reserve) return;
                 const visionLetters = Array.from('VISION');
                 const technologyLetters = Array.from('TECHNOLOGY');
                 const teamLetters = Array.from('TEAM');
@@ -911,6 +910,7 @@
                   const technologyRect = section.getBoundingClientRect();
                   const teamRect = team.getBoundingClientRect();
                   const showcaseRect = showcase.getBoundingClientRect();
+                  const reserveRect = reserve.getBoundingClientRect();
                   let hasVisibleCharacter = false;
                   characterSlots.forEach((slot, index) => {
                     const slotRect = slot.getBoundingClientRect();
@@ -940,6 +940,20 @@
                     }
                   });
                   sideTitle.classList.toggle('is-visible', hasVisibleCharacter);
+
+                  // Mobile uses the same current-section language in the top-right
+                  // navigation control, while the landing view deliberately stays clean.
+                  if (mobileSectionLabel && mobileSectionToggle) {
+                    const mobilePoint = window.innerHeight * .35;
+                    let mobileLabel = '';
+                    if (reserveRect.top <= mobilePoint && reserveRect.bottom >= mobilePoint) mobileLabel = 'Waitlist';
+                    else if (showcaseRect.top <= mobilePoint && showcaseRect.bottom >= mobilePoint) mobileLabel = 'Showcase';
+                    else if (teamRect.top <= mobilePoint && teamRect.bottom >= mobilePoint) mobileLabel = 'Team';
+                    else if (technologyRect.top <= mobilePoint && technologyRect.bottom >= mobilePoint) mobileLabel = 'Technology';
+                    else if (visionRect.top <= mobilePoint && visionRect.bottom >= mobilePoint) mobileLabel = 'Vision';
+                    mobileSectionLabel.textContent = mobileLabel;
+                    mobileSectionToggle.classList.toggle('is-visible', Boolean(mobileLabel));
+                  }
                 };
                 window.addEventListener('scroll', update, { passive: true });
                 window.addEventListener('resize', update, { passive: true });

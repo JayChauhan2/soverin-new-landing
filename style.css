@@ -488,10 +488,6 @@ html {
 
 /* Phone layout: keep the visual system intact without compressing the content. */
 @media (max-width: 767px) {
-  .body-wrap.mobile-menu-open {
-    overflow: hidden;
-  }
-
   .u-container {
     padding-left: 20px;
     padding-right: 20px;
@@ -509,70 +505,86 @@ html {
     display: none;
   }
 
-  .bn_menu {
-    width: 48px;
+  .mobile-section-toggle {
+    width: auto;
+    min-width: 0;
     height: 48px;
     display: flex !important;
     align-items: center;
     justify-content: center;
-    color: #fff;
+    color: #fff !important;
     cursor: pointer;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transform: translateY(-5px);
+    transition: opacity .24s ease, transform .24s ease, color .2s ease;
   }
 
-  .bn_menu_wrap {
-    width: 30px;
-    height: 30px;
-    display: grid;
-    place-items: center;
+  .mobile-section-toggle.is-visible {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transform: translateY(0);
   }
 
-  .pixel-menu-icon,
-  .pixel-close-icon {
-    position: relative;
-    width: 24px;
-    height: 24px;
-    color: currentColor;
+  .mobile-section-toggle__label {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: .95rem;
+    font-weight: 700;
+    letter-spacing: 0;
+    text-transform: uppercase;
+    white-space: nowrap;
   }
 
-  .pixel-menu-icon span,
-  .pixel-close-icon span {
-    position: absolute;
-    top: 4px;
-    left: 4px;
-    width: 4px;
-    height: 4px;
-    background: currentColor;
+  .nav_bar.nav-dark .mobile-section-toggle {
+    color: #000 !important;
   }
 
-  .pixel-menu-icon span {
-    box-shadow:
-      5px 0 currentColor, 10px 0 currentColor, 15px 0 currentColor,
-      0 8px currentColor, 5px 8px currentColor, 10px 8px currentColor, 15px 8px currentColor,
-      0 16px currentColor, 5px 16px currentColor, 10px 16px currentColor, 15px 16px currentColor;
-  }
-
-  .pixel-close-icon span {
-    box-shadow:
-      15px 0 currentColor,
-      5px 5px currentColor, 10px 5px currentColor,
-      10px 10px currentColor,
-      5px 15px currentColor, 10px 15px currentColor;
-  }
-
-  .nav_bar.nav-dark .bn_menu {
-    color: #000;
+  .menu_nav {
+    display: block !important;
+    position: fixed;
+    top: 64px;
+    right: 16px;
+    left: auto;
+    width: min(280px, calc(100vw - 32px));
+    height: auto;
+    max-height: calc(100dvh - 82px);
+    padding: 18px 20px;
+    overflow-y: auto;
+    background: rgba(3, 16, 29, .76);
+    border: 1px solid rgba(255, 255, 255, .18);
+    backdrop-filter: blur(20px) saturate(135%);
+    -webkit-backdrop-filter: blur(20px) saturate(135%);
+    box-shadow: 0 18px 42px rgba(0, 0, 0, .28);
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transform: translateY(-10px) scale(.98);
+    transform-origin: top right;
+    transition: opacity .22s ease, transform .22s ease, visibility .22s ease;
   }
 
   .menu_nav.open {
     top: 64px;
-    height: calc(100dvh - 64px);
-    padding: 28px 24px;
-    overflow-y: auto;
-    background: rgba(3, 16, 29, .76);
-    border-top: 1px solid rgba(255, 255, 255, .18);
-    backdrop-filter: blur(20px) saturate(135%);
-    -webkit-backdrop-filter: blur(20px) saturate(135%);
-    box-shadow: 0 18px 42px rgba(0, 0, 0, .28);
+    right: 16px;
+    left: auto;
+    width: min(280px, calc(100vw - 32px));
+    height: auto;
+    max-height: calc(100dvh - 82px);
+    padding: 18px 20px;
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transform: translateY(0) scale(1);
+  }
+
+  .menu_nav_wrap {
+    gap: 0;
+  }
+
+  .menu_nav_email_link {
+    display: none;
   }
 
   .menu_nav_wrap {
@@ -586,8 +598,14 @@ html {
 
   .link_nav {
     width: 100%;
-    font-size: 21px;
-    padding: 7px 0;
+    color: #fff !important;
+    font-size: 18px;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, .16);
+  }
+
+  .link_nav:last-child {
+    border-bottom: 0;
   }
 
   .s_h_home_bg_video,
@@ -684,7 +702,7 @@ html {
   }
 
   .s_model_content_wrap {
-    height: min(55svh, 400px);
+    height: min(42svh, 320px);
   }
 
   .model-corner-plus--tl { top: 16px; left: 16px; }

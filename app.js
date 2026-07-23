@@ -534,23 +534,14 @@ document.addEventListener("DOMContentLoaded", () => {
   // ==========================================
   const mobMenuBtn = document.getElementById("mob-menu-btn");
   const menuNav = document.querySelector(".menu_nav");
-  const burgerIcon = document.querySelector(".burger_menu");
-  const closeIcon = document.querySelector(".close_menu");
   const navLinks = document.querySelectorAll(".link_nav");
 
   if (mobMenuBtn && menuNav) {
     const setMobileMenu = (isOpen) => {
       menuNav.classList.toggle("open", isOpen);
-      document.body.classList.toggle("mobile-menu-open", isOpen);
       mobMenuBtn.setAttribute("aria-expanded", String(isOpen));
-      mobMenuBtn.setAttribute("aria-label", isOpen ? "Close navigation menu" : "Open navigation menu");
-      if (isOpen) {
-        burgerIcon.style.display = "none";
-        closeIcon.style.display = "block";
-      } else {
-        burgerIcon.style.display = "block";
-        closeIcon.style.display = "none";
-      }
+      mobMenuBtn.setAttribute("aria-label", isOpen ? "Close section navigation" : "Open section navigation");
+      mobMenuBtn.classList.toggle("is-open", isOpen);
     };
 
     mobMenuBtn.addEventListener("click", () => setMobileMenu(!menuNav.classList.contains("open")));
@@ -667,7 +658,9 @@ document.addEventListener("DOMContentLoaded", () => {
       
       // Calculate cover-fit dimensions to map screen coordinates to 256x144 memory grid
       const s = Math.max(w / BG_WIDTH, h / BG_HEIGHT);
-      const offsetX = (w - BG_WIDTH * s) / 2;
+      // On phones, bias the narrow crop toward the right side of the scene.
+      const mobileFocusShift = window.matchMedia("(max-width: 767px)").matches ? BG_WIDTH * s * 0.12 : 0;
+      const offsetX = (w - BG_WIDTH * s) / 2 - mobileFocusShift;
       // Shift crop window down to show more of the bottom lake and mountain reflections instead of top sky
       const offsetY = (h - BG_HEIGHT * s) * 0.75;
       
