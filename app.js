@@ -873,15 +873,17 @@ document.addEventListener("DOMContentLoaded", () => {
           else if (isIceBlue && brightness > animatedBayer * 1.3) ditherColor = [188, 228, 255];
 
           if (ditherColor) {
+            // Only retain the dithered terrain/water colors—the source image
+            // itself stays hidden behind the dark Waitlist background.
             outData[index] = ditherColor[0];
             outData[index + 1] = ditherColor[1];
             outData[index + 2] = ditherColor[2];
             outData[index + 3] = 255;
           } else {
-            outData[index] = r;
-            outData[index + 1] = g;
-            outData[index + 2] = b;
-            outData[index + 3] = data[sampleIndex + 3];
+            outData[index] = 0;
+            outData[index + 1] = 0;
+            outData[index + 2] = 0;
+            outData[index + 3] = 0;
           }
         }
       }
