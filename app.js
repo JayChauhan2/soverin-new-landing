@@ -782,9 +782,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const resizeWaitlistCanvas = () => {
       const rect = waitlistPanel.getBoundingClientRect();
-      // Render at half-resolution then scale crisply for the site's pixel look.
-      waitlistWidth = Math.max(1, Math.round(rect.width / 2));
-      waitlistHeight = Math.max(1, Math.round(rect.height / 2));
+      // Use a finer pixel grid so the treatment reads as texture, not a large
+      // checkerboard of dark cells.
+      waitlistWidth = Math.max(1, Math.round(rect.width));
+      waitlistHeight = Math.max(1, Math.round(rect.height));
       waitlistCanvas.width = waitlistWidth;
       waitlistCanvas.height = waitlistHeight;
       waitlistSampleCanvas.width = waitlistWidth;
@@ -881,20 +882,20 @@ document.addEventListener("DOMContentLoaded", () => {
             outData[index + 3] = 255;
           } else if (isAqua) {
             // Keep the water mass filled with blue rather than leaving black holes.
-            outData[index] = 16;
-            outData[index + 1] = 108;
-            outData[index + 2] = 162;
+            outData[index] = 0;
+            outData[index + 1] = 166;
+            outData[index + 2] = 210;
             outData[index + 3] = 255;
           } else if (isMint) {
             // The land pieces retain a quieter green base between bright dither cells.
-            outData[index] = 28;
-            outData[index + 1] = 116;
-            outData[index + 2] = 88;
+            outData[index] = 102;
+            outData[index + 1] = 198;
+            outData[index + 2] = 157;
             outData[index + 3] = 255;
           } else if (isIceBlue) {
-            outData[index] = 22;
-            outData[index + 1] = 100;
-            outData[index + 2] = 150;
+            outData[index] = 74;
+            outData[index + 1] = 164;
+            outData[index + 2] = 208;
             outData[index + 3] = 255;
           } else {
             outData[index] = 0;
