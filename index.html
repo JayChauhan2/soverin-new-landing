@@ -891,6 +891,7 @@
               const sideTitle = document.getElementById('sf-side-title');
               const mobileSectionLabel = document.getElementById('mobile-section-label');
               const mobileSectionToggle = document.getElementById('mob-menu-btn');
+              const mobileSectionLinks = Array.from(document.querySelectorAll('.menu_nav .link_nav'));
 
               // Fixed left-side indicator follows the major narrative sections.
               function setupSectionIndicator() {
@@ -953,6 +954,9 @@
                     else if (visionRect.top <= mobilePoint && visionRect.bottom >= mobilePoint) mobileLabel = 'Vision';
                     mobileSectionLabel.textContent = mobileLabel;
                     mobileSectionToggle.classList.toggle('is-visible', Boolean(mobileLabel));
+                    mobileSectionLinks.forEach((link) => {
+                      link.classList.toggle('is-current', link.textContent.trim().toLowerCase() === mobileLabel.toLowerCase());
+                    });
                   }
                 };
                 window.addEventListener('scroll', update, { passive: true });
