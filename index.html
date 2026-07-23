@@ -297,7 +297,7 @@
               z-index: 1;
             }
             .team-school-mark {
-              min-height: 166px;
+              min-height: 210px;
               padding: 8px;
               position: relative;
               display: flex;
@@ -351,23 +351,29 @@
               content: '';
               position: absolute;
               z-index: 0;
-              width: 132px;
-              height: 132px;
+              left: 50%;
+              top: 50%;
+              width: 128px;
+              height: 128px;
               border-radius: 50%;
               background: #142c52;
               box-shadow: 0 0 22px rgba(20,44,82,.56);
+              transform: translate(-50%, -50%);
             }
             .team-school-mark--ucsd .team-school-mark__logo {
-              width: min(144px, 96%);
-              height: 144px;
+              width: min(136px, 92%);
+              height: 136px;
             }
             .team-school-rate {
-              position: relative;
+              position: absolute;
               z-index: 2;
-              margin-top: 23px;
+              bottom: 13px;
+              left: 50%;
+              margin: 0;
               color: #fff;
               font: 700 .62rem/1 'Press Start 2P', monospace;
               letter-spacing: -.04em;
+              transform: translateX(-50%);
             }
             .team-glitch-burst {
               position: absolute;
@@ -401,14 +407,17 @@
             @keyframes glitch-raster { 0%,100%{opacity:0} 20%{opacity:.76;background-size:auto,100% 10px} 48%{opacity:.35;background-size:auto,100% 4px} 74%{opacity:.82;background-size:auto,100% 15px} }
             @keyframes glitch-spark { 0%,100%{opacity:0} 22%,31%,57%{opacity:.96;clip-path:inset(42% 0 42% 0)} 44%,70%{opacity:.22;clip-path:inset(14% 0 72% 0)} }
             @keyframes glitch-frame { 0%,100%{opacity:0;transform:scaleX(1)} 23%{opacity:.8;transform:scaleX(.86)} 47%{opacity:.24;transform:scaleX(1.08)} 71%{opacity:.72;transform:scaleX(.94)} }
-            }
             .team-school-copy {
               grid-column: 1 / -1;
-              max-width: 930px;
-              margin: 42px auto 0;
+              width: min(1060px, 100%);
+              margin: 64px auto 0;
               color: #fff;
-              font: 700 0.82rem/1.9 'Press Start 2P', monospace;
+              font-family: 'Press Start 2P', monospace !important;
+              font-size: clamp(1.15rem, 2.2vw, 2rem);
+              font-weight: 700;
+              line-height: 1.65;
               text-align: center;
+              justify-self: center;
               opacity: 0;
               transform: translateY(18px);
               transition: opacity 650ms ease 420ms, transform 650ms cubic-bezier(.2,.8,.2,1) 420ms;
