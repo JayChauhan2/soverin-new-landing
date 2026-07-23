@@ -813,46 +813,79 @@ document.addEventListener("DOMContentLoaded", () => {
         drawY = (waitlistHeight - drawHeight) / 2;
       }
 
-      // Sample the artwork offscreen. The visible canvas stays transparent except
-      // for dither pixels belonging to the artwork's light-blue/aqua regions.
+      // Sample the artwork offscreen, then redraw it as the same low-resolution,
+      // image-bound animated dither treatment used by the hero artwork.
       waitlistSampleCtx.clearRect(0, 0, waitlistWidth, waitlistHeight);
       waitlistSampleCtx.drawImage(waitlistImage, drawX, drawY, drawWidth, drawHeight);
       const pixels = waitlistSampleCtx.getImageData(0, 0, waitlistWidth, waitlistHeight);
       const data = pixels.data;
-      waitlistCtx.clearRect(0, 0, waitlistWidth, waitlistHeight);
-      for (let y = 0; y < waitlistHeight; y += 2) {
-        for (let x = 0; x < waitlistWidth; x += 2) {
+      const output = waitlistCtx.createImageData(waitlistWidth, waitlistHeight);
+      const outData = output.data;
+      const bayer = [
+        .0625, .5625, .1875, .6875,
+        .8125, .3125, .9375, .4375,
+        .25, .75, .125, .625,
+        1, .5, .875, .375
+      ];
+      for (let y = 0; y < waitlistHeight; y++) {
+        for (let x = 0; x < waitlistWidth; x++) {
           const index = (y * waitlistWidth + x) * 4;
-          const r = data[index];
-          const g = data[index + 1];
-          const b = data[index + 2];
+          const rawR = data[index];
+          const rawG = data[index + 1];
+          const rawB = data[index + 2];
+          const rawBrightness = (rawR * .299 + rawG * .587 + rawB * .114) / 255;
+          let dx = 0;
+          let dy = 0;
+          const time = waitlistFrame * (2 * Math.PI / 360);
+          const rawAqua = rawB > rawR * 1.28 && rawG > rawR * 1.14 && rawBrightness > .35;
+          const rawMint = rawG > rawR * 1.08 && rawG >= rawB * .88 && rawBrightness > .38;
+          const rawIceBlue = rawB > rawR * 1.06 && rawG > rawR * .97 && rawBrightness > .55;
+
+          // Independent localized movement, matched to the image's own colors.
+          if (rawAqua) {
+            dx = Math.sin(time * 3 + y * .15) * 1.8;
+            dy = Math.cos(time * 2 + x * .11) * .65;
+          } else if (rawMint) {
+            dx = Math.sin(time * 2 + y * .1) * 1.15;
+          } else if (rawIceBlue) {
+            dx = Math.sin(time * 1.5 + y * .07) * .7;
+          }
+
+          const sampleX = Math.max(0, Math.min(waitlistWidth - 1, Math.floor(x + dx)));
+          const sampleY = Math.max(0, Math.min(waitlistHeight - 1, Math.floor(y + dy)));
+          const sampleIndex = (sampleY * waitlistWidth + sampleX) * 4;
+          const r = data[sampleIndex];
+          const g = data[sampleIndex + 1];
+          const b = data[sampleIndex + 2];
           const brightness = (r * .299 + g * .587 + b * .114) / 255;
-          const isLightBlue = b > r * 1.08 && g > r * .98 && brightness > .56;
-          const isAqua = g > r * 1.08 && b > r * 1.08 && brightness > .48;
-          const xRatio = x / waitlistWidth;
-          const yRatio = y / waitlistHeight;
-          // These masks follow the two distinct blue formations in this artwork,
-          // so the dither stays compositional instead of becoming a full overlay.
-          const inBlueFormation =
-            (xRatio > .39 && xRatio < .66 && yRatio > .38 && yRatio < .92) ||
-            (xRatio > .71 && xRatio < .91 && yRatio > .08 && yRatio < .37);
-          // A deterministic seed means every dither cell is anchored to this
-          // exact part of the image. It does not sweep or respawn elsewhere.
-          const fixedSeed = (Math.sin(x * 12.9898 + y * 78.233) * 43758.5453) % 1;
-          const isDitherCell = Math.abs(fixedSeed) > .935;
-          if (inBlueFormation && (isLightBlue || isAqua) && isDitherCell) {
-            const phase = waitlistFrame * .09 + x * .17 + y * .13;
-            // Each cell has its own small orbit. The pixel field stays in its
-            // source formation while visibly rippling and blinking in place.
-            const localX = Math.sin(phase) * 2.8 + Math.sin(waitlistFrame * .045 + y * .31) * 1.1;
-            const localY = Math.cos(phase * 1.18) * 1.7;
-            const pulse = .62 + (Math.sin(waitlistFrame * .13 + x * .23 - y * .16) + 1) * .19;
-            const opacity = (isAqua ? .58 : .42) * pulse;
-            waitlistCtx.fillStyle = `rgba(183, 229, 255, ${opacity})`;
-            waitlistCtx.fillRect(x + localX, y + localY, 2, 2);
+          const isAqua = b > r * 1.28 && g > r * 1.14 && brightness > .35;
+          const isMint = g > r * 1.08 && g >= b * .88 && brightness > .38;
+          const isIceBlue = b > r * 1.06 && g > r * .97 && brightness > .55;
+          const bayerValue = bayer[(x & 3) + ((y & 3) << 2)];
+          const wave = Math.sin(x * .1 + y * .1 + time * 2) * .12;
+          const animatedBayer = (bayerValue + wave + 1) % 1;
+          let ditherColor = null;
+
+          // Each color family gets its own intentional dither color, exactly
+          // like the hero's warm/green treatment instead of one blanket tint.
+          if (isAqua && brightness > animatedBayer * 1.2) ditherColor = [0, 220, 255];
+          else if (isMint && brightness > animatedBayer * 1.22) ditherColor = [168, 255, 210];
+          else if (isIceBlue && brightness > animatedBayer * 1.3) ditherColor = [188, 228, 255];
+
+          if (ditherColor) {
+            outData[index] = ditherColor[0];
+            outData[index + 1] = ditherColor[1];
+            outData[index + 2] = ditherColor[2];
+            outData[index + 3] = 255;
+          } else {
+            outData[index] = r;
+            outData[index + 1] = g;
+            outData[index + 2] = b;
+            outData[index + 3] = data[sampleIndex + 3];
           }
         }
       }
+      waitlistCtx.putImageData(output, 0, 0);
     };
 
     waitlistImage.src = "assets/waitlist-background.png";
