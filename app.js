@@ -567,6 +567,10 @@ document.addEventListener("DOMContentLoaded", () => {
   // ==========================================
   // 7. Interactive Form Submissions
   // ==========================================
+  // Supabase anon keys are public client keys. Row-level security on the
+  // waitlist table is responsible for limiting what this browser can do.
+  const SUPABASE_WAITLIST_URL = "https://jmxxishcxzkxliemdlak.supabase.co/rest/v1/waitlist";
+  const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpteHhpc2hjeHpreGxpZW1kbGFrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI0MDMxNjUsImV4cCI6MjA5Nzk3OTE2NX0.qo0KGf_PS-HDWkmj2erlbmy66I1WxbA4crapuHZ8o80";
   const subForm = document.getElementById("subscribe-form");
   const emailInput = document.getElementById("form-email");
   const successBox = document.getElementById("form-success");
@@ -580,23 +584,53 @@ document.addEventListener("DOMContentLoaded", () => {
       submitBtn.disabled = !hasValidEmail;
     };
 
-    emailInput?.addEventListener("input", updateSubscribeButton);
-    emailInput?.addEventListener("change", updateSubscribeButton);
+    const clearFormError = () => emailInput?.setCustomValidity("");
+    emailInput?.addEventListener("input", () => {
+      clearFormError();
+      updateSubscribeButton();
+    });
+    emailInput?.addEventListener("change", () => {
+      clearFormError();
+      updateSubscribeButton();
+    });
     updateSubscribeButton();
 
-    subForm.addEventListener("submit", (e) => {
+    subForm.addEventListener("submit", async (e) => {
       e.preventDefault();
       const emailVal = emailInput.value.trim();
       if (!emailVal || !emailInput.validity.valid) return;
 
       if (submitBtn) submitBtn.disabled = true;
 
-      // Mock subscription delays
-      setTimeout(() => {
+      try {
+        const response = await fetch(SUPABASE_WAITLIST_URL, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            apikey: SUPABASE_ANON_KEY,
+            Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+            Prefer: "return=minimal"
+          },
+          body: JSON.stringify({ email: emailVal })
+        });
+
+        // A duplicate email means this visitor is already on the waitlist.
+        if (!response.ok && response.status !== 409) {
+          throw new Error(`Waitlist request failed (${response.status})`);
+        }
+
         subForm.style.display = "none";
         successBox.style.display = "block";
         gsap.from(successBox, { opacity: 0, y: 10, duration: 0.4 });
-      }, 1000);
+      } catch (error) {
+        console.error("Unable to subscribe to the waitlist:", error);
+        emailInput.setCustomValidity("We couldn't add you to the waitlist. Please try again.");
+        emailInput.reportValidity();
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          updateSubscribeButton();
+        }
+      }
     });
   }
 
