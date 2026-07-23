@@ -545,7 +545,7 @@ html {
     display: block !important;
     position: fixed;
     top: 45px;
-    right: 10px;
+    right: var(--mobile-section-edge, 16px);
     left: auto;
     width: auto;
     height: auto;
@@ -565,7 +565,7 @@ html {
 
   .menu_nav.open {
     top: 45px;
-    right: 10px;
+    right: var(--mobile-section-edge, 16px);
     left: auto;
     width: auto;
     height: auto;
@@ -625,6 +625,8 @@ html {
   }
 
   .link_nav_text {
+    display: block;
+    width: 100%;
     color: inherit !important;
     font: inherit;
     letter-spacing: inherit;

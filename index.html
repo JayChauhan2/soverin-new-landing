@@ -945,6 +945,10 @@
                   // Mobile uses the same current-section language in the top-right
                   // navigation control, while the landing view deliberately stays clean.
                   if (mobileSectionLabel && mobileSectionToggle) {
+                    const toggleRect = mobileSectionToggle.getBoundingClientRect();
+                    document.documentElement.style.setProperty(
+                      '--mobile-section-edge', `${Math.max(0, window.innerWidth - toggleRect.right)}px`
+                    );
                     const mobilePoint = window.innerHeight * .35;
                     let mobileLabel = '';
                     if (reserveRect.top <= mobilePoint && reserveRect.bottom >= mobilePoint) mobileLabel = 'Waitlist';
