@@ -1743,7 +1743,10 @@
                   const r = imageData.data[i];
                   const g = imageData.data[i + 1];
                   const b = imageData.data[i + 2];
-                  if (r > 238 && g > 238 && b > 238) imageData.data[i + 3] = 0;
+                  // Both source illustrations are drawn on near-white paper. Strip
+                  // the full light field (including anti-aliased edge pixels), so
+                  // only the marks form the dithered silhouette—never a rectangle.
+                  if (r > 210 && g > 210 && b > 210) imageData.data[i + 3] = 0;
                 }
                 canvasCtx.putImageData(imageData, 0, 0);
               }
@@ -1756,9 +1759,11 @@
                 // like an in-progress diplomatic document rather than a room scene.
                 diplomacyCtx.drawImage(scrollImage, 35, 98, 430, 398);
                 diplomacyCtx.save();
-                diplomacyCtx.translate(355, 326);
-                diplomacyCtx.rotate(0.52);
-                diplomacyCtx.drawImage(quillImage, -44, -184, 88, 174);
+                diplomacyCtx.translate(358, 286);
+                diplomacyCtx.rotate(0.42);
+                // Deliberately oversized and more illustrative than the prior
+                // stock-like pen so it reads as a proper writing quill.
+                diplomacyCtx.drawImage(quillImage, -92, -192, 184, 350);
                 diplomacyCtx.restore();
                 removeWhitePaper(diplomacyCtx);
 
@@ -1769,7 +1774,7 @@
               scrollImage.onload = buildDiplomacyArtwork;
               quillImage.onload = buildDiplomacyArtwork;
               scrollImage.src = 'assets/diplomatic-scroll-source.png';
-              quillImage.src = 'assets/diplomatic-quill-source.png';
+              quillImage.src = 'assets/diplomatic-quill-source.svg';
 
               setupFeatureReveal('sf-chronicle-canvas', 'sf-row-2', (ctx, w, h, p) => {
                 ctx.clearRect(0, 0, w, h);
