@@ -844,13 +844,11 @@
                 const vision = document.getElementById('vision');
                 const team = document.getElementById('team');
                 const showcase = document.getElementById('model');
-                const waitlist = document.getElementById('reserve');
-                if (!vision || !team || !showcase || !waitlist) return;
+                if (!vision || !team || !showcase) return;
                 const visionLetters = Array.from('VISION');
                 const technologyLetters = Array.from('TECHNOLOGY');
                 const teamLetters = Array.from('TEAM');
                 const showcaseLetters = Array.from('SHOWCASE');
-                const waitlistLetters = Array.from('WAITLIST');
                 sideTitle.innerHTML = technologyLetters.map((_, index) => `<span class="sf-side-title__char" data-index="${index}"></span>`).join('');
                 const characterSlots = Array.from(sideTitle.querySelectorAll('.sf-side-title__char'));
                 const update = () => {
@@ -858,7 +856,6 @@
                   const technologyRect = section.getBoundingClientRect();
                   const teamRect = team.getBoundingClientRect();
                   const showcaseRect = showcase.getBoundingClientRect();
-                  const waitlistRect = waitlist.getBoundingClientRect();
                   let hasVisibleCharacter = false;
                   characterSlots.forEach((slot, index) => {
                     const slotRect = slot.getBoundingClientRect();
@@ -867,12 +864,7 @@
                     const overTechnology = technologyRect.top <= point && technologyRect.bottom >= point;
                     const overVision = visionRect.top <= point && visionRect.bottom >= point;
                     const overShowcase = showcaseRect.top <= point && showcaseRect.bottom >= point;
-                    const overWaitlist = waitlistRect.top <= point && waitlistRect.bottom >= point;
-                    if (overWaitlist && waitlistLetters[index]) {
-                      slot.textContent = waitlistLetters[index];
-                      slot.style.color = '#ffffff';
-                      hasVisibleCharacter = true;
-                    } else if (overShowcase && showcaseLetters[index]) {
+                    if (overShowcase && showcaseLetters[index]) {
                       slot.textContent = showcaseLetters[index];
                       slot.style.color = '#ffffff';
                       hasVisibleCharacter = true;
