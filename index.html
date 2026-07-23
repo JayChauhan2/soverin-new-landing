@@ -682,6 +682,8 @@
               letter-spacing: .035em;
               pointer-events: none;
               transform: translateX(-50%);
+              opacity: 0;
+              transition: opacity 260ms ease;
               --world-label-corner: 5px;
               --world-label-stroke: 1.5px;
               --world-label-offset: -1px;
@@ -1622,6 +1624,12 @@
                 if (!worldReady) return;
                 drawBrainStyleGrid(ctx, worldCells, p);
                 drawWorldSignalLines(ctx, p, time);
+                if (worldStatus) {
+                  // Mirror the BCM staging: labels arrive after the visual system
+                  // has had time to materialize, rather than being present upfront.
+                  const labelProgress = Math.max(0, Math.min(1, (p - .72) / .2));
+                  worldStatus.style.opacity = labelProgress;
+                }
               });
 
               function drawSkylinePlane(ctx, time) {
