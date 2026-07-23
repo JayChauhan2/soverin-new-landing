@@ -1727,48 +1727,39 @@
                 ctx.restore();
               }
 
-              const globeSource = document.createElement('canvas');
-              globeSource.width = 500;
-              globeSource.height = 460;
-              const globeCtx = globeSource.getContext('2d');
-              globeCtx.imageSmoothingEnabled = true;
-              let globeCells = [];
-              const globeImage = new Image();
-              let globeReady = false;
-              globeImage.src = 'assets/globe-hands.png';
-              globeImage.onload = () => {
-                // Preserve the source artwork's proportions; move it down a touch
-                // rather than widening it to make the square source fit this card.
-                const scale = globeSource.width / globeImage.naturalWidth;
-                const imageWidth = globeImage.naturalWidth * scale;
-                const imageHeight = globeImage.naturalHeight * scale;
-                globeCtx.drawImage(globeImage, (globeSource.width - imageWidth) / 2, 18, imageWidth, imageHeight);
-                const imageData = globeCtx.getImageData(0, 0, globeSource.width, globeSource.height);
+              const emperorSource = document.createElement('canvas');
+              emperorSource.width = 500;
+              emperorSource.height = 460;
+              const emperorCtx = emperorSource.getContext('2d');
+              emperorCtx.imageSmoothingEnabled = true;
+              let emperorCells = [];
+              const emperorImage = new Image();
+              let emperorReady = false;
+              emperorImage.src = 'assets/diplomatic-emperor-reference.png';
+              emperorImage.onload = () => {
+                // Preserve the formal seated portrait in full, centered in the
+                // card, then distill it into the same dense green pixel language.
+                const scale = emperorSource.height / emperorImage.naturalHeight;
+                const imageWidth = emperorImage.naturalWidth * scale;
+                const imageHeight = emperorImage.naturalHeight * scale;
+                emperorCtx.drawImage(emperorImage, (emperorSource.width - imageWidth) / 2, 0, imageWidth, imageHeight);
+                const imageData = emperorCtx.getImageData(0, 0, emperorSource.width, emperorSource.height);
                 for (let i = 0; i < imageData.data.length; i += 4) {
-                  if (imageData.data[i] > 242 && imageData.data[i + 1] > 242 && imageData.data[i + 2] > 242) imageData.data[i + 3] = 0;
+                  const r = imageData.data[i];
+                  const g = imageData.data[i + 1];
+                  const b = imageData.data[i + 2];
+                  // Remove only the near-black backdrop; retain the throne, robes,
+                  // staff, and bright ceremonial details as a single silhouette.
+                  if (r < 34 && g < 34 && b < 34 && Math.max(r, g, b) - Math.min(r, g, b) < 15) imageData.data[i + 3] = 0;
                 }
-                // The source includes a loose halftone halo around the globe. Trim
-                // only that upper-centre area to a precise circular silhouette;
-                // hands outside this zone remain untouched.
-                const globeCenter = { x: 250, y: 172 };
-                const globeRadius = 120;
-                for (let y = 50; y < 295; y++) {
-                  for (let x = 120; x < 380; x++) {
-                    const dx = x - globeCenter.x;
-                    const dy = y - globeCenter.y;
-                    if (dx * dx + dy * dy > globeRadius * globeRadius) {
-                      imageData.data[(y * globeSource.width + x) * 4 + 3] = 0;
-                    }
-                  }
-                }
-                globeCells = makeBrainStyleGrid(imageData, globeSource.width, globeSource.height);
-                globeReady = true;
+                emperorCells = makeBrainStyleGrid(imageData, emperorSource.width, emperorSource.height);
+                emperorReady = true;
               };
 
               setupFeatureReveal('sf-chronicle-canvas', 'sf-row-2', (ctx, w, h, p) => {
                 ctx.clearRect(0, 0, w, h);
-                if (!globeReady) return;
-                drawBrainStyleGrid(ctx, globeCells, p);
+                if (!emperorReady) return;
+                drawBrainStyleGrid(ctx, emperorCells, p);
               });
               // ==========================================
               // One restrained dither treatment is shared by every image square.
