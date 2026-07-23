@@ -485,3 +485,168 @@ html {
     scroll-behavior: auto;
   }
 }
+
+/* Phone layout: keep the visual system intact without compressing the content. */
+@media (max-width: 767px) {
+  .u-container {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+
+  .nav_bar_menu {
+    min-height: 64px;
+  }
+
+  .link_logo_nav img {
+    height: 24px !important;
+  }
+
+  .bn-s_nav_wrap .bn_nav_wrap {
+    display: none;
+  }
+
+  .menu_nav.open {
+    top: 64px;
+    height: calc(100dvh - 64px);
+    padding: 28px 24px;
+    overflow-y: auto;
+  }
+
+  .menu_nav_wrap {
+    gap: 24px;
+  }
+
+  .menu_nav_list {
+    width: 100%;
+    gap: 16px;
+  }
+
+  .link_nav {
+    width: 100%;
+    font-size: 21px;
+    padding: 7px 0;
+  }
+
+  .s_h_home_bg_video,
+  .s-h-home {
+    min-height: 100svh;
+    height: 100svh;
+  }
+
+  .sf-side-title {
+    display: none;
+  }
+
+  .sf-rows {
+    width: 100%;
+    padding: 16px;
+  }
+
+  .sf-row,
+  .sf-row--flip {
+    flex-direction: column;
+  }
+
+  .sf-square {
+    width: 100%;
+    flex: 0 0 auto;
+    aspect-ratio: 1 / 1;
+  }
+
+  .sf-row .sf-square + .sf-square {
+    border-left: 1px solid rgba(255, 255, 255, 0.08);
+    border-top: none;
+  }
+
+  .sf-square--text {
+    padding: 30px 26px;
+  }
+
+  .sf-square--text__title {
+    font-size: clamp(.72rem, 3.7vw, .9rem);
+    line-height: 1.7;
+    overflow-wrap: anywhere;
+  }
+
+  .sf-square--text__body {
+    margin-bottom: 0;
+    font-size: .94rem;
+    line-height: 1.58;
+    overflow-wrap: anywhere;
+  }
+
+  .sf-world-status {
+    top: 17%;
+    min-height: 22px;
+    padding: 0 8px;
+    font-size: 9px;
+  }
+
+  #team.s-team {
+    padding: 150px 24px 56px;
+  }
+
+  .team-school-wall {
+    gap: 18px 12px;
+  }
+
+  .team-school-mark {
+    min-height: 156px;
+  }
+
+  .team-school-mark__logo,
+  .team-school-mark--ucsd .team-school-mark__logo {
+    width: min(104px, 86%);
+    height: 104px;
+  }
+
+  .team-school-mark--georgia-tech .team-school-mark__logo {
+    width: min(118px, 94%);
+    height: 108px;
+  }
+
+  .team-school-rate {
+    bottom: 8px;
+    font-size: .48rem;
+  }
+
+  .team-school-copy {
+    margin-top: 30px;
+    font-size: 1.25rem;
+  }
+
+  .s-model {
+    min-height: auto;
+    padding: 64px 0;
+  }
+
+  .s_model_content_wrap {
+    height: min(72svh, 560px);
+  }
+
+  .model-corner-plus--tl { top: 16px; left: 16px; }
+  .model-corner-plus--tr { top: 16px; right: 16px; }
+  .model-corner-plus--bl { bottom: 16px; left: 16px; }
+  .model-corner-plus--br { right: 16px; bottom: 16px; }
+
+  #reserve .s_cta_newsletter_content_wrap {
+    grid-template-columns: 1fr;
+    gap: 28px;
+    padding: 36px 20px;
+  }
+
+  #reserve .s_cta_newsletter_title_wrap,
+  #reserve .s_cta_newsletter_form {
+    width: 100%;
+  }
+
+  .newsletter-pill__input,
+  .newsletter-pill__submit {
+    min-height: 54px;
+  }
+
+  .s_footer_content {
+    padding-top: 8px;
+    padding-bottom: 8px;
+  }
+}
