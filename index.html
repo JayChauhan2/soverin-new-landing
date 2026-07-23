@@ -1442,10 +1442,53 @@
                 worldReady = true;
               };
 
+              function drawWorldSignalLines(ctx, progress, time) {
+                const reveal = Math.max(0, Math.min(1, (progress - .32) / .68));
+                if (!reveal) return;
+                const earth = { x: 250, y: 1020, radius: 700 };
+                const lineXs = [132, 156, 181, 207, 234, 262, 289, 316, 342, 367];
+
+                ctx.save();
+                // Signals only exist inside the Earth, beginning beneath the city.
+                ctx.beginPath();
+                ctx.arc(earth.x, earth.y, earth.radius, 0, Math.PI * 2);
+                ctx.clip();
+                ctx.lineWidth = 1.1;
+
+                lineXs.forEach((x, index) => {
+                  const curveY = earth.y - Math.sqrt(earth.radius ** 2 - (x - earth.x) ** 2);
+                  const startY = Math.max(338, curveY + 12 + (index % 3) * 3);
+                  const endY = 486 - (index % 4) * 16;
+                  const visibleEnd = startY + (endY - startY) * reveal;
+                  const dashPhase = (time * .028 + index * 5) % 9;
+
+                  // Fixed vertical data channels, with a gentle flowing dash phase.
+                  ctx.setLineDash([2, 7]);
+                  ctx.lineDashOffset = -dashPhase;
+                  ctx.strokeStyle = 'rgba(183, 255, 211, 0.48)';
+                  ctx.beginPath();
+                  ctx.moveTo(x, startY);
+                  ctx.lineTo(x, visibleEnd);
+                  ctx.stroke();
+
+                  // A brighter packet travels down each channel, leaving a small
+                  // dotted wake in the same square-cell language as the brain.
+                  const route = (time * .00019 + index * .137) % 1;
+                  const packetY = startY + (visibleEnd - startY) * route;
+                  ctx.fillStyle = 'rgba(220, 255, 230, 0.96)';
+                  ctx.fillRect(x - 2, packetY - 2, 4, 4);
+                  ctx.fillStyle = 'rgba(183, 255, 211, 0.56)';
+                  ctx.fillRect(x - 1, packetY - 9, 2, 2);
+                  ctx.fillRect(x - 1, packetY - 16, 2, 2);
+                });
+                ctx.restore();
+              }
+
               setupFeatureReveal('sf-world-canvas', 'sf-row-1', (ctx, w, h, p) => {
                 ctx.clearRect(0, 0, w, h);
                 if (!worldReady) return;
                 drawBrainStyleGrid(ctx, worldCells, p);
+                drawWorldSignalLines(ctx, p, performance.now());
               });
 
               function drawSkylinePlane(ctx, time) {
