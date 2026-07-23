@@ -49,7 +49,7 @@
                   <div class="link_nav_text">Team</div>
                 </a>
                 <a href="#model" class="link_nav w-inline-block">
-                  <div class="link_nav_text">3D Canyon</div>
+                  <div class="link_nav_text">Showcase</div>
                 </a>
               </div>
               <div class="menu_nav_email_link">
@@ -790,21 +790,26 @@
               const section = document.getElementById('features');
               const sideTitle = document.getElementById('sf-side-title');
 
-              // Fixed left-side section indicator: no title on the hero, Vision
-              // on the light intro, Technology on these feature cards, then blank.
+              // Fixed left-side indicator follows the major narrative sections.
               function setupSectionIndicator() {
                 const vision = document.getElementById('vision');
                 const team = document.getElementById('team');
-                if (!vision || !team) return;
+                const showcase = document.getElementById('model');
+                const waitlist = document.getElementById('reserve');
+                if (!vision || !team || !showcase || !waitlist) return;
                 const visionLetters = Array.from('VISION');
                 const technologyLetters = Array.from('TECHNOLOGY');
                 const teamLetters = Array.from('TEAM');
+                const showcaseLetters = Array.from('SHOWCASE');
+                const waitlistLetters = Array.from('WAITLIST');
                 sideTitle.innerHTML = technologyLetters.map((_, index) => `<span class="sf-side-title__char" data-index="${index}"></span>`).join('');
                 const characterSlots = Array.from(sideTitle.querySelectorAll('.sf-side-title__char'));
                 const update = () => {
                   const visionRect = vision.getBoundingClientRect();
                   const technologyRect = section.getBoundingClientRect();
                   const teamRect = team.getBoundingClientRect();
+                  const showcaseRect = showcase.getBoundingClientRect();
+                  const waitlistRect = waitlist.getBoundingClientRect();
                   let hasVisibleCharacter = false;
                   characterSlots.forEach((slot, index) => {
                     const slotRect = slot.getBoundingClientRect();
@@ -812,7 +817,17 @@
                     const overTeam = teamRect.top <= point && teamRect.bottom >= point;
                     const overTechnology = technologyRect.top <= point && technologyRect.bottom >= point;
                     const overVision = visionRect.top <= point && visionRect.bottom >= point;
-                    if (overTeam && teamLetters[index]) {
+                    const overShowcase = showcaseRect.top <= point && showcaseRect.bottom >= point;
+                    const overWaitlist = waitlistRect.top <= point && waitlistRect.bottom >= point;
+                    if (overWaitlist && waitlistLetters[index]) {
+                      slot.textContent = waitlistLetters[index];
+                      slot.style.color = '#ffffff';
+                      hasVisibleCharacter = true;
+                    } else if (overShowcase && showcaseLetters[index]) {
+                      slot.textContent = showcaseLetters[index];
+                      slot.style.color = '#ffffff';
+                      hasVisibleCharacter = true;
+                    } else if (overTeam && teamLetters[index]) {
                       slot.textContent = teamLetters[index];
                       slot.style.color = '#ffffff';
                       hasVisibleCharacter = true;
