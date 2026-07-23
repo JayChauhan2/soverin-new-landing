@@ -316,7 +316,10 @@
             .s-footer { background: #061733 !important; }
             #reserve.s-cta-newsletter,
             #reserve .s_cta_newsletter_content_wrap { border-radius: 0 !important; }
-            #reserve .s_cta_newsletter_content_wrap { position: relative; }
+            #reserve .s_cta_newsletter_content_wrap {
+              position: relative;
+              overflow: visible;
+            }
             .waitlist-corner-square {
               position: absolute;
               z-index: 2;
@@ -325,10 +328,10 @@
               background: #fff;
               pointer-events: none;
             }
-            .waitlist-corner-square--tl { top: 0; left: 0; }
-            .waitlist-corner-square--tr { top: 0; right: 0; }
-            .waitlist-corner-square--bl { bottom: 0; left: 0; }
-            .waitlist-corner-square--br { right: 0; bottom: 0; }
+            .waitlist-corner-square--tl { top: 0; left: 0; transform: translate(-50%, -50%); }
+            .waitlist-corner-square--tr { top: 0; right: 0; transform: translate(50%, -50%); }
+            .waitlist-corner-square--bl { bottom: 0; left: 0; transform: translate(-50%, 50%); }
+            .waitlist-corner-square--br { right: 0; bottom: 0; transform: translate(50%, 50%); }
             #team.s-team {
               display: flex;
               align-items: flex-start;
