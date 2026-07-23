@@ -291,6 +291,7 @@ document.addEventListener("DOMContentLoaded", () => {
       this.model = null;
       this.pivot = null;
       this.keys = new Set();
+      this.controlsActive = false;
 
       this.animate = this.animate.bind(this);
       this.onResize = this.onResize.bind(this);
@@ -366,6 +367,7 @@ document.addEventListener("DOMContentLoaded", () => {
       this.canvas.addEventListener("pointerdown", (e) => {
         if (!this.pivot) return;
         this.canvas.focus({ preventScroll: true });
+        this.controlsActive = true;
         this.isDragging = true;
         lastX = e.clientX;
         lastY = e.clientY;
@@ -397,19 +399,19 @@ document.addEventListener("DOMContentLoaded", () => {
     installKeyboardMove() {
       this.canvas.tabIndex = 0;
       this.canvas.style.outline = "none";
-      this.canvas.addEventListener("keydown", (event) => {
+      window.addEventListener("keydown", (event) => {
         const key = event.key.toLowerCase();
-        if (!['w', 'a', 's', 'd'].includes(key)) return;
+        if (!this.controlsActive || !['w', 'a', 's', 'd'].includes(key)) return;
         this.keys.add(key);
         event.preventDefault();
       });
-      this.canvas.addEventListener("keyup", (event) => {
+      window.addEventListener("keyup", (event) => {
         const key = event.key.toLowerCase();
         if (!['w', 'a', 's', 'd'].includes(key)) return;
         this.keys.delete(key);
         event.preventDefault();
       });
-      this.canvas.addEventListener("blur", () => this.keys.clear());
+      window.addEventListener("blur", () => this.keys.clear());
     }
 
     moveCamera() {
