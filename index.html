@@ -971,18 +971,13 @@
                     else if (visionRect.top <= mobilePoint && visionRect.bottom >= mobilePoint) mobileLabel = 'Vision';
                     mobileSectionLabel.textContent = mobileLabel;
                     mobileSectionToggle.classList.toggle('is-visible', Boolean(mobileLabel));
-                    const sectionOrder = ['Vision', 'Technology', 'Team', 'Showcase', 'Waitlist'];
-                    const currentIndex = sectionOrder.indexOf(mobileLabel);
                     mobileSectionLinks.forEach((link) => {
                       const linkLabel = link.textContent.trim();
-                      const linkIndex = sectionOrder.indexOf(linkLabel);
                       const isCurrent = linkLabel === mobileLabel;
                       link.classList.toggle('is-current', isCurrent);
-                      // Continue the list from the visible current label, wrapping
-                      // only after the final section instead of duplicating it.
-                      link.style.order = currentIndex < 0 || linkIndex < 0
-                        ? ''
-                        : String((linkIndex - currentIndex + sectionOrder.length) % sectionOrder.length);
+                      // Keep the navigation in its authored order on every section.
+                      // The current item is represented by the top-right label.
+                      link.style.order = '';
                     });
                   }
                 };

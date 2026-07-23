@@ -136,6 +136,11 @@ a {
   opacity: 1;
 }
 
+/* Desktop has a dedicated Join Waitlist CTA; keep Waitlist out of the link row. */
+.link_nav--waitlist {
+  display: none !important;
+}
+
 /* Transition for theme switching */
 .link_logo_nav img,
 .link_nav_text,
@@ -503,6 +508,11 @@ html {
 
   .bn-s_nav_wrap .bn_nav_wrap {
     display: none;
+  }
+
+  /* Mobile has no CTA button, so Waitlist remains available in the section list. */
+  .link_nav--waitlist {
+    display: block !important;
   }
 
   .mobile-section-toggle {
