@@ -261,7 +261,7 @@ document.addEventListener("DOMContentLoaded", () => {
     : "https://webflow-resources.b-cdn.net/GRU_Hotel_0001_26.glb";
   const HOTEL_ENVIRONMENT = [
     { url: "assets/models/basemountain.glb", scale: 1.05, x: 0, y: -0.02, z: 0, rotation: 0 },
-    { url: "assets/models/lake.glb", scale: 1.35, x: 0.78, y: -0.06, z: 0.46, rotation: -0.35 }
+    { url: "assets/models/cyn.glb", scale: 2.15, x: -1.22, y: -0.1, z: -1.15, rotation: 0.52 }
   ];
 
   class ModelApp {
