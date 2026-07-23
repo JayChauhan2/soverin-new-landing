@@ -551,9 +551,10 @@ html {
     height: auto;
     padding: 6px 0 0;
     overflow: visible;
-    background: transparent;
-    border: 0;
-    box-shadow: none;
+    background: transparent !important;
+    background-color: transparent !important;
+    border: 0 !important;
+    box-shadow: none !important;
     opacity: 0;
     visibility: hidden;
     pointer-events: none;
@@ -569,6 +570,10 @@ html {
     width: auto;
     height: auto;
     padding: 6px 0 0;
+    background: transparent !important;
+    background-color: transparent !important;
+    border: 0 !important;
+    box-shadow: none !important;
     opacity: 1;
     visibility: visible;
     pointer-events: auto;
@@ -578,6 +583,9 @@ html {
   .menu_nav_wrap {
     align-items: flex-end;
     gap: 0;
+    width: auto;
+    height: auto;
+    padding: 0;
   }
 
   .menu_nav_email_link {
@@ -592,6 +600,7 @@ html {
     width: auto;
     align-items: flex-end;
     gap: 0;
+    margin: 0;
   }
 
   .link_nav {
@@ -603,8 +612,14 @@ html {
     line-height: 1.2;
     padding: 5px 0;
     border: 0;
-    opacity: .58;
-    transform: translateX(10px);
+    opacity: .72;
+    transform: none;
+  }
+
+  .link_nav_text {
+    color: inherit !important;
+    font: inherit;
+    letter-spacing: inherit;
   }
 
   .menu_nav.open .link_nav {
@@ -627,8 +642,15 @@ html {
   }
 
   @keyframes mobile-section-link-in {
-    from { opacity: 0; transform: translateX(10px); }
-    to { transform: translateX(0); }
+    from { opacity: 0; }
+    to { opacity: .72; }
+  }
+
+  .menu_nav.open .link_nav.is-current { animation-name: mobile-section-link-current; }
+
+  @keyframes mobile-section-link-current {
+    from { opacity: 0; }
+    to { opacity: 1; }
   }
 
   .s_h_home_bg_video,
