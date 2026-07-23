@@ -313,22 +313,16 @@
             #team.is-revealed .team-school-mark:nth-child(3) { transition-delay: 180ms; }
             #team.is-revealed .team-school-mark:nth-child(4) { transition-delay: 270ms; }
             #team.is-revealed .team-school-mark:nth-child(5) { transition-delay: 360ms; }
-            .team-school-mark__glyph {
+            .team-school-mark__logo {
               position: relative;
               z-index: 1;
-              color: #fff;
-              font: 700 1.05rem/1 'Press Start 2P', monospace;
-              letter-spacing: -0.08em;
-              text-shadow: 3px 3px 0 rgba(255,255,255,0.16);
-            }
-            .team-school-mark__name {
-              position: relative;
-              z-index: 1;
-              max-width: 150px;
-              color: rgba(255,255,255,0.7);
-              font: 600 0.48rem/1.65 'Press Start 2P', monospace;
-              text-align: center;
-              text-transform: uppercase;
+              width: 92px;
+              height: 92px;
+              fill: none;
+              stroke: #fff;
+              stroke-width: 5;
+              shape-rendering: crispEdges;
+              filter: drop-shadow(3px 3px 0 rgba(255,255,255,0.18));
             }
             .team-school-copy {
               grid-column: 1 / -1;
@@ -1371,11 +1365,11 @@
 
         <section id="team" class="s-team" aria-label="Team">
           <div class="team-school-wall">
-            <div class="team-school-mark"><span class="team-school-mark__glyph">UIUC</span><span class="team-school-mark__name">University of Illinois</span></div>
-            <div class="team-school-mark"><span class="team-school-mark__glyph">IITB</span><span class="team-school-mark__name">IIT Bombay</span></div>
-            <div class="team-school-mark"><span class="team-school-mark__glyph">IITK</span><span class="team-school-mark__name">IIT Kharagpur</span></div>
-            <div class="team-school-mark"><span class="team-school-mark__glyph">GT</span><span class="team-school-mark__name">Georgia Tech</span></div>
-            <div class="team-school-mark"><span class="team-school-mark__glyph">UCSD</span><span class="team-school-mark__name">UC San Diego</span></div>
+            <div class="team-school-mark" aria-label="University of Illinois"><svg class="team-school-mark__logo" viewBox="0 0 120 120" aria-hidden="true"><path fill="#fff" stroke="none" d="M30 10h60v19H75v62h15v19H30V91h15V29H30z"/></svg></div>
+            <div class="team-school-mark" aria-label="IIT Bombay"><svg class="team-school-mark__logo" viewBox="0 0 120 120" aria-hidden="true"><circle cx="60" cy="60" r="42"/><circle cx="60" cy="60" r="19"/><path d="M60 9v18M60 93v18M9 60h18M93 60h18M24 24l13 13M83 83l13 13M96 24L83 37M37 83L24 96"/></svg></div>
+            <div class="team-school-mark" aria-label="IIT Kharagpur"><svg class="team-school-mark__logo" viewBox="0 0 120 120" aria-hidden="true"><circle cx="60" cy="60" r="43"/><path d="M26 74c13-20 25-20 34 0 9-20 21-20 34 0M38 47h44M60 31v50M43 87h34"/></svg></div>
+            <div class="team-school-mark" aria-label="Georgia Tech"><svg class="team-school-mark__logo" viewBox="0 0 120 120" aria-hidden="true"><path fill="#fff" stroke="none" d="M10 19h100v20H73v62H49V39H10z"/><path fill="#000" stroke="none" d="M58 43h40v18H77v20H98v18H58z"/></svg></div>
+            <div class="team-school-mark" aria-label="UC San Diego"><svg class="team-school-mark__logo" viewBox="0 0 120 120" aria-hidden="true"><path d="M60 13v78M37 28l23 25 23-25M27 47l33 31 33-31M43 91h34"/><circle cx="60" cy="16" r="7" fill="#fff" stroke="none"/></svg></div>
             <p class="team-school-copy">We are a team of eight students from some of the best schools around the world.</p>
           </div>
           <script>
