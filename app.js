@@ -290,6 +290,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       this.model = null;
       this.pivot = null;
+      this.keys = new Set();
 
       this.animate = this.animate.bind(this);
       this.onResize = this.onResize.bind(this);
@@ -299,12 +300,14 @@ document.addEventListener("DOMContentLoaded", () => {
       this.ro.observe(this.container);
 
       this.installDragRotate();
+      this.installKeyboardMove();
       this.onResize();
       this.animate();
     }
 
     animate() {
       requestAnimationFrame(this.animate);
+      this.moveCamera();
       if (this.pivot) {
         // Slow constant rotation when not dragged
         if (!this.isDragging) {
@@ -362,6 +365,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       this.canvas.addEventListener("pointerdown", (e) => {
         if (!this.pivot) return;
+        this.canvas.focus({ preventScroll: true });
         this.isDragging = true;
         lastX = e.clientX;
         lastY = e.clientY;
@@ -388,6 +392,38 @@ document.addEventListener("DOMContentLoaded", () => {
       this.canvas.addEventListener("pointerup", stopDrag);
       this.canvas.addEventListener("pointercancel", stopDrag);
       this.canvas.addEventListener("pointerleave", stopDrag);
+    }
+
+    installKeyboardMove() {
+      this.canvas.tabIndex = 0;
+      this.canvas.style.outline = "none";
+      this.canvas.addEventListener("keydown", (event) => {
+        const key = event.key.toLowerCase();
+        if (!['w', 'a', 's', 'd'].includes(key)) return;
+        this.keys.add(key);
+        event.preventDefault();
+      });
+      this.canvas.addEventListener("keyup", (event) => {
+        const key = event.key.toLowerCase();
+        if (!['w', 'a', 's', 'd'].includes(key)) return;
+        this.keys.delete(key);
+        event.preventDefault();
+      });
+      this.canvas.addEventListener("blur", () => this.keys.clear());
+    }
+
+    moveCamera() {
+      if (!this.keys.size) return;
+      const forward = new THREE.Vector3();
+      this.camera.getWorldDirection(forward);
+      forward.y = 0;
+      forward.normalize();
+      const right = new THREE.Vector3().crossVectors(forward, this.camera.up).normalize();
+      const speed = Math.max(0.012, this.baseCamZ * 0.004);
+      if (this.keys.has('w')) this.camera.position.addScaledVector(forward, speed);
+      if (this.keys.has('s')) this.camera.position.addScaledVector(forward, -speed);
+      if (this.keys.has('a')) this.camera.position.addScaledVector(right, -speed);
+      if (this.keys.has('d')) this.camera.position.addScaledVector(right, speed);
     }
   }
 
