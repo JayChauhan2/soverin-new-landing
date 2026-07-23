@@ -360,15 +360,28 @@
               width: min(144px, 96%);
               height: 144px;
             }
-            .team-school-mark.is-glitching .team-school-mark__logo {
-              animation: team-logo-glitch 260ms steps(2, end);
+            .team-glitch-burst {
+              position: absolute;
+              z-index: 3;
+              inset: 18% 4%;
+              pointer-events: none;
+              opacity: 0;
+              mix-blend-mode: screen;
+              background:
+                linear-gradient(90deg, transparent 0 17%, rgba(210,245,255,.85) 17% 19%, transparent 19% 49%, rgba(120,195,255,.76) 49% 52%, transparent 52% 78%, rgba(255,255,255,.92) 78% 80%, transparent 80%),
+                repeating-linear-gradient(0deg, transparent 0 11px, rgba(207,244,255,.78) 11px 13px, transparent 13px 23px);
+              filter: drop-shadow(0 0 4px rgba(135,220,255,.9));
             }
-            @keyframes team-logo-glitch {
-              0%, 100% { transform: translate3d(0, 0, 0); clip-path: inset(0); }
-              18% { transform: translate3d(-4px, 1px, 0); clip-path: inset(12% 0 62% 0); }
-              40% { transform: translate3d(5px, -1px, 0); clip-path: inset(48% 0 28% 0); }
-              62% { transform: translate3d(-2px, 2px, 0); clip-path: inset(74% 0 8% 0); }
-              80% { transform: translate3d(2px, 0, 0); clip-path: inset(0); }
+            .team-school-mark.is-glitching .team-glitch-burst {
+              animation: team-electric-glitch 340ms steps(3, end);
+            }
+            @keyframes team-electric-glitch {
+              0%, 100% { opacity: 0; background-position: 0 0, 0 0; }
+              16% { opacity: .92; background-position: -13px 0, 0 -5px; }
+              34% { opacity: .18; background-position: 9px 0, 0 8px; }
+              52% { opacity: .72; background-position: -5px 0, 0 -13px; }
+              69% { opacity: .12; background-position: 16px 0, 0 4px; }
+              83% { opacity: .54; background-position: -8px 0, 0 -8px; }
             }
             .team-school-copy {
               grid-column: 1 / -1;
@@ -1411,11 +1424,11 @@
 
         <section id="team" class="s-team" aria-label="Team">
           <div class="team-school-wall">
-            <div class="team-school-mark team-school-mark--illinois" aria-label="University of Illinois"><img class="team-school-mark__logo" src="assets/school-logos/illinois.svg" alt="" /></div>
-            <div class="team-school-mark team-school-mark--iitb" aria-label="IIT Bombay"><img class="team-school-mark__logo" src="assets/school-logos/iitb.svg" alt="" /></div>
-            <div class="team-school-mark team-school-mark--iitkgp" aria-label="IIT Kharagpur"><img class="team-school-mark__logo" src="assets/school-logos/iitkgp.svg" alt="" /></div>
-            <div class="team-school-mark team-school-mark--georgia-tech" aria-label="Georgia Tech"><img class="team-school-mark__logo" src="assets/school-logos/georgia-tech.png" alt="" /></div>
-            <div class="team-school-mark team-school-mark--ucsd" aria-label="UC San Diego"><img class="team-school-mark__logo" src="assets/school-logos/ucsd-seal.png" alt="" /></div>
+            <div class="team-school-mark team-school-mark--georgia-tech" aria-label="Georgia Tech"><img class="team-school-mark__logo" src="assets/school-logos/georgia-tech.png" alt="" /><i class="team-glitch-burst" aria-hidden="true"></i></div>
+            <div class="team-school-mark team-school-mark--iitb" aria-label="IIT Bombay"><img class="team-school-mark__logo" src="assets/school-logos/iitb.svg" alt="" /><i class="team-glitch-burst" aria-hidden="true"></i></div>
+            <div class="team-school-mark team-school-mark--illinois" aria-label="University of Illinois"><img class="team-school-mark__logo" src="assets/school-logos/illinois.svg" alt="" /><i class="team-glitch-burst" aria-hidden="true"></i></div>
+            <div class="team-school-mark team-school-mark--iitkgp" aria-label="IIT Kharagpur"><img class="team-school-mark__logo" src="assets/school-logos/iitkgp.svg" alt="" /><i class="team-glitch-burst" aria-hidden="true"></i></div>
+            <div class="team-school-mark team-school-mark--ucsd" aria-label="UC San Diego"><img class="team-school-mark__logo" src="assets/school-logos/ucsd-seal.png" alt="" /><i class="team-glitch-burst" aria-hidden="true"></i></div>
             <p class="team-school-copy">We are a team of eight students from some of the best schools around the world.</p>
           </div>
           <script>
@@ -1449,17 +1462,17 @@
                 ditherFrame++;
                 const rect = teamSection.getBoundingClientRect();
                 const width = rect.width;
-                const height = Math.min(300, rect.height);
+                const height = Math.min(560, rect.height);
                 ditherCtx.clearRect(0, 0, width, rect.height);
-                const spacing = 15;
+                const spacing = 11;
                 for (let y = spacing / 2; y < height; y += spacing) {
                   for (let x = spacing / 2; x < width; x += spacing) {
                     const falloff = Math.max(0, 1 - y / height);
                     const wave = (Math.sin(x * .018 - y * .014 + ditherFrame * .026) + 1) * .5;
                     const flicker = Math.sin(x * .071 + y * .11 + ditherFrame * .05);
-                    const alpha = (.035 + wave * .13 + Math.max(0, flicker) * .1) * falloff;
+                    const alpha = (.09 + wave * .2 + Math.max(0, flicker) * .16) * falloff;
                     ditherCtx.fillStyle = `rgba(255,255,255,${alpha})`;
-                    ditherCtx.fillRect(x - 1, y - 1, 2, 2);
+                    ditherCtx.fillRect(x - 1.5, y - 1.5, 3, 3);
                   }
                 }
                 requestAnimationFrame(renderTeamDither);
