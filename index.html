@@ -273,6 +273,22 @@
               justify-content: center;
               padding: 112px 7vw 96px;
               overflow: hidden;
+              position: relative;
+            }
+            #team.s-team::before {
+              content: '';
+              position: absolute;
+              inset: 0 0 auto;
+              height: 270px;
+              pointer-events: none;
+              opacity: .48;
+              background-image:
+                radial-gradient(circle, rgba(255,255,255,.52) 1px, transparent 1.28px),
+                radial-gradient(circle, rgba(255,255,255,.24) .7px, transparent 1px);
+              background-size: 8px 8px, 16px 16px;
+              background-position: 0 0, 4px 4px;
+              mask-image: linear-gradient(to bottom, transparent 0%, #000 12%, #000 48%, transparent 100%);
+              -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 12%, #000 48%, transparent 100%);
             }
             .team-school-wall {
               width: min(1180px, 100%);
@@ -280,6 +296,8 @@
               grid-template-columns: repeat(5, minmax(0, 1fr));
               gap: clamp(20px, 3vw, 48px);
               align-items: center;
+              position: relative;
+              z-index: 1;
             }
             .team-school-mark {
               min-height: 166px;
@@ -326,6 +344,9 @@
             .team-school-mark--illinois { --team-mark-glow: rgba(255, 91, 0, .54); }
             .team-school-mark--iitb { --team-mark-glow: rgba(0, 103, 184, .56); }
             .team-school-mark--iitkgp { --team-mark-glow: rgba(42, 150, 93, .56); }
+            .team-school-mark--iitkgp .team-school-mark__logo {
+              filter: brightness(0) invert(1) drop-shadow(0 0 12px rgba(255,255,255,.42));
+            }
             .team-school-mark--georgia-tech { --team-mark-glow: rgba(255, 196, 37, .56); }
             .team-school-mark--ucsd { --team-mark-glow: rgba(0, 198, 218, .56); }
             .team-school-copy {
@@ -1373,7 +1394,7 @@
             <div class="team-school-mark team-school-mark--iitb" aria-label="IIT Bombay"><img class="team-school-mark__logo" src="assets/school-logos/iitb.svg" alt="" /></div>
             <div class="team-school-mark team-school-mark--iitkgp" aria-label="IIT Kharagpur"><img class="team-school-mark__logo" src="assets/school-logos/iitkgp.svg" alt="" /></div>
             <div class="team-school-mark team-school-mark--georgia-tech" aria-label="Georgia Tech"><img class="team-school-mark__logo" src="assets/school-logos/georgia-tech.svg" alt="" /></div>
-            <div class="team-school-mark team-school-mark--ucsd" aria-label="UC San Diego"><img class="team-school-mark__logo" src="assets/school-logos/ucsd-mark.png" alt="" /></div>
+            <div class="team-school-mark team-school-mark--ucsd" aria-label="UC San Diego"><img class="team-school-mark__logo" src="assets/school-logos/ucsd-seal.png" alt="" /></div>
             <p class="team-school-copy">We are a team of eight students from some of the best schools around the world.</p>
           </div>
           <script>
