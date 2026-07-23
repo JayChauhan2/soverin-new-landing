@@ -305,13 +305,23 @@
               min-height: 100vh;
               background: linear-gradient(180deg, #000 0%, #01060a 4%, #061522 10%, #0c2940 17%, #195578 25%, #2e86c8 35%, #62ade0 46%, #9dcef0 58%, #c9e4f7 69%, #e7f3fc 80%, #f7fbff 91%, #fff 100%);
             }
-            #model.s-model { background: #061733; }
+            #model.s-model {
+              background: linear-gradient(180deg,
+                #fff 0%,
+                #e5eef5 3%,
+                #9bb2c7 6%,
+                #4d6c89 10%,
+                #24486f 15%,
+                #102e54 22%,
+                #081f40 34%,
+                #061733 100%);
+            }
             #team.s-team {
               display: flex;
               align-items: flex-start;
               justify-content: center;
               min-height: 0;
-              padding: 27vh 7vw clamp(210px, 23vw, 320px);
+              padding: 27vh 7vw 52px;
               overflow: hidden;
               position: relative;
             }
@@ -332,29 +342,6 @@
               display: none;
             }
             .team-clouds { position:absolute; inset:0; z-index:4; pointer-events:none; overflow:hidden; }
-            .team-cloud-transition {
-              position: absolute;
-              z-index: 6;
-              right: 0;
-              bottom: 0;
-              left: 0;
-              height: clamp(180px, 22vw, 310px);
-              display: flex;
-              align-items: flex-end;
-              justify-content: center;
-              padding: 22px 0 8px;
-              overflow: hidden;
-              pointer-events: none;
-              background: linear-gradient(180deg, transparent 0%, rgba(6,23,51,.42) 35%, #061733 100%);
-            }
-            .team-cloud-transition__cloud {
-              flex: 0 0 clamp(105px, 17vw, 235px);
-              width: clamp(105px, 17vw, 235px);
-              height: auto;
-              margin-left: clamp(-26px, -2vw, -8px);
-              filter: brightness(1.22) contrast(.9) drop-shadow(0 12px 16px rgba(0,0,0,.17));
-            }
-            .team-cloud-transition__cloud:first-child { margin-left: 0; }
             .team-cloud {
               position:absolute;
               width:var(--cloud-w);
@@ -1626,14 +1613,6 @@
             <div class="team-cloud team-cloud--four"><svg viewBox="0 0 500 230"><defs><radialGradient id="team-cloud-fill-4" cx="50%" cy="92%" r="98%"><stop offset="0" stop-color="#fff"/><stop offset=".57" stop-color="#f6fbff"/><stop offset="1" stop-color="#bedcf5"/></radialGradient></defs><path fill="url(#team-cloud-fill-4)" d="M40 174C17 174 2 157 2 134C2 112 20 95 45 93C57 65 84 47 116 47C139 47 161 57 176 75C196 36 236 13 281 13C328 13 369 42 383 83C391 80 401 78 411 78C450 78 481 109 481 147C481 184 451 213 414 213C389 213 366 200 354 180C338 204 310 220 278 220C246 220 218 207 200 187C180 206 153 216 124 216C91 216 62 201 48 179C45 177 42 175 40 174Z"/></svg></div>
             <div class="team-cloud team-cloud--five"><svg viewBox="0 0 500 230"><defs><radialGradient id="team-cloud-fill-5" cx="50%" cy="92%" r="98%"><stop offset="0" stop-color="#fff"/><stop offset=".57" stop-color="#f6fbff"/><stop offset="1" stop-color="#bedcf5"/></radialGradient></defs><path fill="url(#team-cloud-fill-5)" d="M54 192C24 192 7 172 7 145C7 119 27 99 57 98C70 65 101 44 137 44C167 44 193 58 210 80C225 55 252 39 284 39C322 39 354 61 366 93C377 87 391 84 405 84C443 84 474 114 474 151C474 186 446 214 411 214C385 214 363 199 352 177C330 201 300 214 268 214C239 214 213 203 195 185C177 205 150 215 121 215C91 215 67 203 54 192Z"/></svg></div>
             <div class="team-cloud team-cloud--six"></div>
-          </div>
-          <div class="team-cloud-transition" aria-hidden="true">
-            <img class="team-cloud-transition__cloud" src="assets/clouds/cloud-1.png" alt=""/>
-            <img class="team-cloud-transition__cloud" src="assets/clouds/cloud-2.png" alt=""/>
-            <img class="team-cloud-transition__cloud" src="assets/clouds/cloud-3.png" alt=""/>
-            <img class="team-cloud-transition__cloud" src="assets/clouds/cloud-4.png" alt=""/>
-            <img class="team-cloud-transition__cloud" src="assets/clouds/cloud-5.png" alt=""/>
-            <img class="team-cloud-transition__cloud" src="assets/clouds/cloud-6.png" alt=""/>
           </div>
           <div class="team-school-wall">
             <div class="team-school-mark team-school-mark--georgia-tech" aria-label="Georgia Tech"><img class="team-school-mark__logo" src="assets/school-logos/georgia-tech.png" alt="" /><i class="team-glitch-burst" aria-hidden="true"></i><span class="team-school-rate">8%</span></div>
