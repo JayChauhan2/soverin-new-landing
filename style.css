@@ -642,13 +642,15 @@ html {
     content: '';
     position: absolute;
     z-index: -1;
-    inset: -24px -34px -26px -44px;
+    inset: -42px -58px -44px -68px;
     pointer-events: none;
-    opacity: .62;
-    background: radial-gradient(ellipse at 72% 45%, rgba(134, 200, 231, .20) 0%, rgba(24, 74, 99, .12) 43%, transparent 74%);
-    filter: blur(17px);
-    -webkit-mask-image: radial-gradient(ellipse at 72% 45%, #000 8%, rgba(0,0,0,.75) 48%, transparent 76%);
-    mask-image: radial-gradient(ellipse at 72% 45%, #000 8%, rgba(0,0,0,.75) 48%, transparent 76%);
+    opacity: .92;
+    background:
+      radial-gradient(ellipse at 72% 38%, rgba(142, 211, 244, .42) 0%, rgba(52, 126, 164, .28) 43%, transparent 75%),
+      radial-gradient(ellipse at 45% 86%, rgba(9, 45, 72, .28) 0%, transparent 72%);
+    filter: blur(22px);
+    -webkit-mask-image: radial-gradient(ellipse at 70% 46%, #000 9%, rgba(0,0,0,.84) 53%, transparent 80%);
+    mask-image: radial-gradient(ellipse at 70% 46%, #000 9%, rgba(0,0,0,.84) 53%, transparent 80%);
   }
 
   .menu_nav.open .link_nav:nth-child(1) { animation-delay: 20ms; }
@@ -666,7 +668,7 @@ html {
   }
 
   .nav_bar.nav-dark .menu_nav.open::before {
-    background: radial-gradient(ellipse at 72% 45%, rgba(255, 255, 255, .32) 0%, rgba(215, 235, 245, .18) 44%, transparent 74%);
+    background: radial-gradient(ellipse at 72% 42%, rgba(255, 255, 255, .48) 0%, rgba(196, 227, 242, .30) 46%, transparent 76%);
   }
 
   @keyframes mobile-section-link-in {
