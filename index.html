@@ -682,17 +682,25 @@
               letter-spacing: .035em;
               pointer-events: none;
               transform: translateX(-50%);
+              --world-label-corner: 5px;
+              --world-label-stroke: 1.5px;
+              --world-label-offset: -1px;
             }
             .sf-world-status::before,
-            .sf-world-status::after {
-              content: '';
+            .sf-world-status::after { display: none; }
+            .sf-world-status__corner {
               position: absolute;
-              width: 4px;
-              height: 4px;
-              background: #006400;
+              box-sizing: border-box;
+              width: var(--world-label-corner);
+              height: var(--world-label-corner);
+              border-color: #006400;
+              border-style: solid;
+              border-width: var(--world-label-stroke);
             }
-            .sf-world-status::before { top: -2px; left: -2px; }
-            .sf-world-status::after { right: -2px; bottom: -2px; }
+            .sf-world-status__corner--tl { top: var(--world-label-offset); left: var(--world-label-offset); border-right: 0; border-bottom: 0; }
+            .sf-world-status__corner--tr { top: var(--world-label-offset); right: var(--world-label-offset); border-left: 0; border-bottom: 0; }
+            .sf-world-status__corner--bl { bottom: var(--world-label-offset); left: var(--world-label-offset); border-right: 0; border-top: 0; }
+            .sf-world-status__corner--br { right: var(--world-label-offset); bottom: var(--world-label-offset); border-left: 0; border-top: 0; }
             /* The image cards are intentionally borderless; only the text-card grid remains. */
             .sf-square--img {
               border: none;
@@ -842,7 +850,13 @@
             <div class="sf-row sf-row--flip" id="sf-row-1">
               <div class="sf-square sf-square--img" style="position: relative; overflow: hidden;">
                 <canvas id="sf-world-canvas" width="500" height="500" style="position:absolute;inset:0;width:100%;height:100%;z-index:5;"></canvas>
-                <div class="sf-world-status" aria-label="Simulation running">SIMULATION RUNNING</div>
+                <div class="sf-world-status" aria-label="Simulation running">
+                  <span class="sf-world-status__corner sf-world-status__corner--tl" aria-hidden="true"></span>
+                  <span class="sf-world-status__corner sf-world-status__corner--tr" aria-hidden="true"></span>
+                  <span class="sf-world-status__corner sf-world-status__corner--bl" aria-hidden="true"></span>
+                  <span class="sf-world-status__corner sf-world-status__corner--br" aria-hidden="true"></span>
+                  SIMULATION RUNNING
+                </div>
               </div>
               <div class="sf-square sf-square--text">
                 <h3 class="sf-square--text__title">Living World Simulation</h3>
@@ -1448,8 +1462,11 @@
                   worldStatus.style.fontSize = `${12 * scale}px`;
                   worldStatus.style.minHeight = `${26 * scale}px`;
                   worldStatus.style.paddingInline = `${11 * scale}px`;
-                  worldStatus.style.top = `${86 * scale}px`;
+                  worldStatus.style.top = `${68 * scale}px`;
                   worldStatus.style.borderWidth = `${Math.max(1, scale)}px`;
+                  worldStatus.style.setProperty('--world-label-corner', `${5 * scale}px`);
+                  worldStatus.style.setProperty('--world-label-stroke', `${1.5 * scale}px`);
+                  worldStatus.style.setProperty('--world-label-offset', `${-1 * scale}px`);
                 };
                 new ResizeObserver(sizeWorldStatus).observe(worldCanvasElement);
                 sizeWorldStatus();
