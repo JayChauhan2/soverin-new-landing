@@ -333,6 +333,19 @@
             .waitlist-corner-square--tr { top: 0; right: 0; transform: translate(50%, -50%); }
             .waitlist-corner-square--bl { bottom: 0; left: 0; transform: translate(-50%, 50%); }
             .waitlist-corner-square--br { right: 0; bottom: 0; transform: translate(50%, 50%); }
+            .waitlist-social-links {
+              position: absolute;
+              z-index: 1;
+              right: 1.5rem;
+              bottom: 1rem;
+              display: flex;
+              align-items: center;
+              gap: .25rem;
+            }
+            .waitlist-social-links .link_footer { padding: .5rem .75rem; }
+            @media (max-width: 767px) {
+              .waitlist-social-links { position: static; justify-content: center; grid-column: 1 / -1; margin-top: 1rem; }
+            }
             #team.s-team {
               display: flex;
               align-items: flex-start;
@@ -2209,6 +2222,10 @@
             <span class="waitlist-corner-square waitlist-corner-square--tr" aria-hidden="true"></span>
             <span class="waitlist-corner-square waitlist-corner-square--bl" aria-hidden="true"></span>
             <span class="waitlist-corner-square waitlist-corner-square--br" aria-hidden="true"></span>
+            <div class="waitlist-social-links">
+              <a href="https://www.linkedin.com/company/soverin-gaming" target="_blank" rel="noopener noreferrer" class="link_footer">LinkedIn</a>
+              <a href="https://www.instagram.com/soverin_gaming?utm_source=ig_web_button_share_sheet&amp;igsh=ZDNlZDc0MzIxNw==" target="_blank" rel="noopener noreferrer" class="link_footer">Instagram</a>
+            </div>
             <div class="s_cta_newsletter_title_wrap">
               <h2 class="s_cta_newsletter_title u-text-style-h2">Join our Waitlist</h2>
               <p class="s_cta_newsletter_descrip">Receive updates on development, ups &amp; downs, and our progress towards developing Runtime Cognitive Models.</p>
@@ -2240,14 +2257,6 @@
     <footer class="s-footer">
       <div class="s_footer_container u-container">
         <div class="s_footer_content">
-          <div class="s_footer_logo_links_list" style="justify-content:center;">
-            <div class="s_footer_links_bn_wrap" style="width:100%;">
-              <div class="s_footer_links_list" style="justify-content:center;">
-                <a href="https://www.linkedin.com/company/soverin-gaming" target="_blank" rel="noopener noreferrer" class="link_footer">LinkedIn</a>
-                <a href="https://www.instagram.com/soverin_gaming?utm_source=ig_web_button_share_sheet&amp;igsh=ZDNlZDc0MzIxNw==" target="_blank" rel="noopener noreferrer" class="link_footer">Instagram</a>
-              </div>
-            </div>
-          </div>
           <div aria-hidden="true" style="display:flex; width:100%; justify-content:center; align-items:center; margin:64px 0 -1.5vw; user-select:none; pointer-events:none; -webkit-mask-image:linear-gradient(to bottom, rgba(0,0,0,1) 40%, rgba(0,0,0,0) 95%); mask-image:linear-gradient(to bottom, rgba(0,0,0,1) 40%, rgba(0,0,0,0) 95%);">
             <img src="assets/soverin_text_logo.png" alt="" style="display:block; width:min(80%, 1200px); height:auto; object-fit:contain; opacity:.08; filter:brightness(0) invert(1);"/>
           </div>
