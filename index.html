@@ -316,6 +316,19 @@
             .s-footer { background: #061733 !important; }
             #reserve.s-cta-newsletter,
             #reserve .s_cta_newsletter_content_wrap { border-radius: 0 !important; }
+            #reserve .s_cta_newsletter_content_wrap { position: relative; }
+            .waitlist-corner-square {
+              position: absolute;
+              z-index: 2;
+              width: 10px;
+              height: 10px;
+              background: #fff;
+              pointer-events: none;
+            }
+            .waitlist-corner-square--tl { top: 0; left: 0; }
+            .waitlist-corner-square--tr { top: 0; right: 0; }
+            .waitlist-corner-square--bl { bottom: 0; left: 0; }
+            .waitlist-corner-square--br { right: 0; bottom: 0; }
             #team.s-team {
               display: flex;
               align-items: flex-start;
@@ -2188,6 +2201,10 @@
       <section id="reserve" class="s-cta-newsletter">
         <div class="s_cta_newsletter_container u-container">
           <div class="s_cta_newsletter_content_wrap">
+            <span class="waitlist-corner-square waitlist-corner-square--tl" aria-hidden="true"></span>
+            <span class="waitlist-corner-square waitlist-corner-square--tr" aria-hidden="true"></span>
+            <span class="waitlist-corner-square waitlist-corner-square--bl" aria-hidden="true"></span>
+            <span class="waitlist-corner-square waitlist-corner-square--br" aria-hidden="true"></span>
             <div class="s_cta_newsletter_title_wrap">
               <h2 class="s_cta_newsletter_title u-text-style-h2">Join our Waitlist</h2>
               <p class="s_cta_newsletter_descrip">Receive updates on milestones, engineering progress, and the steps toward humanity’s first permanent presence on the Moon.</p>
