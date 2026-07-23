@@ -89,18 +89,13 @@
             </div>
             
             <!-- Mobile nav trigger toggle button -->
-            <div class="bn_menu w-nav-button" id="mob-menu-btn">
+            <div class="bn_menu w-nav-button" id="mob-menu-btn" role="button" tabindex="0" aria-label="Open navigation menu" aria-expanded="false">
               <div class="bn_menu_wrap">
-                <div class="burger_menu w-embed">
-                  <svg width="100%" height="100%" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <rect x="6.45801" y="10.3334" width="18.0833" height="1.29167" fill="#D9D9D9"/>
-                    <rect x="6.45801" y="19.375" width="18.0833" height="1.29167" fill="#D9D9D9"/>
-                  </svg>
+                <div class="burger_menu pixel-menu-icon" aria-hidden="true">
+                  <span></span>
                 </div>
-                <div class="close_menu w-embed" style="display: none;">
-                  <svg width="100%" height="100%" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M23.0718 9.87176L18.8292 14.1144C17.7878 15.1558 17.7878 16.8442 18.8292 17.8856L23.0718 22.1283L22.129 23.0711L17.8864 18.8284C16.845 17.7871 15.1565 17.7871 14.1151 18.8284L9.8725 23.0711L8.92969 22.1283L13.1723 17.8856C14.2137 16.8442 14.2137 15.1558 13.1723 14.1144L8.92969 9.87176L9.8725 8.92896L14.1151 13.1716C15.1565 14.213 16.845 14.213 17.8864 13.1716L22.129 8.92896L23.0718 9.87176Z" fill="white"/>
-                  </svg>
+                <div class="close_menu pixel-close-icon" aria-hidden="true" style="display: none;">
+                  <span></span>
                 </div>
               </div>
             </div>
@@ -363,7 +358,16 @@
             }
             .waitlist-social-links .link_footer { padding: .5rem .75rem; }
             @media (max-width: 767px) {
-              .waitlist-social-links { position: static; justify-content: center; grid-column: 1 / -1; margin-top: 1rem; }
+              .waitlist-social-links {
+                position: static;
+                order: 3;
+                justify-self: end;
+                justify-content: flex-end;
+                grid-column: 1 / -1;
+                margin-top: .25rem;
+              }
+              #reserve .s_cta_newsletter_title_wrap { order: 1; }
+              #reserve .s_cta_newsletter_form { order: 2; }
             }
             #team.s-team {
               display: flex;
@@ -826,6 +830,14 @@
             }
             .sf-square--text__cta:hover { color: #d8ffec; }
             .sf-row--flip { flex-direction: row-reverse; }
+            @media (max-width: 767px) {
+              .sf-rows { width: 100%; padding: 16px; }
+              .sf-row, .sf-row--flip { flex-direction: column !important; }
+              .sf-square { width: 100%; flex: 0 0 auto; }
+              .sf-row .sf-square + .sf-square { border-left: 1px solid rgba(255, 255, 255, .08); }
+              .sf-square--text { padding: 30px 26px; }
+              .sf-side-title { display: none; }
+            }
           </style>
 
           <!-- Side label "HOW": overlays the left margin, zero layout impact -->
