@@ -868,9 +868,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
           // Each color family gets its own intentional dither color, exactly
           // like the hero's warm/green treatment instead of one blanket tint.
-          if (isAqua && brightness > animatedBayer * 1.2) ditherColor = [0, 220, 255];
-          else if (isMint && brightness > animatedBayer * 1.22) ditherColor = [168, 255, 210];
-          else if (isIceBlue && brightness > animatedBayer * 1.3) ditherColor = [188, 228, 255];
+          if (isAqua && brightness > animatedBayer * 1.55) ditherColor = [0, 220, 255];
+          else if (isMint && brightness > animatedBayer * 1.6) ditherColor = [168, 255, 210];
+          else if (isIceBlue && brightness > animatedBayer * 1.75) ditherColor = [188, 228, 255];
 
           if (ditherColor) {
             // Only retain the dithered terrain/water colors—the source image
