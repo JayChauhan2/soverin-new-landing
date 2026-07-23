@@ -2534,6 +2534,11 @@
                   <input id="form-email" name="Email" type="email" placeholder="Enter your email" required pattern="^[^\s@]+@[^\s@]+\.[^\s@]+$" title="Enter an email address with a domain, such as name@example.com" inputmode="email" autocomplete="email" class="newsletter-pill__input"/>
                   <button type="submit" class="newsletter-pill__submit" disabled>Subscribe</button>
                 </form>
+
+                <form aria-label="Native HTML email validation check">
+                  <input type="email" required placeholder="Default HTML email check">
+                  <button type="submit">Check email</button>
+                </form>
                 
                 <!-- Success / Error indicators -->
                 <div class="form_sub_success w-form-done" id="form-success" style="display: none; margin-top: 15px; background: transparent; border: 0; padding: 0;">
