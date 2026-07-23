@@ -341,6 +341,13 @@
               filter: contrast(1.12) saturate(1.18) drop-shadow(0 0 12px var(--team-mark-glow));
               transform: translateZ(0);
             }
+            .team-school-mark__dither {
+              position: absolute;
+              z-index: 2;
+              pointer-events: none;
+              image-rendering: pixelated;
+              mix-blend-mode: screen;
+            }
             .team-school-mark--illinois { --team-mark-glow: rgba(255, 91, 0, .54); }
             .team-school-mark--iitb { --team-mark-glow: rgba(0, 103, 184, .56); }
             .team-school-mark--iitkgp { --team-mark-glow: rgba(42, 150, 93, .56); }
@@ -349,6 +356,20 @@
             }
             .team-school-mark--georgia-tech { --team-mark-glow: rgba(255, 196, 37, .56); }
             .team-school-mark--ucsd { --team-mark-glow: rgba(0, 198, 218, .56); }
+            .team-school-mark--ucsd::after {
+              content: '';
+              position: absolute;
+              z-index: 0;
+              width: 132px;
+              height: 132px;
+              border-radius: 50%;
+              background: #142c52;
+              box-shadow: 0 0 22px rgba(20,44,82,.56);
+            }
+            .team-school-mark--ucsd .team-school-mark__logo {
+              width: min(144px, 96%);
+              height: 144px;
+            }
             .team-school-copy {
               grid-column: 1 / -1;
               max-width: 930px;
@@ -1393,7 +1414,7 @@
             <div class="team-school-mark team-school-mark--illinois" aria-label="University of Illinois"><img class="team-school-mark__logo" src="assets/school-logos/illinois.svg" alt="" /></div>
             <div class="team-school-mark team-school-mark--iitb" aria-label="IIT Bombay"><img class="team-school-mark__logo" src="assets/school-logos/iitb.svg" alt="" /></div>
             <div class="team-school-mark team-school-mark--iitkgp" aria-label="IIT Kharagpur"><img class="team-school-mark__logo" src="assets/school-logos/iitkgp.svg" alt="" /></div>
-            <div class="team-school-mark team-school-mark--georgia-tech" aria-label="Georgia Tech"><img class="team-school-mark__logo" src="assets/school-logos/georgia-tech.svg" alt="" /></div>
+            <div class="team-school-mark team-school-mark--georgia-tech" aria-label="Georgia Tech"><img class="team-school-mark__logo" src="assets/school-logos/georgia-tech.png" alt="" /></div>
             <div class="team-school-mark team-school-mark--ucsd" aria-label="UC San Diego"><img class="team-school-mark__logo" src="assets/school-logos/ucsd-seal.png" alt="" /></div>
             <p class="team-school-copy">We are a team of eight students from some of the best schools around the world.</p>
           </div>
@@ -1406,6 +1427,82 @@
                 teamSection.classList.add('is-revealed');
                 observer.unobserve(teamSection);
               }, { threshold: 0.2 }).observe(teamSection);
+
+              // Reuse the landing art's pixel language on the real school marks:
+              // tiny sampled cells pulse within each logo silhouette, never as a
+              // separate box or field around it.
+              teamSection.querySelectorAll('.team-school-mark').forEach((mark, markIndex) => {
+                const logo = mark.querySelector('.team-school-mark__logo');
+                if (!logo) return;
+                const overlay = document.createElement('canvas');
+                overlay.className = 'team-school-mark__dither';
+                mark.appendChild(overlay);
+                const overlayCtx = overlay.getContext('2d');
+                const sample = document.createElement('canvas');
+                const sampleCtx = sample.getContext('2d', { willReadFrequently: true });
+                let pixels;
+                let gridW;
+                let gridH;
+                let box;
+                let dpr = 1;
+
+                const prepare = () => {
+                  const ratio = logo.naturalWidth / logo.naturalHeight || 1;
+                  gridH = 56;
+                  gridW = Math.max(12, Math.round(gridH * ratio));
+                  sample.width = gridW;
+                  sample.height = gridH;
+                  sampleCtx.clearRect(0, 0, gridW, gridH);
+                  sampleCtx.drawImage(logo, 0, 0, gridW, gridH);
+                  pixels = sampleCtx.getImageData(0, 0, gridW, gridH).data;
+                };
+
+                const resize = () => {
+                  const rect = logo.getBoundingClientRect();
+                  if (!rect.width || !rect.height) return;
+                  dpr = window.devicePixelRatio || 1;
+                  box = { width: rect.width, height: rect.height };
+                  overlay.style.width = `${rect.width}px`;
+                  overlay.style.height = `${rect.height}px`;
+                  overlay.style.left = `${logo.offsetLeft}px`;
+                  overlay.style.top = `${logo.offsetTop}px`;
+                  overlay.width = Math.round(rect.width * dpr);
+                  overlay.height = Math.round(rect.height * dpr);
+                  overlayCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+                };
+
+                const render = (time) => {
+                  if (pixels && box) {
+                    overlayCtx.clearRect(0, 0, box.width, box.height);
+                    const cellW = box.width / gridW;
+                    const cellH = box.height / gridH;
+                    for (let y = 0; y < gridH; y++) {
+                      for (let x = 0; x < gridW; x++) {
+                        const p = (y * gridW + x) * 4;
+                        if (pixels[p + 3] < 96) continue;
+                        const pulse = Math.sin(time * .0022 + x * 1.71 + y * 1.13 + markIndex * 2.4);
+                        if (pulse < .73) continue;
+                        const isKharagpur = mark.classList.contains('team-school-mark--iitkgp');
+                        const r = isKharagpur ? 255 : pixels[p];
+                        const g = isKharagpur ? 255 : pixels[p + 1];
+                        const b = isKharagpur ? 255 : pixels[p + 2];
+                        overlayCtx.fillStyle = `rgba(${r}, ${g}, ${b}, ${0.18 + (pulse - .73) * .62})`;
+                        overlayCtx.fillRect(x * cellW, y * cellH, Math.ceil(cellW * .9), Math.ceil(cellH * .9));
+                      }
+                    }
+                  }
+                  requestAnimationFrame(render);
+                };
+
+                const initialise = () => {
+                  prepare();
+                  resize();
+                  new ResizeObserver(resize).observe(logo);
+                  requestAnimationFrame(render);
+                };
+                if (logo.complete && logo.naturalWidth) initialise();
+                else logo.addEventListener('load', initialise, { once: true });
+              });
             })();
           </script>
         </section>
