@@ -1737,12 +1737,34 @@
               let emperorReady = false;
               emperorImage.src = 'assets/diplomatic-emperor.png';
               emperorImage.onload = () => {
-                // Preserve the formal seated portrait in full, centered in the
-                // card, then distill it into the same dense green pixel language.
-                const scale = emperorSource.height / emperorImage.naturalHeight;
+                // A compact emperor sits on a low dais, leaving visual room for
+                // the diplomatic setting rather than filling the whole card.
+                emperorCtx.clearRect(0, 0, emperorSource.width, emperorSource.height);
+                emperorCtx.fillStyle = '#1b2b1e';
+
+                // Broken castle walls behind the throne, deliberately kept low
+                // and fragmented so the emperor remains the focal point.
+                emperorCtx.fillRect(112, 276, 276, 104);
+                emperorCtx.clearRect(136, 286, 28, 36);
+                emperorCtx.clearRect(336, 286, 28, 36);
+                emperorCtx.fillRect(56, 238, 68, 166);
+                emperorCtx.fillRect(376, 258, 68, 146);
+                [56, 82, 108].forEach((x) => emperorCtx.fillRect(x, 226, 14, 18));
+                [376, 402, 428].forEach((x) => emperorCtx.fillRect(x, 246, 14, 18));
+                emperorCtx.clearRect(72, 294, 19, 38);
+                emperorCtx.clearRect(408, 312, 19, 38);
+                emperorCtx.clearRect(102, 248, 22, 26);
+                emperorCtx.clearRect(376, 274, 22, 22);
+
+                // A single flat platform grounds the throne in the ruins.
+                emperorCtx.fillRect(78, 404, 344, 14);
+                emperorCtx.fillRect(104, 418, 292, 7);
+
+                const portraitHeight = 250;
+                const scale = portraitHeight / emperorImage.naturalHeight;
                 const imageWidth = emperorImage.naturalWidth * scale;
                 const imageHeight = emperorImage.naturalHeight * scale;
-                emperorCtx.drawImage(emperorImage, (emperorSource.width - imageWidth) / 2, 0, imageWidth, imageHeight);
+                emperorCtx.drawImage(emperorImage, (emperorSource.width - imageWidth) / 2, 154, imageWidth, imageHeight);
                 const imageData = emperorCtx.getImageData(0, 0, emperorSource.width, emperorSource.height);
                 emperorCells = makeBrainStyleGrid(imageData, emperorSource.width, emperorSource.height);
                 emperorReady = true;
