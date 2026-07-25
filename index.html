@@ -47,6 +47,9 @@
                 <a href="#technology" class="link_nav w-inline-block">
                   <div class="link_nav_text">Technology</div>
                 </a>
+                <a href="#plan" class="link_nav w-inline-block">
+                  <div class="link_nav_text">Plan</div>
+                </a>
                 <a href="#team" class="link_nav w-inline-block">
                   <div class="link_nav_text">Team</div>
                 </a>
@@ -792,12 +795,33 @@
             }
             .sf-square--text__cta:hover { color: #d8ffec; }
             .sf-row--flip { flex-direction: row-reverse; }
+            .plan-section {
+              position: relative;
+              padding: 120px 0;
+              background: #020204;
+            }
+            .plan-section .sf-rows {
+              max-width: 1180px;
+            }
+            .plan-row { align-items: stretch; }
+            .plan-row .sf-square {
+              width: 33.333%;
+              flex: 0 0 33.333%;
+              min-height: 340px;
+              aspect-ratio: auto;
+            }
+            .plan-row .sf-square + .sf-square { border-left: none; }
+            .plan-row .sf-square--text { padding: 42px; }
+            .plan-row .sf-square--text__title { color: #ffffff; }
             @media (max-width: 767px) {
               .sf-rows { width: 100%; padding: 16px; }
               .sf-row, .sf-row--flip { flex-direction: column !important; }
               .sf-square { width: 100%; flex: 0 0 auto; }
               .sf-row .sf-square + .sf-square { border-left: 1px solid rgba(255, 255, 255, .08); }
               .sf-square--text { padding: 30px 26px; }
+              .plan-section { padding: 72px 0; }
+              .plan-row .sf-square { width: 100%; flex: 0 0 auto; min-height: 280px; }
+              .plan-row .sf-square + .sf-square { border-left: 1px solid rgba(255, 255, 255, .08); border-top: none; }
               .sf-side-title { display: none; }
             }
           </style>
@@ -862,12 +886,14 @@
               // Fixed left-side indicator follows the major narrative sections.
               function setupSectionIndicator() {
                 const vision = document.getElementById('vision');
+                const plan = document.getElementById('plan');
                 const team = document.getElementById('team');
                 const showcase = document.getElementById('model');
                 const reserve = document.getElementById('reserve');
-                if (!vision || !team || !showcase || !reserve) return;
+                if (!vision || !plan || !team || !showcase || !reserve) return;
                 const visionLetters = Array.from('VISION');
                 const technologyLetters = Array.from('TECHNOLOGY');
+                const planLetters = Array.from('PLAN');
                 const teamLetters = Array.from('TEAM');
                 const showcaseLetters = Array.from('SHOWCASE');
                 sideTitle.innerHTML = technologyLetters.map((_, index) => `<span class="sf-side-title__char" data-index="${index}"></span>`).join('');
@@ -875,6 +901,7 @@
                 const update = () => {
                   const visionRect = vision.getBoundingClientRect();
                   const technologyRect = section.getBoundingClientRect();
+                  const planRect = plan.getBoundingClientRect();
                   const teamRect = team.getBoundingClientRect();
                   const showcaseRect = showcase.getBoundingClientRect();
                   const reserveRect = reserve.getBoundingClientRect();
@@ -884,6 +911,7 @@
                     const point = slotRect.top + slotRect.height / 2;
                     const overTeam = teamRect.top <= point && teamRect.bottom >= point;
                     const overTechnology = technologyRect.top <= point && technologyRect.bottom >= point;
+                    const overPlan = planRect.top <= point && planRect.bottom >= point;
                     const overVision = visionRect.top <= point && visionRect.bottom >= point;
                     const overShowcase = showcaseRect.top <= point && showcaseRect.bottom >= point;
                     if (overShowcase && showcaseLetters[index]) {
@@ -892,6 +920,10 @@
                       hasVisibleCharacter = true;
                     } else if (overTeam && teamLetters[index]) {
                       slot.textContent = teamLetters[index];
+                      slot.style.color = '#ffffff';
+                      hasVisibleCharacter = true;
+                    } else if (overPlan && planLetters[index]) {
+                      slot.textContent = planLetters[index];
                       slot.style.color = '#ffffff';
                       hasVisibleCharacter = true;
                     } else if (overTechnology) {
@@ -920,6 +952,7 @@
                     if (reserveRect.top <= mobilePoint && reserveRect.bottom >= mobilePoint) mobileLabel = 'Waitlist';
                     else if (showcaseRect.top <= mobilePoint && showcaseRect.bottom >= mobilePoint) mobileLabel = 'Showcase';
                     else if (teamRect.top <= mobilePoint && teamRect.bottom >= mobilePoint) mobileLabel = 'Team';
+                    else if (planRect.top <= mobilePoint && planRect.bottom >= mobilePoint) mobileLabel = 'Plan';
                     else if (technologyRect.top <= mobilePoint && technologyRect.bottom >= mobilePoint) mobileLabel = 'Technology';
                     else if (visionRect.top <= mobilePoint && visionRect.bottom >= mobilePoint) mobileLabel = 'Vision';
                     mobileSectionLabel.textContent = mobileLabel;
@@ -1893,6 +1926,28 @@
 
             })();
           </script>
+        </section>
+
+        <section id="plan" class="plan-section" aria-labelledby="plan-title">
+          <div class="sf-rows">
+            <div class="plan-row">
+              <article class="sf-square sf-square--text">
+                <p class="sf-square--text__tag">01 / Foundation</p>
+                <h2 class="sf-square--text__title" id="plan-title">Build the Core</h2>
+                <p class="sf-square--text__body">Develop the intelligence systems that make every strategic world responsive and alive.</p>
+              </article>
+              <article class="sf-square sf-square--text">
+                <p class="sf-square--text__tag">02 / Play</p>
+                <h2 class="sf-square--text__title">Ship the Experience</h2>
+                <p class="sf-square--text__body">Bring those systems into games where every decision creates a distinct story.</p>
+              </article>
+              <article class="sf-square sf-square--text">
+                <p class="sf-square--text__tag">03 / Scale</p>
+                <h2 class="sf-square--text__title">Grow the World</h2>
+                <p class="sf-square--text__body">Expand the engine for studios and players building the next generation of strategy.</p>
+              </article>
+            </div>
+          </div>
         </section>
 
         <section id="team" class="s-team" data-glitch="arc" aria-label="Team">
