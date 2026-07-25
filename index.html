@@ -1046,7 +1046,6 @@
               section.appendChild(canvas);
 
               const ctx = canvas.getContext('2d');
-              const bounceFlashes = [];
 
               function resizeCanvas() {
                 const rect = section.getBoundingClientRect();
@@ -2005,6 +2004,7 @@
               const canvas = planSection?.querySelector('.plan-dither-canvas');
               if (!canvas) return;
               const ctx = canvas.getContext('2d');
+              const bounceFlashes = [];
 
               const resize = () => {
                 const rect = planSection.getBoundingClientRect();
