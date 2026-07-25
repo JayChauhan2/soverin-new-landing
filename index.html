@@ -803,7 +803,7 @@
             .plan-section .sf-rows {
               max-width: 1180px;
             }
-            .plan-row { align-items: stretch; }
+            .plan-row { display: flex; width: 100%; align-items: stretch; }
             .plan-row .sf-square {
               width: 33.333%;
               flex: 0 0 33.333%;
@@ -820,6 +820,7 @@
               .sf-row .sf-square + .sf-square { border-left: 1px solid rgba(255, 255, 255, .08); }
               .sf-square--text { padding: 30px 26px; }
               .plan-section { padding: 72px 0; }
+              .plan-row { flex-direction: column; }
               .plan-row .sf-square { width: 100%; flex: 0 0 auto; min-height: 280px; }
               .plan-row .sf-square + .sf-square { border-left: 1px solid rgba(255, 255, 255, .08); border-top: none; }
               .sf-side-title { display: none; }
