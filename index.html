@@ -801,8 +801,13 @@
               background: #020204;
             }
             .plan-section .sf-rows {
-              max-width: 1180px;
+              width: 100%;
+              max-width: none;
+              padding: 0;
+              background: transparent;
             }
+            .plan-section .sf-rows::before,
+            .plan-section .sf-rows::after { display: none; }
             .plan-row { display: flex; width: 100%; align-items: stretch; }
             .plan-row .sf-square {
               width: 33.333%;
