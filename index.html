@@ -1046,6 +1046,7 @@
               section.appendChild(canvas);
 
               const ctx = canvas.getContext('2d');
+              const bounceFlashes = [];
 
               function resizeCanvas() {
                 const rect = section.getBoundingClientRect();
@@ -2018,6 +2019,10 @@
               let frame = 0;
               const render = () => {
                 frame++;
+                const now = performance.now();
+                for (let index = bounceFlashes.length - 1; index >= 0; index--) {
+                  if (now - bounceFlashes[index].started > 620) bounceFlashes.splice(index, 1);
+                }
                 const rect = planSection.getBoundingClientRect();
                 const width = rect.width;
                 const height = rect.height;
@@ -2028,8 +2033,14 @@
                     const wave = Math.sin(x * 0.017 - y * 0.011 + frame * 0.026) * 0.16;
                     const band = Math.sin((x + y) * 0.008 - frame * 0.014) * 0.08;
                     const value = Math.max(0.25, Math.min(1, 0.54 + wave + band));
-                    const size = 1.25 + value * 2.15;
-                    const alpha = 0.12 + value * 0.2;
+                    let impactGlow = 0;
+                    bounceFlashes.forEach((flash) => {
+                      const distance = Math.hypot(x - flash.x, y - flash.y);
+                      const age = (now - flash.started) / 620;
+                      if (distance < 92) impactGlow = Math.max(impactGlow, (1 - distance / 92) * (1 - age));
+                    });
+                    const size = 1.25 + value * 2.15 + impactGlow * 2.2;
+                    const alpha = 0.12 + value * 0.2 + impactGlow * 0.56;
                     ctx.fillStyle = `rgba(151, 255, 180, ${alpha})`;
                     ctx.fillRect(x - size / 2, y - size / 2, size, size);
                   }
@@ -2069,8 +2080,9 @@
                 ballCanvas.height = Math.round(rect.height * dpr);
                 ballCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
                 const field = playfieldBounds();
-                ball.x = field.left + ball.radius + 20;
-                ball.y = Math.max(field.top + ball.radius + 20, field.bottom - ball.radius - 20);
+                const contactRadius = ball.radius - 3;
+                ball.x = field.left + contactRadius;
+                ball.y = Math.max(field.top + contactRadius, field.bottom - contactRadius);
                 const angle = -0.5 - Math.random() * 0.75;
                 const speed = 125 + Math.random() * 65;
                 ball.vx = Math.cos(angle) * speed;
@@ -2081,23 +2093,6 @@
               window.addEventListener('resize', resetBall, { passive: true });
 
               let lastBallTime = performance.now();
-              const bouncePixels = [];
-              const createBounceSplash = (time) => {
-                for (let index = 0; index < 30; index++) {
-                  const angle = Math.random() * Math.PI * 2;
-                  const speed = 38 + Math.random() * 112;
-                  bouncePixels.push({
-                    x: ball.x,
-                    y: ball.y,
-                    vx: Math.cos(angle) * speed,
-                    vy: Math.sin(angle) * speed,
-                    size: 3 + Math.random() * 4,
-                    started: time,
-                    duration: 420 + Math.random() * 280
-                  });
-                }
-              };
-
               const drawPixelBall = (time) => {
                 const rect = planSection.getBoundingClientRect();
                 ballCtx.clearRect(0, 0, rect.width, rect.height);
@@ -2106,19 +2101,6 @@
                 ballCtx.beginPath();
                 ballCtx.rect(field.left, field.top, field.right - field.left, field.bottom - field.top);
                 ballCtx.clip();
-                for (let index = bouncePixels.length - 1; index >= 0; index--) {
-                  const burst = bouncePixels[index];
-                  const age = time - burst.started;
-                  if (age >= burst.duration) {
-                    bouncePixels.splice(index, 1);
-                    continue;
-                  }
-                  const progress = age / burst.duration;
-                  const x = burst.x + burst.vx * age / 1000;
-                  const y = burst.y + burst.vy * age / 1000 + progress * progress * 28;
-                  ballCtx.fillStyle = `rgba(0, 125, 0, ${(.5 * (1 - progress)).toFixed(3)})`;
-                  ballCtx.fillRect(Math.round(x), Math.round(y), burst.size, burst.size);
-                }
                 const pixel = 6;
                 const radiusSquared = (ball.radius - pixel / 2) ** 2;
                 for (let y = -ball.radius; y < ball.radius; y += pixel) {
@@ -2153,19 +2135,20 @@
                 const elapsed = Math.min(.05, (time - lastBallTime) / 1000);
                 lastBallTime = time;
                 const field = playfieldBounds();
+                const contactRadius = ball.radius - 3;
                 ball.x += ball.vx * elapsed;
                 ball.y += ball.vy * elapsed;
-                if (ball.x <= field.left + ball.radius || ball.x >= field.right - ball.radius) {
-                  ball.x = Math.max(field.left + ball.radius, Math.min(field.right - ball.radius, ball.x));
+                if (ball.x <= field.left + contactRadius || ball.x >= field.right - contactRadius) {
+                  ball.x = Math.max(field.left + contactRadius, Math.min(field.right - contactRadius, ball.x));
                   ball.vx *= -1;
                   ball.vy += (Math.random() - .5) * 26;
-                  createBounceSplash(time);
+                  bounceFlashes.push({ x: ball.x, y: ball.y, started: time });
                 }
-                if (ball.y <= field.top + ball.radius || ball.y >= field.bottom - ball.radius) {
-                  ball.y = Math.max(field.top + ball.radius, Math.min(field.bottom - ball.radius, ball.y));
+                if (ball.y <= field.top + contactRadius || ball.y >= field.bottom - contactRadius) {
+                  ball.y = Math.max(field.top + contactRadius, Math.min(field.bottom - contactRadius, ball.y));
                   ball.vy *= -1;
                   ball.vx += (Math.random() - .5) * 26;
-                  createBounceSplash(time);
+                  bounceFlashes.push({ x: ball.x, y: ball.y, started: time });
                 }
                 drawPixelBall(time);
                 updateTextHighlights();
