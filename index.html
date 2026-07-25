@@ -1961,17 +1961,14 @@
           <div class="sf-rows">
             <div class="plan-row">
               <article class="sf-square sf-square--text plan-card" style="background: #ffffff !important;">
-                <p class="sf-square--text__tag" style="color: rgba(0, 100, 0, .76) !important;">01 / Foundation</p>
                 <h2 class="sf-square--text__title" id="plan-title" style="color: #006400 !important;">Build the Core</h2>
                 <p class="sf-square--text__body" style="color: rgba(0, 50, 18, .82) !important;">Develop the intelligence systems that make every strategic world responsive and alive.</p>
               </article>
               <article class="sf-square sf-square--text plan-card" style="background: #ffffff !important;">
-                <p class="sf-square--text__tag" style="color: rgba(0, 100, 0, .76) !important;">02 / Play</p>
                 <h2 class="sf-square--text__title" style="color: #006400 !important;">Ship the Experience</h2>
                 <p class="sf-square--text__body" style="color: rgba(0, 50, 18, .82) !important;">Bring those systems into games where every decision creates a distinct story.</p>
               </article>
               <article class="sf-square sf-square--text plan-card" style="background: #ffffff !important;">
-                <p class="sf-square--text__tag" style="color: rgba(0, 100, 0, .76) !important;">03 / Scale</p>
                 <h2 class="sf-square--text__title" style="color: #006400 !important;">Grow the World</h2>
                 <p class="sf-square--text__body" style="color: rgba(0, 50, 18, .82) !important;">Expand the engine for studios and players building the next generation of strategy.</p>
               </article>
@@ -2037,29 +2034,28 @@
                 return { card, layer, waveCtx };
               });
 
-              const renderPlanWaves = (time) => {
+              const renderPlanWaves = () => {
                 planWaveLayers.forEach(({ card, waveCtx }, cardIndex) => {
                   const rect = card.getBoundingClientRect();
                   const width = rect.width;
                   const height = rect.height;
                   waveCtx.clearRect(0, 0, width, height);
-                  const step = 30;
-                  const pixel = 17;
-                  const amplitude = Math.min(48, height * .17);
-                  const baseline = height * .59;
+                  const step = 22;
+                  const pixel = 14;
+                  const amplitude = Math.min(44, height * .15);
+                  const baseline = height * .42;
                   for (let x = -step; x < width + step; x += step) {
-                    const phase = x * .026 - time * .00125 + cardIndex * .72;
+                    const phase = x * .026 + cardIndex * .72;
                     const y = baseline + Math.sin(phase) * amplitude;
-                    const shimmer = .5 + .5 * Math.sin(phase * 1.7 + time * .0018);
-                    waveCtx.fillStyle = `rgba(0, 100, 0, ${.055 + shimmer * .08})`;
+                    waveCtx.fillStyle = 'rgba(0, 100, 0, .12)';
                     waveCtx.fillRect(x, y, pixel, pixel);
-                    waveCtx.fillStyle = `rgba(0, 100, 0, ${.022 + shimmer * .045})`;
+                    waveCtx.fillStyle = 'rgba(0, 100, 0, .055)';
                     waveCtx.fillRect(x, y + step, pixel, pixel);
                   }
                 });
-                requestAnimationFrame(renderPlanWaves);
               };
-              requestAnimationFrame(renderPlanWaves);
+              renderPlanWaves();
+              window.addEventListener('resize', renderPlanWaves, { passive: true });
             })();
           </script>
         </section>
