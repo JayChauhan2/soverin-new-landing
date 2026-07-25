@@ -848,7 +848,7 @@
             }
             .plan-row .sf-square + .sf-square { border-left: none; }
             .plan-row .sf-square--text {
-              padding: 42px;
+              padding: 42px 76px;
               background: #ffffff !important;
             }
             .plan-row .sf-square--text__tag { color: rgba(0, 100, 0, .76) !important; }
@@ -874,6 +874,7 @@
               .plan-section { padding: 16px 0 72px; }
               .plan-row { flex-direction: column; }
               .plan-row .sf-square { width: 100%; flex: 0 0 auto; min-height: 280px; }
+              .plan-row .sf-square--text { padding: 30px 42px; }
               .plan-row .sf-square + .sf-square { border-left: 1px solid rgba(255, 255, 255, .08); border-top: none; }
               .sf-side-title { display: none; }
             }
@@ -2080,20 +2081,58 @@
               window.addEventListener('resize', resetBall, { passive: true });
 
               let lastBallTime = performance.now();
-              const drawPixelBall = () => {
+              const bouncePixels = [];
+              const createBounceSplash = (time) => {
+                for (let index = 0; index < 30; index++) {
+                  const angle = Math.random() * Math.PI * 2;
+                  const speed = 38 + Math.random() * 112;
+                  bouncePixels.push({
+                    x: ball.x,
+                    y: ball.y,
+                    vx: Math.cos(angle) * speed,
+                    vy: Math.sin(angle) * speed,
+                    size: 3 + Math.random() * 4,
+                    started: time,
+                    duration: 420 + Math.random() * 280
+                  });
+                }
+              };
+
+              const drawPixelBall = (time) => {
                 const rect = planSection.getBoundingClientRect();
                 ballCtx.clearRect(0, 0, rect.width, rect.height);
-                const pixel = 9;
-                const radiusSquared = ball.radius * ball.radius;
-                for (let y = -ball.radius; y <= ball.radius; y += pixel) {
-                  for (let x = -ball.radius; x <= ball.radius; x += pixel) {
-                    const distanceSquared = x * x + y * y;
+                const field = playfieldBounds();
+                ballCtx.save();
+                ballCtx.beginPath();
+                ballCtx.rect(field.left, field.top, field.right - field.left, field.bottom - field.top);
+                ballCtx.clip();
+                for (let index = bouncePixels.length - 1; index >= 0; index--) {
+                  const burst = bouncePixels[index];
+                  const age = time - burst.started;
+                  if (age >= burst.duration) {
+                    bouncePixels.splice(index, 1);
+                    continue;
+                  }
+                  const progress = age / burst.duration;
+                  const x = burst.x + burst.vx * age / 1000;
+                  const y = burst.y + burst.vy * age / 1000 + progress * progress * 28;
+                  ballCtx.fillStyle = `rgba(0, 125, 0, ${(.5 * (1 - progress)).toFixed(3)})`;
+                  ballCtx.fillRect(Math.round(x), Math.round(y), burst.size, burst.size);
+                }
+                const pixel = 6;
+                const radiusSquared = (ball.radius - pixel / 2) ** 2;
+                for (let y = -ball.radius; y < ball.radius; y += pixel) {
+                  for (let x = -ball.radius; x < ball.radius; x += pixel) {
+                    const centerX = x + pixel / 2;
+                    const centerY = y + pixel / 2;
+                    const distanceSquared = centerX * centerX + centerY * centerY;
                     if (distanceSquared > radiusSquared) continue;
                     const edge = Math.sqrt(distanceSquared) / ball.radius;
                     ballCtx.fillStyle = edge > .83 ? 'rgba(0, 70, 0, .78)' : '#006400';
                     ballCtx.fillRect(Math.round(ball.x + x), Math.round(ball.y + y), pixel - 1, pixel - 1);
                   }
                 }
+                ballCtx.restore();
               };
 
               const updateTextHighlights = () => {
@@ -2120,13 +2159,15 @@
                   ball.x = Math.max(field.left + ball.radius, Math.min(field.right - ball.radius, ball.x));
                   ball.vx *= -1;
                   ball.vy += (Math.random() - .5) * 26;
+                  createBounceSplash(time);
                 }
                 if (ball.y <= field.top + ball.radius || ball.y >= field.bottom - ball.radius) {
                   ball.y = Math.max(field.top + ball.radius, Math.min(field.bottom - ball.radius, ball.y));
                   ball.vy *= -1;
                   ball.vx += (Math.random() - .5) * 26;
+                  createBounceSplash(time);
                 }
-                drawPixelBall();
+                drawPixelBall(time);
                 updateTextHighlights();
                 requestAnimationFrame(animateBall);
               };
