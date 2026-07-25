@@ -955,7 +955,7 @@
                       hasVisibleCharacter = true;
                     } else if (overPlan && planLetters[index]) {
                       slot.textContent = planLetters[index];
-                      slot.style.color = '#ffffff';
+                      slot.style.color = '#000000';
                       hasVisibleCharacter = true;
                     } else if (overTechnology) {
                       slot.textContent = technologyLetters[index];
@@ -2016,6 +2016,50 @@
                 requestAnimationFrame(render);
               };
               render();
+
+              const planCards = [...planSection.querySelectorAll('.plan-card')];
+              const planWaveLayers = planCards.map((card) => {
+                const layer = document.createElement('canvas');
+                layer.className = 'plan-card-wave';
+                layer.setAttribute('aria-hidden', 'true');
+                layer.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0;';
+                card.appendChild(layer);
+                const waveCtx = layer.getContext('2d');
+                const resizeLayer = () => {
+                  const rect = card.getBoundingClientRect();
+                  const dpr = window.devicePixelRatio || 1;
+                  layer.width = Math.round(rect.width * dpr);
+                  layer.height = Math.round(rect.height * dpr);
+                  waveCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+                };
+                new ResizeObserver(resizeLayer).observe(card);
+                resizeLayer();
+                return { card, layer, waveCtx };
+              });
+
+              const renderPlanWaves = (time) => {
+                planWaveLayers.forEach(({ card, waveCtx }, cardIndex) => {
+                  const rect = card.getBoundingClientRect();
+                  const width = rect.width;
+                  const height = rect.height;
+                  waveCtx.clearRect(0, 0, width, height);
+                  const step = 30;
+                  const pixel = 17;
+                  const amplitude = Math.min(48, height * .17);
+                  const baseline = height * .59;
+                  for (let x = -step; x < width + step; x += step) {
+                    const phase = x * .026 - time * .00125 + cardIndex * .72;
+                    const y = baseline + Math.sin(phase) * amplitude;
+                    const shimmer = .5 + .5 * Math.sin(phase * 1.7 + time * .0018);
+                    waveCtx.fillStyle = `rgba(0, 100, 0, ${.055 + shimmer * .08})`;
+                    waveCtx.fillRect(x, y, pixel, pixel);
+                    waveCtx.fillStyle = `rgba(0, 100, 0, ${.022 + shimmer * .045})`;
+                    waveCtx.fillRect(x, y + step, pixel, pixel);
+                  }
+                });
+                requestAnimationFrame(renderPlanWaves);
+              };
+              requestAnimationFrame(renderPlanWaves);
             })();
           </script>
         </section>
