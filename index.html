@@ -573,7 +573,7 @@
               top: 0;
               bottom: 0;
               width: 1px;
-              background: linear-gradient(to bottom, #fff 0%, #fff 84%, rgba(255,255,255,.82) 91%, rgba(255,255,255,.3) 97%, transparent 100%);
+              background: #fff;
               pointer-events: none;
             }
             .sf-rows::before { left: 0; }
@@ -799,6 +799,27 @@
               position: relative;
               padding: 120px 0;
               background: #020204;
+              isolation: isolate;
+            }
+            .plan-section::before {
+              content: '';
+              position: absolute;
+              top: 0;
+              right: 0;
+              left: 0;
+              height: 1px;
+              background: #fff;
+              z-index: 2;
+            }
+            .plan-section::after {
+              content: '';
+              position: absolute;
+              inset: 0;
+              z-index: 0;
+              pointer-events: none;
+              opacity: .78;
+              background-image: radial-gradient(circle, rgba(151, 255, 180, .38) 0 1.4px, transparent 1.6px);
+              background-size: 15px 15px;
             }
             .plan-section .sf-rows {
               width: 100%;
@@ -1072,10 +1093,7 @@
                         }
                       }
                       const size = 1.25 + val * 2.15 + push * 0.1;
-                      // The technology field dissolves before Team begins;
-                      // no hard dither cutoff at the section boundary.
-                      const exitFade = Math.max(0, Math.min(1, (height - y) / Math.max(220, height * .16)));
-                      const alpha = (0.12 + val * 0.2 + push * 0.012) * exitFade;
+                      const alpha = 0.12 + val * 0.2 + push * 0.012;
                       ctx.fillStyle = `rgba(151, 255, 180, ${alpha})`;
                       ctx.fillRect(px - size / 2, py - size / 2, size, size);
                     }
