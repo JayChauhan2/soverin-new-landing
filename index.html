@@ -2029,7 +2029,10 @@
                   layer.height = Math.round(rect.height * dpr);
                   waveCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
                 };
-                new ResizeObserver(resizeLayer).observe(card);
+                new ResizeObserver(() => {
+                  resizeLayer();
+                  requestAnimationFrame(renderPlanWaves);
+                }).observe(card);
                 resizeLayer();
                 return { card, layer, waveCtx };
               });
@@ -2047,9 +2050,9 @@
                   for (let x = -step; x < width + step; x += step) {
                     const phase = x * .026 + cardIndex * .72;
                     const y = baseline + Math.sin(phase) * amplitude;
-                    waveCtx.fillStyle = 'rgba(0, 100, 0, .12)';
+                    waveCtx.fillStyle = 'rgba(0, 100, 0, .24)';
                     waveCtx.fillRect(x, y, pixel, pixel);
-                    waveCtx.fillStyle = 'rgba(0, 100, 0, .055)';
+                    waveCtx.fillStyle = 'rgba(0, 100, 0, .11)';
                     waveCtx.fillRect(x, y + step, pixel, pixel);
                   }
                 });
