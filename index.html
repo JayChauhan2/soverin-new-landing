@@ -797,7 +797,7 @@
             .sf-row--flip { flex-direction: row-reverse; }
             .plan-section {
               position: relative;
-              padding: 32px 0 120px;
+              padding: 32px 0;
               background: #020204;
               isolation: isolate;
             }
@@ -806,6 +806,16 @@
               position: absolute;
               top: 0;
               right: 0;
+              left: 0;
+              height: 1px;
+              background: #fff;
+              z-index: 2;
+            }
+            .plan-section::after {
+              content: '';
+              position: absolute;
+              right: 0;
+              bottom: 0;
               left: 0;
               height: 1px;
               background: #fff;
@@ -871,7 +881,7 @@
               .sf-square { width: 100%; flex: 0 0 auto; }
               .sf-row .sf-square + .sf-square { border-left: 1px solid rgba(255, 255, 255, .08); }
               .sf-square--text { padding: 30px 26px; }
-              .plan-section { padding: 16px 0 72px; }
+              .plan-section { padding: 16px 0; }
               .plan-row { flex-direction: column; }
               .plan-row .sf-square { width: 100%; flex: 0 0 auto; min-height: 280px; }
               .plan-row .sf-square--text { padding: 30px 42px; }
@@ -2026,6 +2036,13 @@
                 const rect = planSection.getBoundingClientRect();
                 const width = rect.width;
                 const height = rect.height;
+                const rowRect = planSection.querySelector('.plan-row').getBoundingClientRect();
+                const whiteField = {
+                  left: rowRect.left - rect.left,
+                  top: rowRect.top - rect.top,
+                  right: rowRect.right - rect.left,
+                  bottom: rowRect.bottom - rect.top
+                };
                 ctx.clearRect(0, 0, width, height);
                 const spacing = 15;
                 for (let y = spacing / 2; y < height; y += spacing) {
@@ -2037,10 +2054,14 @@
                     bounceFlashes.forEach((flash) => {
                       const distance = Math.hypot(x - flash.x, y - flash.y);
                       const age = (now - flash.started) / 620;
-                      if (distance < 92) impactGlow = Math.max(impactGlow, (1 - distance / 92) * (1 - age));
+                      const insideWhiteField = x >= whiteField.left && x <= whiteField.right && y >= whiteField.top && y <= whiteField.bottom;
+                      if (insideWhiteField && distance < 92) impactGlow = Math.max(impactGlow, (1 - distance / 92) * (1 - age));
                     });
                     const size = 1.25 + value * 2.15 + impactGlow * 2.2;
-                    const alpha = 0.12 + value * 0.2 + impactGlow * 0.56;
+                    const exitFade = y <= whiteField.bottom
+                      ? 1
+                      : Math.max(0, Math.min(1, (height - y) / (height - whiteField.bottom)));
+                    const alpha = (0.12 + value * 0.2 + impactGlow * 0.56) * exitFade;
                     ctx.fillStyle = `rgba(151, 255, 180, ${alpha})`;
                     ctx.fillRect(x - size / 2, y - size / 2, size, size);
                   }
