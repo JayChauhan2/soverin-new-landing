@@ -820,11 +820,21 @@
               pointer-events: none;
               image-rendering: pixelated;
             }
+            .plan-ball-canvas {
+              position: absolute;
+              inset: 0;
+              z-index: 3;
+              width: 100%;
+              height: 100%;
+              pointer-events: none;
+              image-rendering: pixelated;
+            }
             .plan-section .sf-rows {
               width: 100%;
               max-width: none;
               padding: 0;
               background: transparent;
+              z-index: auto;
             }
             .plan-section .sf-rows::before,
             .plan-section .sf-rows::after { display: none; }
@@ -834,6 +844,7 @@
               flex: 0 0 33.333%;
               min-height: 340px;
               aspect-ratio: auto;
+              z-index: auto;
             }
             .plan-row .sf-square + .sf-square { border-left: none; }
             .plan-row .sf-square--text {
@@ -843,6 +854,12 @@
             .plan-row .sf-square--text__tag { color: rgba(0, 100, 0, .76) !important; }
             .plan-row .sf-square--text__title { color: #006400 !important; }
             .plan-row .sf-square--text__body { color: rgba(0, 50, 18, .82) !important; }
+            .plan-card > .sf-square--text__title,
+            .plan-card > .sf-square--text__body { z-index: 4; }
+            .plan-card .is-ball-lit {
+              color: #ffffff !important;
+              text-shadow: 0 1px 2px rgba(0, 55, 0, .46);
+            }
             @media (max-width: 767px) {
               .sf-rows { width: 100%; padding: 16px; }
               .sf-row, .sf-row--flip { flex-direction: column !important; }
@@ -1958,6 +1975,7 @@
 
         <section id="plan" class="plan-section" aria-labelledby="plan-title">
           <canvas class="plan-dither-canvas" aria-hidden="true"></canvas>
+          <canvas class="plan-ball-canvas" aria-hidden="true"></canvas>
           <div class="sf-rows">
             <div class="plan-row">
               <article class="sf-square sf-square--text plan-card" style="background: #ffffff !important;">
@@ -2014,51 +2032,76 @@
               };
               render();
 
-              const planCards = [...planSection.querySelectorAll('.plan-card')];
-              const planWaveLayers = planCards.map((card) => {
-                const layer = document.createElement('canvas');
-                layer.className = 'plan-card-wave';
-                layer.setAttribute('aria-hidden', 'true');
-                layer.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0;';
-                card.appendChild(layer);
-                const waveCtx = layer.getContext('2d');
-                const resizeLayer = () => {
-                  const rect = card.getBoundingClientRect();
-                  const dpr = window.devicePixelRatio || 1;
-                  layer.width = Math.round(rect.width * dpr);
-                  layer.height = Math.round(rect.height * dpr);
-                  waveCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
-                };
-                new ResizeObserver(() => {
-                  resizeLayer();
-                  requestAnimationFrame(renderPlanWaves);
-                }).observe(card);
-                resizeLayer();
-                return { card, layer, waveCtx };
-              });
+              const ballCanvas = planSection.querySelector('.plan-ball-canvas');
+              const ballCtx = ballCanvas.getContext('2d');
+              const textNodes = [...planSection.querySelectorAll('.plan-card .sf-square--text__title, .plan-card .sf-square--text__body')];
+              const ball = { x: 0, y: 0, vx: 0, vy: 0, radius: 72, ready: false };
 
-              const renderPlanWaves = () => {
-                planWaveLayers.forEach(({ card, waveCtx }, cardIndex) => {
-                  const rect = card.getBoundingClientRect();
-                  const width = rect.width;
-                  const height = rect.height;
-                  waveCtx.clearRect(0, 0, width, height);
-                  const step = 22;
-                  const pixel = 14;
-                  const amplitude = Math.min(44, height * .15);
-                  const baseline = height * .42;
-                  for (let x = -step; x < width + step; x += step) {
-                    const phase = x * .026 + cardIndex * .72;
-                    const y = baseline + Math.sin(phase) * amplitude;
-                    waveCtx.fillStyle = 'rgba(0, 100, 0, .24)';
-                    waveCtx.fillRect(x, y, pixel, pixel);
-                    waveCtx.fillStyle = 'rgba(0, 100, 0, .11)';
-                    waveCtx.fillRect(x, y + step, pixel, pixel);
+              const resetBall = () => {
+                const rect = planSection.getBoundingClientRect();
+                const dpr = window.devicePixelRatio || 1;
+                ballCanvas.width = Math.round(rect.width * dpr);
+                ballCanvas.height = Math.round(rect.height * dpr);
+                ballCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+                ball.x = ball.radius + 20;
+                ball.y = Math.max(ball.radius + 20, rect.height - ball.radius - 20);
+                const angle = -0.5 - Math.random() * 0.75;
+                const speed = 125 + Math.random() * 65;
+                ball.vx = Math.cos(angle) * speed;
+                ball.vy = Math.sin(angle) * speed;
+                ball.ready = true;
+              };
+              resetBall();
+              window.addEventListener('resize', resetBall, { passive: true });
+
+              let lastBallTime = performance.now();
+              const drawPixelBall = () => {
+                const rect = planSection.getBoundingClientRect();
+                ballCtx.clearRect(0, 0, rect.width, rect.height);
+                const pixel = 9;
+                const radiusSquared = ball.radius * ball.radius;
+                for (let y = -ball.radius; y <= ball.radius; y += pixel) {
+                  for (let x = -ball.radius; x <= ball.radius; x += pixel) {
+                    const distanceSquared = x * x + y * y;
+                    if (distanceSquared > radiusSquared) continue;
+                    const edge = Math.sqrt(distanceSquared) / ball.radius;
+                    ballCtx.fillStyle = edge > .83 ? 'rgba(0, 70, 0, .78)' : '#006400';
+                    ballCtx.fillRect(Math.round(ball.x + x), Math.round(ball.y + y), pixel - 1, pixel - 1);
                   }
+                }
+              };
+
+              const updateTextCollision = () => {
+                const planBounds = planSection.getBoundingClientRect();
+                textNodes.forEach((node) => {
+                  const bounds = node.getBoundingClientRect();
+                  const nearestX = Math.max(bounds.left - planBounds.left, Math.min(ball.x, bounds.right - planBounds.left));
+                  const nearestY = Math.max(bounds.top - planBounds.top, Math.min(ball.y, bounds.bottom - planBounds.top));
+                  node.classList.toggle('is-ball-lit', Math.hypot(ball.x - nearestX, ball.y - nearestY) < ball.radius);
                 });
               };
-              renderPlanWaves();
-              window.addEventListener('resize', renderPlanWaves, { passive: true });
+
+              const animateBall = (time) => {
+                const elapsed = Math.min(.05, (time - lastBallTime) / 1000);
+                lastBallTime = time;
+                const rect = planSection.getBoundingClientRect();
+                ball.x += ball.vx * elapsed;
+                ball.y += ball.vy * elapsed;
+                if (ball.x <= ball.radius || ball.x >= rect.width - ball.radius) {
+                  ball.x = Math.max(ball.radius, Math.min(rect.width - ball.radius, ball.x));
+                  ball.vx *= -1;
+                  ball.vy += (Math.random() - .5) * 26;
+                }
+                if (ball.y <= ball.radius || ball.y >= rect.height - ball.radius) {
+                  ball.y = Math.max(ball.radius, Math.min(rect.height - ball.radius, ball.y));
+                  ball.vy *= -1;
+                  ball.vx += (Math.random() - .5) * 26;
+                }
+                drawPixelBall();
+                updateTextCollision();
+                requestAnimationFrame(animateBall);
+              };
+              requestAnimationFrame(animateBall);
             })();
           </script>
         </section>
