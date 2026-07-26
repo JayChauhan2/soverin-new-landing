@@ -371,6 +371,29 @@
             #terra .waitlist-social-links { text-shadow: 0 2px 10px rgba(6, 23, 51, .52); }
             #reserve .s_cta_newsletter_form,
             #terra .s_cta_newsletter_form { justify-content: center; }
+            #terra .s_cta_newsletter_content_wrap {
+              min-height: 440px;
+              background-image: linear-gradient(90deg, rgba(7, 9, 8, .54), rgba(7, 9, 8, .12)), url('https://raw.githubusercontent.com/JayChauhan2/soverin-landing/main/desert_battle.jpg');
+              background-position: center 40%;
+              background-size: cover;
+            }
+            #terra .waitlist-dither-canvas { display: none; }
+            #terra .s_cta_newsletter_title_wrap { max-width: 760px; }
+            #terra .s_cta_newsletter_title {
+              color: #ffffff;
+              font-size: clamp(4rem, 9vw, 9rem);
+              line-height: .9;
+              text-shadow: 0 4px 24px rgba(0, 0, 0, .58);
+            }
+            .terra-arrow {
+              position: absolute;
+              z-index: 3;
+              top: 28px;
+              right: 32px;
+              color: #ffffff;
+              font: 400 clamp(3rem, 5vw, 5rem)/1 'Space Grotesk', sans-serif;
+              text-shadow: 0 3px 16px rgba(0, 0, 0, .48);
+            }
             .waitlist-corner-square {
               position: absolute;
               z-index: 2;
@@ -408,6 +431,9 @@
               #reserve .s_cta_newsletter_content_wrap,
               #terra .s_cta_newsletter_content_wrap { padding-bottom: 76px; }
               #terra.s-cta-newsletter { padding-bottom: 36px !important; }
+              #terra .s_cta_newsletter_content_wrap { min-height: 300px; }
+              #terra .s_cta_newsletter_title { font-size: clamp(3.5rem, 18vw, 5.5rem); }
+              .terra-arrow { top: 20px; right: 20px; }
             }
             #team.s-team {
               display: flex;
@@ -2760,26 +2786,10 @@
             <span class="waitlist-corner-square waitlist-corner-square--tr" aria-hidden="true"></span>
             <span class="waitlist-corner-square waitlist-corner-square--bl" aria-hidden="true"></span>
             <span class="waitlist-corner-square waitlist-corner-square--br" aria-hidden="true"></span>
-            <div class="waitlist-social-links">
-              <a href="https://www.linkedin.com/company/soverin-gaming" target="_blank" rel="noopener noreferrer" class="link_footer">LinkedIn</a>
-              <a href="https://www.instagram.com/soverin_gaming?utm_source=ig_web_button_share_sheet&amp;igsh=ZDNlZDc0MzIxNw==" target="_blank" rel="noopener noreferrer" class="link_footer">Instagram</a>
-            </div>
             <div class="s_cta_newsletter_title_wrap">
               <h2 class="s_cta_newsletter_title u-text-style-h2">Terra</h2>
-              <p class="s_cta_newsletter_descrip">Receive updates on development, ups &amp; downs, and our progress towards creating Runtime Cognitive Models. We promise lots of eye candy :)</p>
             </div>
-            <div class="s_cta_newsletter_form">
-              <div class="form_sub w-form">
-                <form class="newsletter-pill" data-waitlist-form>
-                  <label class="u-sr-only" for="terra-form-email">Join Terra</label>
-                  <input id="terra-form-email" name="Email" type="email" placeholder="Enter your email" required pattern="^[^\s@]+@[^\s@]+\.[^\s@]+$" title="Enter an email address with a domain, such as name@example.com" inputmode="email" autocomplete="email" class="newsletter-pill__input"/>
-                  <button type="submit" class="newsletter-pill__submit" disabled>Subscribe</button>
-                </form>
-                <div class="form_sub_success w-form-done" style="display: none; margin-top: 15px; background: transparent; border: 0; padding: 0;">
-                  <div class="form_sub_success_content"><p class="form_sub_success_text">You've been subscribed!</p></div>
-                </div>
-              </div>
-            </div>
+            <span class="terra-arrow" aria-hidden="true">↗</span>
           </div>
         </div>
       </section>
