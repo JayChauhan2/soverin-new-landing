@@ -56,7 +56,7 @@
                 <a href="#model" class="link_nav w-inline-block">
                   <div class="link_nav_text">Showcase</div>
                 </a>
-                <a href="#terra" class="link_nav link_nav--terra w-inline-block">
+                <a href="https://github.com/JayChauhan2/soverin-landing" target="_blank" rel="noopener noreferrer" class="link_nav link_nav--terra w-inline-block">
                   <div class="link_nav_text">Terra</div>
                 </a>
                 <a href="#reserve" class="link_nav link_nav--waitlist w-inline-block">
@@ -379,16 +379,30 @@
               background-size: cover;
             }
             #terra .waitlist-dither-canvas { display: none; }
-            #terra .s_cta_newsletter_title_wrap { max-width: 760px; margin: 0; }
+            #terra .s_cta_newsletter_title_wrap { max-width: 760px; margin: 0; z-index: 3; }
+            .terra-panel-link {
+              position: absolute;
+              z-index: 2;
+              inset: 0;
+            }
             .terra-brand {
               display: flex;
               align-items: center;
               gap: clamp(18px, 3vw, 42px);
             }
+            .terra-logo-slot {
+              position: relative;
+              flex: 0 0 clamp(72px, 10vw, 150px);
+              height: clamp(72px, 10vw, 150px);
+            }
             .terra-logo {
-              width: clamp(72px, 10vw, 150px);
+              position: absolute;
+              top: 50%;
+              left: 50%;
+              width: clamp(112px, 14vw, 210px);
               height: auto;
               object-fit: contain;
+              transform: translate(-50%, -50%);
             }
             #terra .s_cta_newsletter_title {
               color: #ffffff;
@@ -445,7 +459,11 @@
               #terra .s_cta_newsletter_content_wrap { padding-bottom: 76px; }
               #terra.s-cta-newsletter { padding-bottom: 36px !important; }
               #terra .s_cta_newsletter_title { font-size: clamp(3.5rem, 18vw, 5.5rem); }
-              .terra-logo { width: clamp(58px, 18vw, 92px); }
+              .terra-logo-slot {
+                flex-basis: clamp(58px, 18vw, 92px);
+                height: clamp(58px, 18vw, 92px);
+              }
+              .terra-logo { width: clamp(92px, 25vw, 140px); }
               .terra-arrow { top: 20px; right: 20px; }
             }
             #team.s-team {
@@ -2795,13 +2813,14 @@
         <div class="s_cta_newsletter_container u-container">
           <div class="s_cta_newsletter_content_wrap">
             <canvas class="waitlist-dither-canvas" aria-hidden="true"></canvas>
+            <a class="terra-panel-link" href="https://github.com/JayChauhan2/soverin-landing" target="_blank" rel="noopener noreferrer" aria-label="Visit Terra"></a>
             <span class="waitlist-corner-square waitlist-corner-square--tl" aria-hidden="true"></span>
             <span class="waitlist-corner-square waitlist-corner-square--tr" aria-hidden="true"></span>
             <span class="waitlist-corner-square waitlist-corner-square--bl" aria-hidden="true"></span>
             <span class="waitlist-corner-square waitlist-corner-square--br" aria-hidden="true"></span>
             <div class="s_cta_newsletter_title_wrap">
               <div class="terra-brand">
-                <img src="assets/terra-logo.png" alt="Terra logo" class="terra-logo"/>
+                <span class="terra-logo-slot"><img src="assets/terra-logo.png" alt="Terra logo" class="terra-logo"/></span>
                 <h2 class="s_cta_newsletter_title u-text-style-h2">Terra</h2>
               </div>
             </div>
