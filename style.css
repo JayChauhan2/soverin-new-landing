@@ -771,6 +771,12 @@ html {
     height: min(42svh, 320px);
   }
 
+  .s_model_content,
+  .code-canvas,
+  #sketch {
+    touch-action: pan-y;
+  }
+
   .model-corner-plus--tl { top: 16px; left: 16px; }
   .model-corner-plus--tr { top: 16px; right: 16px; }
   .model-corner-plus--bl { bottom: 16px; left: 16px; }

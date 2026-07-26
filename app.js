@@ -361,7 +361,7 @@ document.addEventListener("DOMContentLoaded", () => {
       controlSurface.style.cursor = "grab";
 
       controlSurface.addEventListener("pointerdown", (e) => {
-        if (!this.pivot) return;
+        if (!this.pivot || e.pointerType !== "mouse") return;
         this.canvas.focus({ preventScroll: true });
         this.isDragging = true;
         lastX = e.clientX;
