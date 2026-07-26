@@ -80,7 +80,7 @@ html, body {
   height: 100%;
   display: block;
   z-index: 2;
-  pointer-events: auto;
+  pointer-events: none;
 }
 
 /* Vignette for depth and cinematic focus */
@@ -134,7 +134,7 @@ html, body {
   left: 50%;
   transform: translateX(-50%);
   z-index: 10;
-  pointer-events: none;
+  pointer-events: auto;
 }
 
 .production-title {
