@@ -900,13 +900,12 @@
               .plan-row .sf-square--text { padding: 30px 42px; }
               .plan-row .sf-square + .sf-square { border-left: 1px solid rgba(255, 255, 255, .08); border-top: none; }
               .plan-arrow {
-                position: relative;
-                top: auto;
-                left: auto;
-                flex: 0 0 34px;
-                align-self: center;
-                transform: rotate(90deg);
+                position: absolute;
+                left: 50%;
+                transform: translate(-50%, -50%) rotate(90deg);
               }
+              .plan-arrow--one { top: 33.333%; }
+              .plan-arrow--two { top: 66.666%; }
               .sf-side-title { display: none; }
             }
           </style>
@@ -2114,12 +2113,16 @@
                 };
               };
 
-              const resetBall = () => {
+              const resizeBallCanvas = () => {
                 const rect = planSection.getBoundingClientRect();
                 const dpr = window.devicePixelRatio || 1;
                 ballCanvas.width = Math.round(rect.width * dpr);
                 ballCanvas.height = Math.round(rect.height * dpr);
                 ballCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+              };
+
+              const resetBall = () => {
+                resizeBallCanvas();
                 const field = playfieldBounds();
                 const contactRadius = ball.radius - 3;
                 ball.x = field.left + contactRadius;
@@ -2131,7 +2134,15 @@
                 ball.ready = true;
               };
               resetBall();
-              window.addEventListener('resize', resetBall, { passive: true });
+              let lastBallViewportWidth = window.innerWidth;
+              window.addEventListener('resize', () => {
+                const widthChanged = Math.abs(window.innerWidth - lastBallViewportWidth) > 1;
+                resizeBallCanvas();
+                if (widthChanged) {
+                  lastBallViewportWidth = window.innerWidth;
+                  resetBall();
+                }
+              }, { passive: true });
 
               let lastBallTime = performance.now();
               const drawPixelBall = (time) => {

@@ -1019,17 +1019,19 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // ==========================================
-  // Navbar dark/light theme toggle on white section (#vision)
+  // Navbar dark/light theme toggle on light sections (#vision and #plan)
   // ==========================================
   const navbar = document.querySelector(".nav_bar");
   const visionSec = document.getElementById("vision");
-  if (navbar && visionSec) {
+  const planSec = document.getElementById("plan");
+  if (navbar && visionSec && planSec) {
     const handleNavbarTheme = () => {
-      const rect = visionSec.getBoundingClientRect();
+      const visionRect = visionSec.getBoundingClientRect();
+      const planRect = planSec.getBoundingClientRect();
       const navbarHeight = navbar.offsetHeight || 80;
-      // If the top of the vision section has reached the navbar,
-      // and the bottom of the vision section is still below the navbar:
-      if (rect.top <= navbarHeight && rect.bottom >= 0) {
+      const overVision = visionRect.top <= navbarHeight && visionRect.bottom >= 0;
+      const overPlan = planRect.top <= navbarHeight && planRect.bottom >= 0;
+      if (overVision || overPlan) {
         navbar.classList.add("nav-dark");
       } else {
         navbar.classList.remove("nav-dark");
