@@ -56,6 +56,9 @@
                 <a href="#model" class="link_nav w-inline-block">
                   <div class="link_nav_text">Showcase</div>
                 </a>
+                <a href="#terra" class="link_nav link_nav--terra w-inline-block">
+                  <div class="link_nav_text">Terra</div>
+                </a>
                 <a href="#reserve" class="link_nav link_nav--waitlist w-inline-block">
                   <div class="link_nav_text">Waitlist</div>
                 </a>
@@ -320,10 +323,14 @@
             }
             /* Keep the site's ending as one uninterrupted continuation of Showcase. */
             #reserve.s-cta-newsletter,
+            #terra.s-cta-newsletter,
             .s-footer { background: #061733 !important; }
             #reserve.s-cta-newsletter,
-            #reserve .s_cta_newsletter_content_wrap { border-radius: 0 !important; }
-            #reserve .s_cta_newsletter_content_wrap {
+            #terra.s-cta-newsletter,
+            #reserve .s_cta_newsletter_content_wrap,
+            #terra .s_cta_newsletter_content_wrap { border-radius: 0 !important; }
+            #reserve .s_cta_newsletter_content_wrap,
+            #terra .s_cta_newsletter_content_wrap {
               position: relative;
               overflow: visible;
               background-color: #176f9d;
@@ -342,11 +349,17 @@
               image-rendering: pixelated;
             }
             #reserve .s_cta_newsletter_title_wrap,
-            #reserve .s_cta_newsletter_form { position: relative; z-index: 1; }
+            #reserve .s_cta_newsletter_form,
+            #terra .s_cta_newsletter_title_wrap,
+            #terra .s_cta_newsletter_form { position: relative; z-index: 1; }
             #reserve .s_cta_newsletter_title_wrap,
             #reserve .s_cta_newsletter_form,
-            #reserve .waitlist-social-links { text-shadow: 0 2px 10px rgba(6, 23, 51, .52); }
-            #reserve .s_cta_newsletter_form { justify-content: center; }
+            #reserve .waitlist-social-links,
+            #terra .s_cta_newsletter_title_wrap,
+            #terra .s_cta_newsletter_form,
+            #terra .waitlist-social-links { text-shadow: 0 2px 10px rgba(6, 23, 51, .52); }
+            #reserve .s_cta_newsletter_form,
+            #terra .s_cta_newsletter_form { justify-content: center; }
             .waitlist-corner-square {
               position: absolute;
               z-index: 2;
@@ -377,9 +390,12 @@
                 justify-content: flex-end;
                 margin: 0;
               }
-              #reserve .s_cta_newsletter_title_wrap { order: 1; }
-              #reserve .s_cta_newsletter_form { order: 2; }
-              #reserve .s_cta_newsletter_content_wrap { padding-bottom: 76px; }
+              #reserve .s_cta_newsletter_title_wrap,
+              #terra .s_cta_newsletter_title_wrap { order: 1; }
+              #reserve .s_cta_newsletter_form,
+              #terra .s_cta_newsletter_form { order: 2; }
+              #reserve .s_cta_newsletter_content_wrap,
+              #terra .s_cta_newsletter_content_wrap { padding-bottom: 76px; }
             }
             #team.s-team {
               display: flex;
@@ -2723,6 +2739,39 @@
         </div>
       </section>
 
+      <!-- Terra CTA -->
+      <section id="terra" class="s-cta-newsletter terra-panel">
+        <div class="s_cta_newsletter_container u-container">
+          <div class="s_cta_newsletter_content_wrap">
+            <canvas class="waitlist-dither-canvas" aria-hidden="true"></canvas>
+            <span class="waitlist-corner-square waitlist-corner-square--tl" aria-hidden="true"></span>
+            <span class="waitlist-corner-square waitlist-corner-square--tr" aria-hidden="true"></span>
+            <span class="waitlist-corner-square waitlist-corner-square--bl" aria-hidden="true"></span>
+            <span class="waitlist-corner-square waitlist-corner-square--br" aria-hidden="true"></span>
+            <div class="waitlist-social-links">
+              <a href="https://www.linkedin.com/company/soverin-gaming" target="_blank" rel="noopener noreferrer" class="link_footer">LinkedIn</a>
+              <a href="https://www.instagram.com/soverin_gaming?utm_source=ig_web_button_share_sheet&amp;igsh=ZDNlZDc0MzIxNw==" target="_blank" rel="noopener noreferrer" class="link_footer">Instagram</a>
+            </div>
+            <div class="s_cta_newsletter_title_wrap">
+              <h2 class="s_cta_newsletter_title u-text-style-h2">Terra</h2>
+              <p class="s_cta_newsletter_descrip">Receive updates on development, ups &amp; downs, and our progress towards creating Runtime Cognitive Models. We promise lots of eye candy :)</p>
+            </div>
+            <div class="s_cta_newsletter_form">
+              <div class="form_sub w-form">
+                <form class="newsletter-pill" data-waitlist-form>
+                  <label class="u-sr-only" for="terra-form-email">Join Terra</label>
+                  <input id="terra-form-email" name="Email" type="email" placeholder="Enter your email" required pattern="^[^\s@]+@[^\s@]+\.[^\s@]+$" title="Enter an email address with a domain, such as name@example.com" inputmode="email" autocomplete="email" class="newsletter-pill__input"/>
+                  <button type="submit" class="newsletter-pill__submit" disabled>Subscribe</button>
+                </form>
+                <div class="form_sub_success w-form-done" style="display: none; margin-top: 15px; background: transparent; border: 0; padding: 0;">
+                  <div class="form_sub_success_content"><p class="form_sub_success_text">You've been subscribed!</p></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <!-- Newsletter CTA -->
       <section id="reserve" class="s-cta-newsletter">
         <div class="s_cta_newsletter_container u-container">
@@ -2743,7 +2792,7 @@
             
             <div class="s_cta_newsletter_form">
               <div class="form_sub w-form">
-                <form id="subscribe-form" class="newsletter-pill">
+                <form id="subscribe-form" class="newsletter-pill" data-waitlist-form>
                   <label class="u-sr-only" for="form-email">Join our Waitlist</label>
                   <input id="form-email" name="Email" type="email" placeholder="Enter your email" required pattern="^[^\s@]+@[^\s@]+\.[^\s@]+$" title="Enter an email address with a domain, such as name@example.com" inputmode="email" autocomplete="email" class="newsletter-pill__input"/>
                   <button type="submit" class="newsletter-pill__submit" disabled>Subscribe</button>

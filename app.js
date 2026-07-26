@@ -571,11 +571,10 @@ document.addEventListener("DOMContentLoaded", () => {
   // waitlist table is responsible for limiting what this browser can do.
   const SUPABASE_WAITLIST_URL = "https://jmxxishcxzkxliemdlak.supabase.co/rest/v1/waitlist";
   const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpteHhpc2hjeHpreGxpZW1kbGFrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI0MDMxNjUsImV4cCI6MjA5Nzk3OTE2NX0.qo0KGf_PS-HDWkmj2erlbmy66I1WxbA4crapuHZ8o80";
-  const subForm = document.getElementById("subscribe-form");
-  const emailInput = document.getElementById("form-email");
-  const successBox = document.getElementById("form-success");
-
-  if (subForm && successBox) {
+  document.querySelectorAll("[data-waitlist-form]").forEach((subForm) => {
+    const emailInput = subForm.querySelector("input[type='email']");
+    const successBox = subForm.parentElement?.querySelector(".form_sub_success");
+    if (!emailInput || !successBox) return;
     const submitBtn = subForm.querySelector("button[type='submit']");
     const updateSubscribeButton = () => {
       if (!emailInput || !submitBtn) return;
@@ -632,7 +631,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       }
     });
-  }
+  });
 
   // ==========================================
   // 8. Animated Image-Based Dither Overlay (Code-Only Pixel Canvas)
@@ -819,8 +818,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // ==========================================
   // 9. Animated dither treatment for the Waitlist artwork
   // ==========================================
-  const waitlistCanvas = document.querySelector(".waitlist-dither-canvas");
-  if (waitlistCanvas) {
+  document.querySelectorAll(".waitlist-dither-canvas").forEach((waitlistCanvas) => {
     const waitlistPanel = waitlistCanvas.closest(".s_cta_newsletter_content_wrap");
     const waitlistCtx = waitlistCanvas.getContext("2d", { willReadFrequently: true });
     const waitlistSampleCanvas = document.createElement("canvas");
@@ -963,7 +961,7 @@ document.addEventListener("DOMContentLoaded", () => {
     resizeWaitlistCanvas();
     window.addEventListener("resize", resizeWaitlistCanvas, { passive: true });
     requestAnimationFrame(drawWaitlistDither);
-  }
+  });
 
   // ==========================================
   // 10. Interactive Pixel Trail on Hover

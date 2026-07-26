@@ -141,6 +141,10 @@ a {
   display: none !important;
 }
 
+.link_nav--terra .link_nav_text {
+  color: #cf9f3d !important;
+}
+
 /* Transition for theme switching */
 .link_logo_nav img,
 .link_nav_text,
