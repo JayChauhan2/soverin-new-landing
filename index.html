@@ -848,7 +848,7 @@
             }
             .plan-section .sf-rows::before,
             .plan-section .sf-rows::after { display: none; }
-            .plan-row { display: flex; width: 100%; align-items: stretch; }
+            .plan-row { position: relative; display: flex; width: 100%; align-items: stretch; }
             .plan-row .sf-square {
               width: 33.333%;
               flex: 0 0 33.333%;
@@ -875,6 +875,19 @@
               text-shadow: none !important;
               background: transparent;
             }
+            .plan-arrow {
+              position: absolute;
+              top: 50%;
+              z-index: 6;
+              width: 42px;
+              height: 34px;
+              color: #006400;
+              transform: translate(-50%, -50%);
+              pointer-events: none;
+            }
+            .plan-arrow--one { left: 33.333%; }
+            .plan-arrow--two { left: 66.666%; }
+            .plan-arrow svg { display: block; width: 100%; height: 100%; shape-rendering: crispEdges; }
             @media (max-width: 767px) {
               .sf-rows { width: 100%; padding: 16px; }
               .sf-row, .sf-row--flip { flex-direction: column !important; }
@@ -886,6 +899,14 @@
               .plan-row .sf-square { width: 100%; flex: 0 0 auto; min-height: 280px; }
               .plan-row .sf-square--text { padding: 30px 42px; }
               .plan-row .sf-square + .sf-square { border-left: 1px solid rgba(255, 255, 255, .08); border-top: none; }
+              .plan-arrow {
+                position: relative;
+                top: auto;
+                left: auto;
+                flex: 0 0 34px;
+                align-self: center;
+                transform: rotate(90deg);
+              }
               .sf-side-title { display: none; }
             }
           </style>
@@ -1995,15 +2016,17 @@
           <div class="sf-rows">
             <div class="plan-row">
               <article class="sf-square sf-square--text plan-card" style="background: #ffffff !important;">
-                <h2 class="sf-square--text__title" id="plan-title" style="color: #006400 !important;">Build the Core</h2>
+                <h2 class="sf-square--text__title" id="plan-title" style="color: #006400 !important;">We build our own AI-native titles.</h2>
                 <p class="sf-square--text__body" style="color: rgba(0, 50, 18, .82) !important;">Develop the intelligence systems that make every strategic world responsive and alive.</p>
               </article>
+              <span class="plan-arrow plan-arrow--one" aria-hidden="true"><svg viewBox="0 0 10 8" fill="currentColor"><rect x="6" y="0" width="2" height="2"/><rect x="4" y="1" width="2" height="2"/><rect x="6" y="2" width="2" height="2"/><rect x="2" y="3" width="2" height="2"/><rect x="4" y="3" width="2" height="2"/><rect x="6" y="3" width="2" height="2"/><rect x="8" y="3" width="2" height="2"/><rect x="4" y="5" width="2" height="2"/><rect x="6" y="5" width="2" height="2"/><rect x="6" y="6" width="2" height="2"/></svg></span>
               <article class="sf-square sf-square--text plan-card" style="background: #ffffff !important;">
-                <h2 class="sf-square--text__title" style="color: #006400 !important;">Ship the Experience</h2>
+                <h2 class="sf-square--text__title" style="color: #006400 !important;">We power other studios' games.</h2>
                 <p class="sf-square--text__body" style="color: rgba(0, 50, 18, .82) !important;">Bring those systems into games where every decision creates a distinct story.</p>
               </article>
+              <span class="plan-arrow plan-arrow--two" aria-hidden="true"><svg viewBox="0 0 10 8" fill="currentColor"><rect x="6" y="0" width="2" height="2"/><rect x="4" y="1" width="2" height="2"/><rect x="6" y="2" width="2" height="2"/><rect x="2" y="3" width="2" height="2"/><rect x="4" y="3" width="2" height="2"/><rect x="6" y="3" width="2" height="2"/><rect x="8" y="3" width="2" height="2"/><rect x="4" y="5" width="2" height="2"/><rect x="6" y="5" width="2" height="2"/><rect x="6" y="6" width="2" height="2"/></svg></span>
               <article class="sf-square sf-square--text plan-card" style="background: #ffffff !important;">
-                <h2 class="sf-square--text__title" style="color: #006400 !important;">Grow the World</h2>
+                <h2 class="sf-square--text__title" style="color: #006400 !important;">An AI-architecture-first game engine.</h2>
                 <p class="sf-square--text__body" style="color: rgba(0, 50, 18, .82) !important;">Expand the engine for studios and players building the next generation of strategy.</p>
               </article>
             </div>
