@@ -372,15 +372,17 @@
             #reserve .s_cta_newsletter_form,
             #terra .s_cta_newsletter_form { justify-content: center; }
             #terra .s_cta_newsletter_content_wrap {
-              min-height: 440px;
-              background-image: linear-gradient(90deg, rgba(7, 9, 8, .54), rgba(7, 9, 8, .12)), url('https://raw.githubusercontent.com/JayChauhan2/soverin-landing/main/desert_battle.jpg');
+              display: flex;
+              align-items: center;
+              background-image: linear-gradient(90deg, rgba(7, 9, 8, .54), rgba(7, 9, 8, .12)), url('assets/desert_battle.jpg');
               background-position: center 40%;
               background-size: cover;
             }
             #terra .waitlist-dither-canvas { display: none; }
-            #terra .s_cta_newsletter_title_wrap { max-width: 760px; }
+            #terra .s_cta_newsletter_title_wrap { max-width: 760px; margin: 0; }
             #terra .s_cta_newsletter_title {
               color: #ffffff;
+              font-family: 'Press Start 2P', monospace;
               font-size: clamp(4rem, 9vw, 9rem);
               line-height: .9;
               text-shadow: 0 4px 24px rgba(0, 0, 0, .58);
@@ -391,7 +393,7 @@
               top: 28px;
               right: 32px;
               color: #ffffff;
-              font: 400 clamp(3rem, 5vw, 5rem)/1 'Space Grotesk', sans-serif;
+              font: 400 clamp(2.5rem, 4vw, 4.2rem)/1 'Press Start 2P', monospace;
               text-shadow: 0 3px 16px rgba(0, 0, 0, .48);
             }
             .waitlist-corner-square {
@@ -431,7 +433,6 @@
               #reserve .s_cta_newsletter_content_wrap,
               #terra .s_cta_newsletter_content_wrap { padding-bottom: 76px; }
               #terra.s-cta-newsletter { padding-bottom: 36px !important; }
-              #terra .s_cta_newsletter_content_wrap { min-height: 300px; }
               #terra .s_cta_newsletter_title { font-size: clamp(3.5rem, 18vw, 5.5rem); }
               .terra-arrow { top: 20px; right: 20px; }
             }
