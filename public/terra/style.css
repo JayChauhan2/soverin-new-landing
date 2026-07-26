@@ -80,7 +80,7 @@ html, body {
   height: 100%;
   display: block;
   z-index: 2;
-  pointer-events: none;
+  pointer-events: auto;
 }
 
 /* Vignette for depth and cinematic focus */
@@ -151,6 +151,7 @@ html, body {
   align-items: center;
   gap: 12px;
   justify-content: center;
+  text-decoration: none;
 }
 
 .soverin-text-logo {
