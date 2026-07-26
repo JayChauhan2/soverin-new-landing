@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Terra — Soverin</title>
+  <!-- SEO Meta Tags -->
+  <meta name="description" content="Terra, a Soverin production.">
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Outfit:wght@200;400;600&display=swap" rel="stylesheet">
+  
+  <!-- Main Stylesheet -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Fullscreen Smooth Scroll Snapping Container -->
+  <div class="scroll-container" id="scrollContainer">
+    
+    <!-- Section 1: The Epic Cinematic Battle Visual -->
+    <section id="hero" class="scroll-section">
+      <!-- Background & Canvas overlays -->
+      <div class="canvas-container">
+        <div id="battleBg" class="battle-bg"></div>
+        <canvas id="battleCanvas"></canvas>
+        <div class="vignette"></div>
+        <div class="color-filter" id="colorFilter"></div>
+      </div>
+
+      <!-- Static Header Logo (No animations, fixed at top center) -->
+      <header class="logo-header">
+        <div class="production-title">
+          <span>A</span>
+          <img src="soverin_text_logo.png" alt="Soverin" class="soverin-text-logo">
+          <span>PRODUCTION</span>
+        </div>
+      </header>
+
+      <!-- Minimalist Cinematic Corner Typography (Inspired by Book Cover Layout) -->
+      <!-- Top Left Corner -->
+      <div class="corner-text tl-text">TERRA</div>
+      
+      <!-- Bottom Left Corner -->
+      <div class="corner-text bl-text">COMING SOON</div>
+
+      <!-- Bottom Right Corner (Horizontal Waitlist Form) -->
+      <div class="waitlist-container">
+        <form id="waitlistForm" class="waitlist-form">
+          <input type="email" id="emailInput" class="waitlist-input" placeholder="ENTER EMAIL" required>
+          <button type="submit" class="waitlist-submit" title="Join Waitlist">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+              <path d="M5 12h14M12 5l7 7-7 7"/>
+            </svg>
+          </button>
+        </form>
+        <div id="waitlistSuccess" class="waitlist-success hidden">ON THE LIST</div>
+      </div>
+
+      <!-- Hover Detection Zones for mouse-parallax camera movement -->
+      <div class="hover-zones">
+        <div class="hover-zone" id="zoneLeft" data-faction="nomads"></div>
+        <div class="hover-zone" id="zoneRight" data-faction="legion"></div>
+      </div>
+    </section>
+
+    <!-- Section 2: Dark Minimalistic Details Screen (Enables Scroll & Snapping) -->
+    <section id="details" class="scroll-section">
+      <div class="details-content">
+        <h2 class="details-title">THE INTELLIGENCE LAYER</h2>
+        <p class="details-sub">Soverin orchestrates complex simulation systems under a single, unified interface.</p>
+        <div class="details-divider"></div>
+        <div class="details-metadata">
+          <div class="meta-item"><span>01 / PROTOCOL</span><span>ACTIVE</span></div>
+          <div class="meta-item"><span>02 / BANDWIDTH</span><span>STABLE</span></div>
+          <div class="meta-item"><span>03 / NODES</span><span>ONLINE</span></div>
+        </div>
+      </div>
+    </section>
+    
+  </div>
+
+  <!-- JavaScript File -->
+  <script src="app.js"></script>
+</body>
+</html>

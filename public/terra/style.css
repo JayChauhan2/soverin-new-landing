@@ -1,0 +1,389 @@
+/* Define Design System Tokens - Realistic Cinema Palette */
+:root {
+  --color-bg: #09090b;
+  --color-text-primary: #ffffff;
+  --color-text-secondary: rgba(255, 255, 255, 0.5);
+  --color-accent-gold: #c59b27;
+  
+  --font-title: 'Cinzel', serif;
+  --font-body: 'Outfit', sans-serif;
+  
+  --transition-speed: 0.8s;
+  --transition-ease: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Reset and Core Layout */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background-color: var(--color-bg);
+  color: var(--color-text-primary);
+  font-family: var(--font-body);
+  user-select: none;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Smooth Snapping Scroll Container */
+.scroll-container {
+  width: 100%;
+  height: 100vh;
+  overflow-y: scroll;
+  scroll-snap-type: y mandatory;
+  scroll-behavior: smooth;
+  scrollbar-width: none; /* Hide scrollbars */
+  -ms-overflow-style: none; /* IE/Edge */
+}
+
+.scroll-container::-webkit-scrollbar {
+  display: none; /* Chrome/Safari */
+}
+
+.scroll-section {
+  width: 100%;
+  height: 100vh;
+  position: relative;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  overflow: hidden;
+}
+
+/* Fullscreen Canvas & Background Container */
+.canvas-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  overflow: hidden;
+}
+
+/* Realistic Image Background */
+.battle-bg {
+  position: absolute;
+  top: -5%;
+  left: -5%;
+  width: 110%;
+  height: 110%;
+  background-image: url('desert_battle.jpg');
+  background-size: cover;
+  background-position: center 40%;
+  filter: brightness(0.95) contrast(1.02) saturate(0.9);
+  transition: transform 1s var(--transition-ease),
+              filter 1s var(--transition-ease);
+  z-index: 1;
+}
+
+/* Canvas overlay for particle effects, heat distortion, lens flare */
+#battleCanvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* Vignette for depth and cinematic focus */
+.vignette {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  background: radial-gradient(circle, rgba(0,0,0,0) 30%, rgba(9,9,11,0.4) 70%, rgba(9,9,11,0.85) 100%);
+  z-index: 3;
+}
+
+/* Dynamic color filter for state changes */
+.color-filter {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  opacity: 0;
+  mix-blend-mode: overlay;
+  transition: background-color var(--transition-speed) var(--transition-ease),
+              opacity var(--transition-speed) var(--transition-ease);
+  z-index: 4;
+}
+
+/* Invisible Interaction Zones */
+.hover-zones {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  z-index: 5;
+}
+
+.hover-zone {
+  flex: 1;
+  height: 100%;
+  cursor: pointer;
+}
+
+/* Logo Header (Fixed top center, static, no animations) */
+.logo-header {
+  position: absolute;
+  top: 50px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  pointer-events: none;
+}
+
+.production-title {
+  font-family: var(--font-body);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 5px;
+  color: #ffffff;
+  opacity: 0.35; /* Subtle low opacity */
+  text-transform: uppercase;
+  white-space: nowrap;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.6);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  justify-content: center;
+}
+
+.soverin-text-logo {
+  height: 10px; /* Aligns cleanly with capital letters size */
+  width: auto;
+  display: block;
+  filter: brightness(0) invert(1); /* Ensure matching white color */
+  margin-top: 1px; /* Vertically align with font baseline */
+}
+
+/* Elegant Corner Typography (Inspired by Book Cover Layout) */
+.corner-text {
+  position: absolute;
+  font-family: var(--font-body);
+  color: var(--color-text-primary);
+  z-index: 10;
+  pointer-events: none;
+  opacity: 1; /* Fully visible */
+  text-shadow: 0 4px 12px rgba(0, 0, 0, 0.85); /* Strong drop shadow for photorealism contrast */
+}
+
+.tl-text {
+  top: 60px;
+  left: 60px;
+  font-family: var(--font-title);
+  font-size: 28px;
+  font-weight: 900;
+  letter-spacing: 1px;
+  line-height: 1.1;
+  max-width: 320px;
+}
+
+.bl-text {
+  bottom: 60px;
+  left: 60px;
+  font-family: var(--font-body); /* Outfit (Sans-Serif) */
+  font-size: 28px;
+  font-weight: 900;
+  letter-spacing: 1px;
+  line-height: 1.1;
+}
+
+.rotated-text {
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  white-space: nowrap;
+}
+
+/* Waitlist Signup Widget (Bottom Right, Horizontal, Glassmorphic) */
+.waitlist-container {
+  position: absolute;
+  bottom: 60px;
+  right: 60px;
+  z-index: 10;
+  pointer-events: auto; /* Let users click and type */
+}
+
+.waitlist-form {
+  display: flex;
+  align-items: center;
+  border-bottom: 1.5px solid rgba(255, 255, 255, 0.4);
+  padding-bottom: 6px;
+  transition: border-color 0.4s, opacity 0.4s var(--transition-ease);
+}
+
+.waitlist-form:focus-within {
+  border-color: #ffffff;
+}
+
+.waitlist-input {
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #ffffff;
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  width: 150px;
+  padding: 4px 8px 4px 0;
+  transition: width 0.4s var(--transition-ease);
+}
+
+.waitlist-input::placeholder {
+  color: rgba(255, 255, 255, 0.4);
+  font-weight: 400;
+}
+
+.waitlist-submit {
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.6);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  transition: color 0.3s, transform 0.3s;
+}
+
+.waitlist-submit:hover {
+  color: #ffffff;
+  transform: translateX(2px);
+}
+
+.waitlist-success {
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 2.5px;
+  color: #ffffff;
+  text-shadow: 0 2px 8px rgba(255, 255, 255, 0.2);
+  opacity: 0;
+  transition: opacity 0.4s var(--transition-ease);
+  padding: 6px 0;
+}
+
+.waitlist-success.show {
+  opacity: 1;
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* State Filter Effects */
+.state-nomads-hover .battle-bg {
+  filter: brightness(0.85) contrast(1.05) saturate(0.95);
+}
+
+.state-legion-hover .battle-bg {
+  filter: brightness(0.9) contrast(1.05) saturate(0.95);
+}
+
+/* Section 2: Dark Minimalistic Details Screen */
+#details {
+  background-color: #0b0b0e;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+  box-shadow: inset 0 20px 40px rgba(0, 0, 0, 0.8);
+}
+
+.details-content {
+  text-align: center;
+  max-width: 600px;
+  padding: 0 40px;
+}
+
+.details-title {
+  font-family: var(--font-title);
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: 4px;
+  margin-bottom: 20px;
+  text-transform: uppercase;
+}
+
+.details-sub {
+  font-size: 14px;
+  line-height: 1.8;
+  color: var(--color-text-secondary);
+  margin-bottom: 40px;
+}
+
+.details-divider {
+  width: 60px;
+  height: 1px;
+  background: var(--color-text-secondary);
+  opacity: 0.3;
+  margin: 0 auto 40px;
+}
+
+.details-metadata {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+}
+
+.meta-item {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.meta-item span:first-child {
+  font-size: 9px;
+  letter-spacing: 2px;
+  color: var(--color-text-secondary);
+}
+
+.meta-item span:last-child {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 1px;
+}
+
+/* Responsive adjustments - scale instead of hide */
+@media (max-width: 768px) {
+  .tl-text {
+    font-size: 18px;
+    top: 30px;
+    left: 30px;
+    max-width: 200px;
+  }
+  .bl-text {
+    font-size: 18px;
+    bottom: 30px;
+    left: 30px;
+  }
+  .waitlist-container {
+    bottom: 30px;
+    right: 30px;
+  }
+  .waitlist-input {
+    width: 110px;
+    font-size: 11px;
+  }
+  .logo-header {
+    top: 30px;
+  }
+  .details-title {
+    font-size: 20px;
+  }
+}
