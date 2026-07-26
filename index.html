@@ -17,10 +17,10 @@
   <!-- Custom Stylesheet (Local overrides & fixes) -->
   <link rel="stylesheet" href="style.css"/>
 
-  <!-- Google Fonts: Space Grotesk & Press Start 2P -->
+  <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Press+Start+2P&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Space+Grotesk:wght@300;400;500;600;700&family=Press+Start+2P&display=swap" rel="stylesheet">
 
 </head>
 <body class="body-wrap">
@@ -380,9 +380,20 @@
             }
             #terra .waitlist-dither-canvas { display: none; }
             #terra .s_cta_newsletter_title_wrap { max-width: 760px; margin: 0; }
+            .terra-brand {
+              display: flex;
+              align-items: center;
+              gap: clamp(18px, 3vw, 42px);
+            }
+            .terra-logo {
+              width: clamp(72px, 10vw, 150px);
+              height: auto;
+              object-fit: contain;
+            }
             #terra .s_cta_newsletter_title {
               color: #ffffff;
-              font-family: 'Press Start 2P', monospace;
+              font-family: 'Cinzel', serif;
+              font-weight: 900;
               font-size: clamp(4rem, 9vw, 9rem);
               line-height: .9;
               text-shadow: 0 4px 24px rgba(0, 0, 0, .58);
@@ -393,7 +404,7 @@
               top: 28px;
               right: 32px;
               color: #ffffff;
-              font: 400 clamp(2.5rem, 4vw, 4.2rem)/1 'Press Start 2P', monospace;
+              font: 900 clamp(2.5rem, 4vw, 4.2rem)/1 'Cinzel', serif;
               text-shadow: 0 3px 16px rgba(0, 0, 0, .48);
             }
             .waitlist-corner-square {
@@ -434,6 +445,7 @@
               #terra .s_cta_newsletter_content_wrap { padding-bottom: 76px; }
               #terra.s-cta-newsletter { padding-bottom: 36px !important; }
               #terra .s_cta_newsletter_title { font-size: clamp(3.5rem, 18vw, 5.5rem); }
+              .terra-logo { width: clamp(58px, 18vw, 92px); }
               .terra-arrow { top: 20px; right: 20px; }
             }
             #team.s-team {
@@ -2788,7 +2800,10 @@
             <span class="waitlist-corner-square waitlist-corner-square--bl" aria-hidden="true"></span>
             <span class="waitlist-corner-square waitlist-corner-square--br" aria-hidden="true"></span>
             <div class="s_cta_newsletter_title_wrap">
-              <h2 class="s_cta_newsletter_title u-text-style-h2">Terra</h2>
+              <div class="terra-brand">
+                <img src="assets/terra-logo.png" alt="Terra logo" class="terra-logo"/>
+                <h2 class="s_cta_newsletter_title u-text-style-h2">Terra</h2>
+              </div>
             </div>
             <span class="terra-arrow" aria-hidden="true">↗</span>
           </div>
